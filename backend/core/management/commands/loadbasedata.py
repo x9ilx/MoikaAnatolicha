@@ -59,36 +59,9 @@ class Command(BaseCommand):
         )
         return False
 
-    def load_company_requisites(self, data_file_path, model):
+    def load_no_foreign_key_table(self, data_file_path, model):
         with open(data_file_path, newline='', encoding='UTF-8') as csvfile:
             csv_reader = csv.DictReader(f=csvfile)
-
-            index = 0
-            index_all = 0
-            for row in csv_reader:
-                try:
-                    index = index + 1
-                    index_all = index_all + 1
-                    model.objects.update_or_create(**row)
-
-                except Exception as ex:
-                    index = index - 1
-                    self.stdout.write(
-                        self.style.ERROR(f'Запись "{row}" не добавлена: {ex}')
-                    )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    (f'\nДобавлено {index} записей ' f'из {index_all}\n\n')
-                )
-            )
-
-    def load_ingredients(self, data_file_path, model):
-        model_units = apps.get_model('recipe', 'MeasurimentUnit')
-
-        with open(data_file_path, newline='', encoding='UTF-8') as csvfile:
-            csv_reader = csv.DictReader(
-                f=csvfile, fieldnames=['name', 'measuriment_unit']
-            )
 
             index = 0
             index_all = 0
@@ -97,15 +70,7 @@ class Command(BaseCommand):
                     try:
                         index = index + 1
                         index_all = index_all + 1
-                        (
-                            unit,
-                            add_result,
-                        ) = model_units.objects.update_or_create(
-                            name=row['measuriment_unit']
-                        )
-                        model.objects.update_or_create(
-                            name=row['name'], measurement_unit=unit
-                        )
+                        model.objects.update_or_create(**row)
 
                     except Exception as ex:
                         index = index - 1
@@ -151,7 +116,34 @@ class Command(BaseCommand):
                 'company',
                 'CompanyRequisites',
                 './data/company_requisites.csv',
-                self.load_company_requisites,
+                self.load_no_foreign_key_table,
+            )
+
+        if self.check_installed_apps('vehicle'):
+            self.load_data(
+                'vehicle',
+                'VehicleOrTrailerClass',
+                './data/vehicle_or_trailer_class.csv',
+                self.load_no_foreign_key_table,
+            )
+            self.load_data(
+                'vehicle',
+                'VehicleOrTrailerType',
+                './data/vehicle_or_trailer_type.csv',
+                self.load_no_foreign_key_table,
+            )
+        if self.check_installed_apps('service'):
+            self.load_data(
+                'service',
+                'Service',
+                './data/services.csv',
+                self.load_no_foreign_key_table,
+            )
+            self.load_data(
+                'service',
+                'ServiceVehicleType',
+                './data/service_vehicle_types.csv',
+                self.load_no_foreign_key_table,
             )
 
         self.print_divider()

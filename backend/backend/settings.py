@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'djoser',
+    'corsheaders',
     'api.apps.ApiConfig',
     'employer.apps.EmployerConfig',
     'order.apps.OrderConfig',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'vehicle.apps.VehicleConfig',
     'company.apps.CompanyConfig',
     'core.apps.CoreConfig',
+    'counterparty.apps.CounterpartyConfig',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -141,10 +144,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_RENDERER_CLASSES = ('rest_framework.renderers.JSONRenderer',)
 
-if DEBUG:
-    DEFAULT_RENDERER_CLASSES = (
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    ) + DEFAULT_RENDERER_CLASSES
+# if DEBUG:
+#     DEFAULT_RENDERER_CLASSES = (
+#         'rest_framework.renderers.BrowsableAPIRenderer',
+#     ) + DEFAULT_RENDERER_CLASSES
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -162,16 +165,17 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 8,
 }
 
-# DJOSER = {
-#     'LOGIN_FIELD': 'email',
-#     'HIDE_USERS': False,
-#     'PERMISSIONS': {
-#         'user': ['rest_framework.permissions.AllowAny'],
-#         'user_list': ['rest_framework.permissions.AllowAny'],
-#     },
-#     'SERIALIZERS': {
-#         'user_create': 'user.serializers.UserCreateSerializer',
-#         'current_user': 'user.serializers.UserSerializer',
-#         'user': 'user.serializers.UserSerializer',
-#     },
-# }
+DJOSER = {
+    'HIDE_USERS': False,
+    'SERIALIZERS': {
+        # 'user_create': 'user.serializers.UserCreateSerializer',
+        'current_user': 'employer.serializers.UserSerializer',
+        'user': 'employer.serializers.UserSerializer',
+    },
+}
+
+CORS_ALLOWED_ORIGINS = ['https://' + cors for cors in os.getenv('ALLOWED_HOSTS', 'localhost/*').split(';')]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True

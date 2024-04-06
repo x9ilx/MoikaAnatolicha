@@ -1,0 +1,12 @@
+$theme-colors: (
+  "primary": #26a4df,
+  "secondary": #F1C97E,
+  "contrast": #EBDB4C,
+  "text-color": #0F0F0F,
+);
+
+.text {
+    color: #0F0F0F !important;
+}
+
+@import "bootstrap/scss/bootstrap";

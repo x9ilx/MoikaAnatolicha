@@ -1,0 +1,5 @@
+id,name,additional_service
+1,Мойка с химией,False
+2,Мойка двигателя,True
+3,Мойка радиатора,True
+4,Мойка рамы,True
