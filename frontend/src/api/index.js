@@ -1,77 +1,83 @@
-const URL = "http://localhost:8000"
+const URL = "http://localhost:8000";
+import Cookies from "universal-cookie";
 
+const cookies = new Cookies(null, { path: "/" });
 class Api {
-  constructor (url, headers) {
-    this._url = url
-    this._headers = headers
+  constructor(url, headers) {
+    this._url = url;
+    this._headers = headers;
   }
 
-  checkResponse (res) {
+
+  checkResponse(res) {
     return new Promise((resolve, reject) => {
       if (res.status === 204) {
-        return resolve(res)
+        return resolve(res);
       }
-      const func = res.status < 400 ? resolve : reject
-      res.json().then(data => func(data))
-    })
+      const func = res.status < 400 ? resolve : reject;
+      res.json().then((data) => func(data));
+    });
   }
 
-  signin ({ username, password }) {
-    console.log(username)
-    console.log(password)
-    return fetch(
-      URL + '/api/auth/token/login/',
-      {
-        method: 'POST',
-        headers: this._headers,
-        body: JSON.stringify({
-          username, password
-        })
-      }
-    ).then(this.checkResponse)
+  signin({ username, password }) {
+    return fetch(URL + "/api/auth/token/login/", {
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    }).then(this.checkResponse);
   }
 
-  signout () {
-    const token = localStorage.getItem('token')
-    return fetch(
-      URL + '/api/auth/token/logout/',
-      {
-        method: 'POST',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        }
-      }
-    ).then(this.checkResponse)
+  signout() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + "/api/auth/token/logout/", {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
   }
 
-  signup ({ email, password, username, first_name, last_name }) {
-    return fetch(
-      URL + `/api/users/`,
-      {
-        method: 'POST',
-        headers: this._headers,
-        body: JSON.stringify({
-          email, password, username, first_name, last_name
-        })
-      }
-    ).then(this.checkResponse)
+  signup({ email, password, username, first_name, last_name }) {
+    return fetch(URL + `/api/users/`, {
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify({
+        email,
+        password,
+        username,
+        first_name,
+        last_name,
+      }),
+    }).then(this.checkResponse);
   }
 
-  getUserData () {
-    const token = localStorage.getItem('token')
-    return fetch(
-      URL + `/api/users/me/`,
-      {
-        method: 'GET',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        }
-      }
-    ).then(this.checkResponse)
+  getUserData() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/users/me/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+
+    // EMPLOYES
   }
 
+  getEmployeesList() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
   // getRecipe ({
   //   recipe_id
   // }) {
@@ -150,4 +156,6 @@ class Api {
   // }
 }
 
-export default new Api(process.env.API_URL || 'http://localhost', { 'content-type': 'application/json' })
+export default new Api(process.env.API_URL || "http://localhost", {
+  "content-type": "application/json",
+});

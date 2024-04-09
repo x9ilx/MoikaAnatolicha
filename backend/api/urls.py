@@ -2,11 +2,10 @@ from django.urls import include, path
 from rest_framework import routers
 
 from company.views import CompanyRequisitesViewSet
+from employer.views import EmployerViewSet
 from service.views import ServiceViewSet
-from vehicle.views import (
-    VehicleOrTrailerClassViewSet,
-    VehicleOrTrailerTypeViewSet,
-)
+from vehicle.views import (VehicleOrTrailerClassViewSet,
+                           VehicleOrTrailerTypeViewSet)
 
 app_name = 'api'
 
@@ -28,6 +27,11 @@ v1_router.register(
     'services',
     ServiceViewSet,
     basename='Service',
+)
+v1_router.register(
+    'employees',
+    EmployerViewSet,
+    basename='Employer',
 )
 
 urlpatterns = [

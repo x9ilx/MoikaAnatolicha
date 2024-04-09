@@ -1,12 +1,39 @@
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+
+
 $theme-colors: (
   "primary": #26a4df,
   "secondary": #F1C97E,
+  "danger": #962c17,
+  "success": #1aad3a,
   "contrast": #EBDB4C,
-  "text-color": #0F0F0F,
+  "text-color": #272727,
 );
 
-.text {
-    color: #0F0F0F !important;
-}
+$font-sizes: (
+    1: $h1-font-size,
+    2: $h2-font-size,
+    3: $h3-font-size,
+    4: $h4-font-size,
+    5: $h5-font-size,
+    6: $h6-font-size,
+    7: 0.9rem, // adds fs-7
+    8: 0.8rem, // adds fs-n1
+    9: 0.7rem, // adds fs-7
+    10: 0.6rem, // adds fs-n1
+);
+
 
 @import "bootstrap/scss/bootstrap";
+
+
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+  background-color: rgb(#26a4df, 0.5);
+}
+
+.text {
+    color: #272727 !important;
+}

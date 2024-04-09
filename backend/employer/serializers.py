@@ -1,14 +1,27 @@
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 
-from employer.models import Employer
+from employer.models import Employer, EmployerPositions
 
 
 class EmployerSerializer(serializers.ModelSerializer):
+    user_name = serializers.StringRelatedField(source='user', read_only=True)
+    position_verbose = serializers.SerializerMethodField()
+  
+    def get_position_verbose(self, obj):
+        return EmployerPositions[obj.position].label
 
     class Meta:
         model = Employer
-        fields = '__all__'
+        fields = [
+            'id',
+            'position',
+            'name',
+            'short_name',
+            'phone',
+            'user_name',
+            'position_verbose',
+        ]
 
 
 class UserSerializer(BaseUserSerializer):
@@ -24,7 +37,7 @@ class UserSerializer(BaseUserSerializer):
             result['phone'] = employer.phone
         except Employer.DoesNotExist:
             ...
-        
+
         return result
 
     class Meta(BaseUserSerializer.Meta):

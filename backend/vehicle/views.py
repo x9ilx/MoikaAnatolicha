@@ -6,10 +6,8 @@ from rest_framework.response import Response
 from service.serializers import VehicleTypeServiceSerializer
 
 from .models import VehicleOrTrailerClass, VehicleOrTrailerType
-from .serializers import (
-    VehicleOrTrailerClassSerializer,
-    VehicleOrTrailerTypeSerializer,
-)
+from .serializers import (VehicleOrTrailerClassSerializer,
+                          VehicleOrTrailerTypeSerializer)
 
 
 class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):

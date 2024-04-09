@@ -2,11 +2,11 @@ import React from 'react';
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from '../../contexts/auth-context';
 
-const ProtectedRoute = () => {
+const UserRoleRouter = (role) => {
   const auth = useAuth();
 
-  if (!auth.loggedIn) return <Navigate to="/signin" />;
+  if (auth.employerInfo.employer_info.position != role.role) return <Navigate to="/access_denided" />;
     return <Outlet />;
 
 }
-export default ProtectedRoute;
+export default UserRoleRouter;

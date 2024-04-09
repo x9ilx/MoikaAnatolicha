@@ -1,23 +1,18 @@
 import { useFormWithValidation } from "../../utils/validation";
-import { AuthContext } from "../../contexts";
-import { Form, Navigate } from "react-router-dom";
-import { useContext } from "react";
-import MetaTags from "react-meta-tags";
-import logo from '../../../public/logo.jpg'
+import { Navigate } from "react-router-dom";
+import logo from '/logo.jpg'
+import { useAuth } from "../../contexts/auth-context";
 
-const SignIn = ({ onSignIn }) => {
+const SignIn = () => {
   const { values, handleChange, errors, isValid, resetForm } =
     useFormWithValidation();
-  const authContext = useContext(AuthContext);
+  const auth = useAuth();
 
+  {document.title="Войти в CRM Чистый Грузовик"}
   return (
     <>
-      {authContext && <Navigate to="/" />}
-      <MetaTags>
-        <title>Войти в CRM</title>
-        <meta name="description" content="Чистый грузовик - Войти в CRM" />
-        <meta property="og:title" content="Войти в CRM" />
-      </MetaTags>
+      {auth.loggedIn && <Navigate to="/" />}
+      
 
       <div className="text-center">
         <img className="img-fluid col-md-5 px-0" src={logo}></img>
@@ -25,11 +20,10 @@ const SignIn = ({ onSignIn }) => {
 
       <form onSubmit={e => {
           e.preventDefault()
-          onSignIn(values)
+          auth.loginAction(values)
         }}>
         <div className="form-floating mb-3">
           <input
-            type="text"
             className="form-control text"
             id="floatingUsername"
             placeholder="name@example.com"

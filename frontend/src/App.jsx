@@ -1,61 +1,53 @@
-import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, Navigate, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/protected-route";
-import AuthContext from "./contexts/auth-context";
-import api from "./api/index";
+import { useAuth } from "./contexts/auth-context";
 import SignIn from "./pages/signin/index.jsx";
+import Header from "./components/header/index.jsx";
+import * as bootstrap from 'bootstrap'
+import WorkOrderList from "./components/work_order_list/index.jsx";
+import UserRoleRouter from "./components/user_role_router/index.jsx";
+import { EmployerPosition } from "./constants.jsx";
+import EmployeesSettings from "./pages/employees_settings/index.jsx";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(null);
-  const [user, setUser] = useState({});
+  const auth = useAuth();
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-  const authorization = ({ username, password }) => {
-    api
-      .signin({
-        username,
-        password,
-      })
-      .then((res) => {
-        if (res.auth_token) {
-          localStorage.setItem("token", res.auth_token);
-          api
-            .getUserData()
-            .then((res) => {
-              setUser(res);
-              setLoggedIn(true);
-            })
-            .catch((err) => {
-              setLoggedIn(false);
-            });
-        } else {
-          setLoggedIn(false);
-        }
-      })
-      .catch((err) => {
-        const errors = Object.values(err);
-        if (errors) {
-          alert(errors.join(", "));
-        }
-        setLoggedIn(false);
-      });
-  };
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route path="/signin" element={<SignIn onSignIn={authorization} />} />
-        <Route
-          path="/"
-          element={loggedIn ? <Navigate to="/" /> : <Navigate to="/signin" />}
-        />
-      </>
-    )
-  );
-
+  {document.title="CRM Чистый Грузовик"}
   return (
-    <AuthContext.Provider value={loggedIn}>
-        <RouterProvider router={router} />
-    </AuthContext.Provider>
+    <>
+      
+      <div className="container mb-3">
+      {auth?.loggedIn && <Header />}
+        <Routes>
+          <Route path="/signin" element={<SignIn />} />
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/"
+              element={
+                <>
+                  <WorkOrderList />
+                </>
+              }
+            />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<UserRoleRouter role={EmployerPosition.MANAGER}/>}>
+              <Route
+                path="/employees"
+                element={
+                  <>
+                    <EmployeesSettings />
+                  </>
+                }
+              />
+            </Route>
+          </Route>
+        </Routes>
+      </div>
+    </>
   );
 }
 

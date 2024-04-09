@@ -13,7 +13,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='servicevehicletype',
             name='employer_salary',
-            field=models.DecimalField(decimal_places=1, default=1, max_digits=5, verbose_name='Оплата сотруднику'),
+            field=models.DecimalField(
+                decimal_places=1,
+                default=1,
+                max_digits=5,
+                verbose_name='Оплата сотруднику',
+            ),
             preserve_default=False,
         ),
     ]

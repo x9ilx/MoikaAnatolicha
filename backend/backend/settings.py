@@ -142,13 +142,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_RENDERER_CLASSES = ('rest_framework.renderers.JSONRenderer',)
-
-# if DEBUG:
-#     DEFAULT_RENDERER_CLASSES = (
-#         'rest_framework.renderers.BrowsableAPIRenderer',
-#     ) + DEFAULT_RENDERER_CLASSES
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -160,9 +153,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
-    'PAGE_SIZE': 8,
+    'DEFAULT_PAGINATION_CLASS': 'core.paginations.PageCountPagination',
+    'PAGE_SIZE': 10,
 }
 
 DJOSER = {
@@ -174,7 +166,10 @@ DJOSER = {
     },
 }
 
-CORS_ALLOWED_ORIGINS = ['https://' + cors for cors in os.getenv('ALLOWED_HOSTS', 'localhost/*').split(';')]
+CORS_ALLOWED_ORIGINS = [
+    'https://' + cors
+    for cors in os.getenv('ALLOWED_HOSTS', 'localhost/*').split(';')
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
 

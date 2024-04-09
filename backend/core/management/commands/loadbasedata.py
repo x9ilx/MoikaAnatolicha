@@ -1,10 +1,16 @@
 import csv
+import os
 from pathlib import Path
 
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
+
+from employer.models import Employer, EmployerPositions
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -107,9 +113,39 @@ class Command(BaseCommand):
             )
             self.stdout.write('\n\n')
 
+    def create_super_user(self):
+        self.stdout.write(self.style.SUCCESS(f'Создание суперпользователя'))
+        try:
+            newuser, _ = User.objects.update_or_create(
+                pk=1,
+                username=os.getenv('SUPERUSER_NAME'),
+                is_superuser=True,
+                is_staff=True,
+                is_active=True,
+            )
+            newuser.set_password(os.getenv('SUPERUSER_PASSWORD'))
+            newuser.save()
+
+            Employer.objects.update_or_create(
+                pk=1,
+                name='Управляющий',
+                short_name='Управляющий',
+                user=newuser,
+                position=EmployerPositions.MANAGER,
+            )
+            self.stdout.write(self.style.SUCCESS(f'Суперпользователь создан'))
+        except Exception as ex:
+            self.stdout.write('\n')
+            self.stdout.write(
+                self.style.ERROR((f'Ошибка при создании пользователя: {ex}'))
+            )
+        self.stdout.write('\n\n')
+
     def handle(self, *args, **kwargs):
 
         self.print_divider()
+
+        self.create_super_user()
 
         if self.check_installed_apps('company'):
             self.load_data(

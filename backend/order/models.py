@@ -5,7 +5,8 @@ class Order(models.Model):
     """Model definition for Order."""
 
     order_datetime = models.DateTimeField(
-        'Дата/время заказа', auto_now_add=True,
+        'Дата/время заказа',
+        auto_now_add=True,
     )
     order_close_datetime = models.DateTimeField(
         'Дата/время заказа',
