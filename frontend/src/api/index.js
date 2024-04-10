@@ -15,7 +15,9 @@ class Api {
         return resolve(res);
       }
       const func = res.status < 400 ? resolve : reject;
-      res.json().then((data) => func(data));
+      res.json().then((data) => {
+        func(data)
+      });
     });
   }
 
@@ -64,8 +66,39 @@ class Api {
         authorization: `Token ${token}`,
       },
     }).then(this.checkResponse);
+  }
 
-    // EMPLOYES
+// EMPLOYES
+
+  createEmployer ({
+    name,
+    short_name,
+    phone = '',
+    position,
+    add_user = false,
+    username = '',
+    password = ''
+  }) {
+    const token = localStorage.getItem('token')
+    return fetch(
+      URL + '/api/employees/',
+      {
+        method: 'POST',
+        headers: {
+          ...this._headers,
+          'authorization': `Token ${token}`
+        },
+        body: JSON.stringify({
+          name,
+          short_name,
+          phone,
+          position,
+          add_user,
+          username,
+          password
+        })
+      }
+    ).then(this.checkResponse)
   }
 
   getEmployeesList() {
@@ -78,6 +111,17 @@ class Api {
       },
     }).then(this.checkResponse);
   }
+  getEmployeesPositions() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/get_all_position/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
   // getRecipe ({
   //   recipe_id
   // }) {

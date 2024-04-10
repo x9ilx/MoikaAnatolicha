@@ -9,7 +9,7 @@ const OrderElementGroup = (props) => {
       <ul className="list-group  px-2 ">
         {
             Object.keys(props?.elements_with_badge).map((key) => (
-                <li className="list-group-item p-2 border-primary" key={key}>
+                <li className="list-group-item p-2 " key={key}>
                     <div className="row">
                         <div className="col text-start">{key}</div>
                         <div className="col text-end px-3">

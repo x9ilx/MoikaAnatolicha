@@ -23,14 +23,21 @@ class Employer(models.Model):
     )
     name = models.CharField('Ф. И. О.', max_length=250)
     short_name = models.CharField('Короткое имя', max_length=250)
-    phone = models.CharField('Телефон', max_length=25)
+    phone = models.CharField('Телефон', max_length=25, blank=True, null=True)
     user = models.ForeignKey(
-        User, verbose_name='Пользователь в БД', on_delete=models.CASCADE
+        User,
+        verbose_name='Пользователь в БД',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     class Meta:
         """Meta definition for Employer."""
 
+        ordering = [
+            'name',
+        ]
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
 

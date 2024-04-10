@@ -13,9 +13,9 @@ class OnlyManager(permissions.BasePermission):
         return not request.user.is_anonymous
 
     def has_object_permission(self, request, view, obj):
-        
+
         if request.user.is_superuser:
             return True
-        
+
         employer = Employer.objects.get(user=request.user)
         return employer and employer.position == EmployerPositions.MANAGER
