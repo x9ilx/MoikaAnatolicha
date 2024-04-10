@@ -78,7 +78,8 @@ class Api {
     add_user = false,
     username = '',
     password = ''
-  }) {
+  }
+  ) {
     const token = localStorage.getItem('token')
     return fetch(
       URL + '/api/employees/',
@@ -101,9 +102,42 @@ class Api {
     ).then(this.checkResponse)
   }
 
-  getEmployeesList() {
+  updateEmployer ({
+    id,
+    name,
+    short_name,
+    phone = '',
+    position,
+    add_user = false,
+    username = '',
+    password = ''
+  }
+  ) {
+    const token = localStorage.getItem('token')
+    return fetch(
+       `${URL}/api/employees/${id}/`,
+      {
+        method: 'PATCH',
+        headers: {
+          ...this._headers,
+          'authorization': `Token ${token}`
+        },
+        body: JSON.stringify({
+          name,
+          short_name,
+          phone,
+          position,
+          add_user,
+          username,
+          password
+        })
+      }
+    ).then(this.checkResponse)
+  }
+
+  getEmployer(id) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/employees/`, {
+    return fetch(URL + `/api/employees/${id}/`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -111,6 +145,18 @@ class Api {
       },
     }).then(this.checkResponse);
   }
+
+  getEmployeesList(page = 1, items_limit = 8) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/?page=${page}&limit=${items_limit}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
   getEmployeesPositions() {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/employees/get_all_position/`, {

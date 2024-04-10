@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from company.views import CompanyRequisitesViewSet
-from employer.views import EmployerViewSet
+from employer.views import CHGUserViewSet, EmployerViewSet
 from service.views import ServiceViewSet
 from vehicle.views import (VehicleOrTrailerClassViewSet,
                            VehicleOrTrailerTypeViewSet)
@@ -10,6 +10,7 @@ from vehicle.views import (VehicleOrTrailerClassViewSet,
 app_name = 'api'
 
 v1_router = routers.DefaultRouter()
+v1_router.register('users', CHGUserViewSet, basename='User')
 v1_router.register(
     'company', CompanyRequisitesViewSet, basename='CompanyRequisites'
 )
@@ -36,6 +37,6 @@ v1_router.register(
 
 urlpatterns = [
     path('', include(v1_router.urls)),
-    path('', include('djoser.urls')),
+    # path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]

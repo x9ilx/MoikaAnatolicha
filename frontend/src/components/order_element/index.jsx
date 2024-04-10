@@ -43,7 +43,7 @@ const OrderElement = (order) => {
             </div>
           </div>
           <div className="row mx-3 gap-1 my-2">
-            <button type="button" className="btn btn-primary">
+            <button type="button" className="btn btn-bd-primary text_light fw-medium lh-lg">
               Завершить заказ
             </button>
           </div>

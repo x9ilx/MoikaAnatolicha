@@ -1,5 +1,7 @@
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,10 +10,17 @@ from core.permissions import OnlyManager
 from employer.models import Employer, EmployerPositions
 from employer.serializers import EmployerSerializer
 
+user_model = get_user_model()
+
+
+class CHGUserViewSet(UserViewSet):
+    def get_queryset(self):
+        return user_model.objects.filter(~Q(pk=666))
+
 
 class EmployerViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'patch']
     serializer_class = EmployerSerializer
-    queryset = Employer.objects.all()
     permission_classes = [
         OnlyManager,
     ]
@@ -31,6 +40,14 @@ class EmployerViewSet(viewsets.ModelViewSet):
         'name',
         'position',
     ]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
+
+    def get_queryset(self):
+        return Employer.objects.filter(~Q(pk=666))
 
     @action(
         detail=False,
