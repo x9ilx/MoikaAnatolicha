@@ -1,17 +1,20 @@
 import React from "react";
 import { toast } from "react-toastify";
 import api from "../../api";
+import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 
-const EmployerAdd = () => {
+
+const EmployerAdd = (props) => {
   const [loading, setLoading] = React.useState(true);
   const [employeesPositions, setEmployeesPositions] = React.useState({});
   const [type, setType] = React.useState("password");
   const [icon, setIcon] = React.useState(
     <FaRegEyeSlash className="absolute mr-10" size={25} />
   );
+  const [DELETE, setDELETE] = React.useState(false);
 
   const [name, setName] = React.useState("");
   const [short_name, setShortName] = React.useState("");
@@ -55,7 +58,7 @@ const EmployerAdd = () => {
         setAddUser(false);
         setUsername(res.user_name);
         setPassword("");
-        set_user_name(res.user_name)
+        set_user_name(res.user_name);
         setLoading(false);
       })
       .catch((err) => {
@@ -127,6 +130,8 @@ const EmployerAdd = () => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
       });
   };
+
+
 
   return (
     <>
@@ -228,13 +233,12 @@ const EmployerAdd = () => {
                 checked={addUser}
                 onChange={() => {
                   setAddUser(!addUser);
-                }}            
-
+                }}
               />
               <label className="form-check-label" htmlFor="add_user">
-              {user_name ? 
-              "Изменить имя пользователя в CRM или пароль" : 
-              "Добавить пользователя для CRM"}
+                {user_name
+                  ? "Изменить имя пользователя в CRM или пароль"
+                  : "Добавить пользователя для CRM"}
               </label>
             </div>
 
@@ -250,12 +254,16 @@ const EmployerAdd = () => {
                     }}
                     name="username"
                     value={username}
-                    title={user_name ? "Новое имя пользователя": "Имя пользователя для входа в CRM"}
+                    title={
+                      user_name
+                        ? "Новое имя пользователя"
+                        : "Имя пользователя для входа в CRM"
+                    }
                     autoComplete="off"
                   />
                   <label htmlFor="username">Имя пользователя</label>
                 </div>
-                <div className="input-group mb-3" >
+                <div className="input-group mb-3">
                   <div className="form-floating  mb-3 ">
                     <input
                       className="form-control text "
@@ -267,11 +275,17 @@ const EmployerAdd = () => {
                         setPassword(e.target.value);
                       }}
                       name="password"
-                      title={user_name ? "Ввести новый пароль, для изменения старого": "Пароль для входа в CRM"}
+                      title={
+                        user_name
+                          ? "Ввести новый пароль, для изменения старого"
+                          : "Пароль для входа в CRM"
+                      }
                       autoComplete="off"
                     />
                     <label htmlFor="password">
-                    {user_name ? "Ввести новый пароль, для изменения старого": "Пароль (можно изменить позже)"}
+                      {user_name
+                        ? "Ввести новый пароль, для изменения старого"
+                        : "Пароль (можно изменить позже)"}
                     </label>
                   </div>
                   <div className="input-group-prepend">
@@ -305,11 +319,52 @@ const EmployerAdd = () => {
             >
               Отмена
             </button>
+
+            {employer_id && (
+              <>
+                <div className="form-check form-switch form-check-reverse pb-2">
+                  <input
+                    className="form-check-input "
+                    type="checkbox"
+                    id="DELETE"
+                    name="DELETE"
+                    onChange={() => {
+                      setDELETE(!DELETE);
+                    }}
+                  />
+                  <label className="form-check-label" htmlFor="DELETE">
+                    Удалить данные о сотруднике
+                  </label>
+                </div>
+                {DELETE && (
+                  <>
+                    <button
+                      type="button"
+                      className="w-100 btn btn-danger mt-2 mb-5 text-white fw-medium lh-lg"
+                      style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
+                      onClick={() => {
+                        props.setInfoStringForDelete('сотрудника ' + name);
+                        props.setId(employer_id);
+                        navigate("./delete/");
+                      }}
+                    >
+                      УДАЛИТЬ ЗАПИСЬ О СОТРУДНИКЕ
+                    </button>
+                  </>
+                )}
+              </>
+            )}
           </form>
         </>
       )}
     </>
   );
 };
+
+EmployerAdd.propTypes = {
+  setInfoStringForDelete: PropTypes.func,
+  setId: PropTypes.func,
+};
+
 
 export default EmployerAdd;

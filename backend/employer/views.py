@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import filters, status, viewsets
@@ -19,7 +20,7 @@ class CHGUserViewSet(UserViewSet):
 
 
 class EmployerViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'patch']
+    http_method_names = ['get', 'post', 'patch', 'delete']
     serializer_class = EmployerSerializer
     permission_classes = [
         OnlyManager,
@@ -48,6 +49,14 @@ class EmployerViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Employer.objects.filter(~Q(pk=1))
+
+    def destroy(self, request, *args, **kwargs):
+        employer = get_object_or_404(Employer, pk=kwargs['pk'])
+        employer.user.delete()
+        employer.delete()
+        return Response(
+            {'details': 'delete - ok'}, status=status.HTTP_204_NO_CONTENT
+        )
 
     @action(
         detail=False,

@@ -68,7 +68,7 @@ class Api {
     }).then(this.checkResponse);
   }
 
-// EMPLOYES
+//////////////////////////////////////////////////// EMPLOYES
 
   createEmployer ({
     name,
@@ -131,6 +131,20 @@ class Api {
           username,
           password
         })
+      }
+    ).then(this.checkResponse)
+  }
+
+  deleteEmployer (id) {
+    const token = cookies.get("auth_token");
+    return fetch(
+       `${URL}/api/employees/${id}/`,
+      {
+        method: 'DELETE',
+        headers: {
+          ...this._headers,
+          'authorization': `Token ${token}`
+        },
       }
     ).then(this.checkResponse)
   }
