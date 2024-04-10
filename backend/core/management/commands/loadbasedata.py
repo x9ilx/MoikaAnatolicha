@@ -117,7 +117,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f'Создание суперпользователя'))
         try:
             newuser, _ = User.objects.update_or_create(
-                pk=666,
+                pk=1,
                 username=os.getenv('SUPERUSER_NAME'),
                 is_superuser=True,
                 is_staff=True,
@@ -127,7 +127,7 @@ class Command(BaseCommand):
             newuser.save()
 
             Employer.objects.update_or_create(
-                pk=666,
+                pk=1,
                 name='Управляющий',
                 short_name='Управляющий',
                 user=newuser,

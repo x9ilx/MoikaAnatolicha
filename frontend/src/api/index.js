@@ -80,7 +80,7 @@ class Api {
     password = ''
   }
   ) {
-    const token = localStorage.getItem('token')
+    const token = cookies.get("auth_token");
     return fetch(
       URL + '/api/employees/',
       {
@@ -113,7 +113,7 @@ class Api {
     password = ''
   }
   ) {
-    const token = localStorage.getItem('token')
+    const token = cookies.get("auth_token");
     return fetch(
        `${URL}/api/employees/${id}/`,
       {

@@ -15,7 +15,7 @@ user_model = get_user_model()
 
 class CHGUserViewSet(UserViewSet):
     def get_queryset(self):
-        return user_model.objects.filter(~Q(pk=666))
+        return user_model.objects.filter(~Q(pk=1))
 
 
 class EmployerViewSet(viewsets.ModelViewSet):
@@ -47,7 +47,7 @@ class EmployerViewSet(viewsets.ModelViewSet):
         return context
 
     def get_queryset(self):
-        return Employer.objects.filter(~Q(pk=666))
+        return Employer.objects.filter(~Q(pk=1))
 
     @action(
         detail=False,

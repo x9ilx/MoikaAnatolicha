@@ -271,7 +271,7 @@ const EmployerAdd = () => {
                       autoComplete="off"
                     />
                     <label htmlFor="password">
-                      Пароль (можно изменить позже)
+                    {user_name ? "Ввести новый пароль, для изменения старого": "Пароль (можно изменить позже)"}
                     </label>
                   </div>
                   <div className="input-group-prepend">
