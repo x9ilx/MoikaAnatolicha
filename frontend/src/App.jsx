@@ -6,13 +6,11 @@ import { useAuth } from "./contexts/auth-context";
 import SignIn from "./pages/signin/index.jsx";
 import Header from "./components/header/index.jsx";
 import * as bootstrap from "bootstrap";
-import WorkOrderList from "./components/work_order_list/index.jsx";
+import WorkOrderList from "./pages/orders/work_order_list/index.jsx";
 import UserRoleRouter from "./components/user_role_router/index.jsx";
 import { EmployerPosition } from "./constants.jsx";
-import EmployeesSettings from "./pages/employees_settings/index.jsx";
 import AccessDenidedPage from "./pages/access_denided/index.jsx";
-import EmployerAdd from "./pages/employer_add/index.jsx";
-import EmployeesController from "./pages/employes_controller/index.jsx";
+import EmployeesController from "./pages/employees/employes_controller/index.jsx";
 
 function App() {
   const auth = useAuth();

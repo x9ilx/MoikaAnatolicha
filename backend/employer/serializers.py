@@ -93,7 +93,6 @@ class EmployerSerializer(serializers.ModelSerializer):
                     instance.user = new_user
 
             if password:
-                print('pass change')
                 instance.user.set_password(password)
                 instance.user.save()
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { isMobile } from "react-device-detect";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../api";
-import { prettyPhone } from "../../utils/string_utils";
-import Paginator from "../../components/paginator";
+import api from "../../../api";
+import { prettyPhone } from "../../../utils/string_utils";
+import Paginator from "../../../components/paginator";
 
 const EmployeesSettings = () => {
   const [loading, setLoading] = React.useState(true);

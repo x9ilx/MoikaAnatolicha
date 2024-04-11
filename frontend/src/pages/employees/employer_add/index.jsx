@@ -1,6 +1,6 @@
 import React from "react";
 import { toast } from "react-toastify";
-import api from "../../api";
+import api from "../../../api";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
@@ -151,6 +151,7 @@ const EmployerAdd = (props) => {
           )}
           <hr></hr>
           <form
+            autoComplete="new-password"
             onSubmit={(e) => {
               e.preventDefault();
               {
@@ -259,7 +260,7 @@ const EmployerAdd = (props) => {
                         ? "Новое имя пользователя"
                         : "Имя пользователя для входа в CRM"
                     }
-                    autoComplete="off"
+                    autoComplete="new-password"
                   />
                   <label htmlFor="username">Имя пользователя</label>
                 </div>
@@ -280,7 +281,7 @@ const EmployerAdd = (props) => {
                           ? "Ввести новый пароль, для изменения старого"
                           : "Пароль для входа в CRM"
                       }
-                      autoComplete="off"
+                      autoComplete="new-password"
                     />
                     <label htmlFor="password">
                       {user_name

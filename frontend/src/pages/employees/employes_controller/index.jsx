@@ -1,13 +1,13 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import ProtectedRoute from "../../components/protected-route";
-import UserRoleRouter from "../../components/user_role_router";
-import DeletePage from "../DELETE_page";
-import { EmployerPosition } from "../../constants";
+import ProtectedRoute from "../../../components/protected-route";
+import UserRoleRouter from "../../../components/user_role_router";
+import DeletePage from "../../DELETE_page";
+import { EmployerPosition } from "../../../constants";
 import EmployeesSettings from "../employees_settings";
 import EmployerAdd from "../employer_add";
-import api from "../../api";
+import api from "../../../api";
 import { toast } from "react-toastify";
 
 function EmployeesController() {

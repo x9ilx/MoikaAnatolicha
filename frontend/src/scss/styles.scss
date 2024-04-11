@@ -54,6 +54,11 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
   text-shadow: 1px -1px 7px rgba(0,0,0,0.45);
 }
 
+.btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .btn-bd-primary {
   --bs-btn-font-weight: 600;
   --bs-btn-color: #e7e7e7;
