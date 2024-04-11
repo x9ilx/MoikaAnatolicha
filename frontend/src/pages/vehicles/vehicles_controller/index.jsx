@@ -8,6 +8,7 @@ import { EmployerPosition } from "../../../constants";
 import UserRoleRouter from "../../../components/user_role_router";
 import DeletePage from "../../DELETE_page";
 import VehicleClassSettings from "../vehicles_class_settings";
+import VehicleClassAdd from "../vehicles_class_add";
 
 function VehiclesController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -61,21 +62,18 @@ function VehiclesController() {
             />
           </Route>
         </Route>
-        {/* <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute />}>
           <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
             <Route
-              path="/:employer_id/"
+              path="/classes/add"
               element={
                 <>
-                  <EmployerAdd
-                    setInfoStringForDelete={set_info_string_for_delete}
-                    setId={set_id}
-                  />
+                  <VehicleClassAdd />
                 </>
               }
             />
           </Route>
-        </Route> */}
+        </Route>
       </Routes>
     </>
   );

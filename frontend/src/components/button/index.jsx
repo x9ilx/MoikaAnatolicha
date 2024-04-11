@@ -10,6 +10,7 @@ const Button = (props) => {
         style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
         onClick={props.clickHandler}
         disabled={props.disabled}
+        title={props.hint}
       >
         {props.children}
       </button>
@@ -23,6 +24,7 @@ Button.propTypes = {
   clickHandler: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
   type: PropTypes.string.isRequired,
+  hint: PropTypes.string,
 };
 
 export default Button;

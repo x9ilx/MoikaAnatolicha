@@ -3,6 +3,7 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from vehicle.filters import VehicleOrTrailerClassSearchFilter
 from service.serializers import VehicleTypeServiceSerializer
 
 from .models import VehicleOrTrailerClass, VehicleOrTrailerType
@@ -14,9 +15,9 @@ class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleOrTrailerClassSerializer
     queryset = VehicleOrTrailerClass.objects.all()
     filter_backends = [
-        filters.SearchFilter,
+        django_filters.DjangoFilterBackend,
     ]
-    search_fields = ['name']
+    filterset_class = VehicleOrTrailerClassSearchFilter
 
     @action(
         detail=True,

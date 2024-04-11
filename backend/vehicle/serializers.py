@@ -13,7 +13,9 @@ class VehicleOrTrailerTypeMiniSerializer(serializers.ModelSerializer):
 
 
 class VehicleOrTrailerClassSerializer(serializers.ModelSerializer):
-    vehicle_types = VehicleOrTrailerTypeMiniSerializer(many=True)
+    vehicle_types = VehicleOrTrailerTypeMiniSerializer(
+        many=True, read_only=True
+    )
     class Meta:
         model = VehicleOrTrailerClass
         fields = [

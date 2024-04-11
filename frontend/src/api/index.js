@@ -195,9 +195,9 @@ class Api {
   
   /////////////////////////////// VEHICLES
 
-  getVehicleClasses(page = 1, items_limit = 8) {
+  getVehicleClasses(page = 1, items_limit = 8, search="") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/vehicle_class/?page=${page}&limit=${items_limit}`, {
+    return fetch(URL + `/api/vehicle_class/?page=${page}&limit=${items_limit}&search=${search}`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -217,82 +217,26 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  // getRecipe ({
-  //   recipe_id
-  // }) {
-  //   const token = localStorage.getItem('token')
-  //   const authorization = token ? { 'authorization': `Token ${token}` } : {}
-  //   return fetch(
-  //     `/api/recipes/${recipe_id}/`,
-  //     {
-  //       method: 'GET',
-  //       headers: {
-  //         ...this._headers,
-  //         ...authorization
-  //       }
-  //     }
-  //   ).then(this.checkResponse)
-  // }
-
-  // createRecipe ({
-  //   name = '',
-  //   image,
-  //   tags = [],
-  //   cooking_time = 0,
-  //   text = '',
-  //   ingredients = []
-  // }) {
-  //   const token = localStorage.getItem('token')
-  //   return fetch(
-  //     '/api/recipes/',
-  //     {
-  //       method: 'POST',
-  //       headers: {
-  //         ...this._headers,
-  //         'authorization': `Token ${token}`
-  //       },
-  //       body: JSON.stringify({
-  //         name,
-  //         image,
-  //         tags,
-  //         cooking_time,
-  //         text,
-  //         ingredients
-  //       })
-  //     }
-  //   ).then(this.checkResponse)
-  // }
-
-  // updateRecipe ({
-  //   name,
-  //   recipe_id,
-  //   image,
-  //   tags,
-  //   cooking_time,
-  //   text,
-  //   ingredients
-  // }, wasImageUpdated) { // image was changed
-  //   const token = localStorage.getItem('token')
-  //   return fetch(
-  //     `/api/recipes/${recipe_id}/`,
-  //     {
-  //       method: 'PATCH',
-  //       headers: {
-  //         ...this._headers,
-  //         'authorization': `Token ${token}`
-  //       },
-  //       body: JSON.stringify({
-  //         name,
-  //         id: recipe_id,
-  //         image: wasImageUpdated ? image : undefined,
-  //         tags,
-  //         cooking_time: Number(cooking_time),
-  //         text,
-  //         ingredients
-  //       })
-  //     }
-  //   ).then(this.checkResponse)
-  // }
+  createVehicleClass ({
+    name,
+  }
+  ) {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL + '/api/vehicle_class/',
+      {
+        method: 'POST',
+        headers: {
+          ...this._headers,
+          'authorization': `Token ${token}`
+        },
+        body: JSON.stringify({
+          name,
+        })
+      }
+    ).then(this.checkResponse)
+  }
+  
 }
 
 export default new Api(process.env.API_URL || "http://localhost", {
