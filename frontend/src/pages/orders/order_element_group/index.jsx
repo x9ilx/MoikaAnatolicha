@@ -4,24 +4,24 @@ import PropTypes from "prop-types";
 const OrderElementGroup = (props) => {
   return (
     <>
-    <div className="p-1">
-      <p className="px-2 pb-1 fs-7 m-0 fw-medium">{props?.header}</p>
-      <ul className="list-group  px-2 ">
-        {
-            Object.keys(props?.elements_with_badge).map((key) => (
-                <li className="list-group-item p-2 " key={key}>
-                    <div className="row">
-                        <div className="col text-start">{key}</div>
-                        <div className="col text-end px-3">
-                        {/* <span className="badge text-bg-primary text-white  text-end"> */}
-                            <span className="fw-medium">{props?.elements_with_badge[key]}</span>
-                        {/* </span> */}
-                        </div>
+      <div className="p-1">
+        <p className="px-2 pb-1 fs-7 m-0 fw-medium">{props?.header}</p>
+        <ul className="list-group  px-2 ">
+          {props?.elements_with_badge?.map((value) => (
+            <li className="list-group-item p-2 " key={value.name}>
+              <div className="row">
+                <div className="col text-start">{value.name}</div>
+                {value.badge && (
+                  <>
+                    <div className="col text-end px-3">
+                      <span className="fw-medium">{value.badge}</span>
                     </div>
-                </li>
-            ))
-        }
-      </ul>
+                  </>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </>
   );
@@ -29,7 +29,7 @@ const OrderElementGroup = (props) => {
 
 OrderElementGroup.propTypes = {
   header: PropTypes.string.isRequired,
-  elements_with_badge: PropTypes.object.isRequired,
+  elements_with_badge: PropTypes.array.isRequired,
 };
 
 export default OrderElementGroup;

@@ -12,12 +12,30 @@ from .serializers import (VehicleOrTrailerClassSerializer,
 
 class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleOrTrailerClassSerializer
-    pagination_class = None
     queryset = VehicleOrTrailerClass.objects.all()
     filter_backends = [
         filters.SearchFilter,
     ]
     search_fields = ['name']
+
+    @action(
+        detail=True,
+        methods=['GET'],
+        url_path='get_vehicle_types',
+        url_name='get-vehicle-types',
+    )
+    def get_vehicle_types(self, request, pk):
+        vehicle = VehicleOrTrailerClass.objects.get(pk=pk)
+
+        if not vehicle:
+            return Response(
+                {'errors': 'Объект не существует'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        vehicle_types = vehicle.vehicle_types.all()
+        serializer = VehicleOrTrailerTypeSerializer(vehicle_types, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class VehicleOrTrailerTypeViewSet(viewsets.ModelViewSet):
@@ -40,7 +58,6 @@ class VehicleOrTrailerTypeViewSet(viewsets.ModelViewSet):
         methods=['GET'],
         url_path='services',
         url_name='services',
-        # permission_classes=[OnlyAuthor],
     )
     def get_service_for_vehicle_type(self, request, pk):
         vehicle = VehicleOrTrailerType.objects.get(pk=pk)

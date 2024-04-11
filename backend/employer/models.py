@@ -31,6 +31,7 @@ class Employer(models.Model):
         blank=True,
         null=True,
     )
+    is_busy_working = models.BooleanField("Занят работой?", default=False)
 
     class Meta:
         """Meta definition for Employer."""

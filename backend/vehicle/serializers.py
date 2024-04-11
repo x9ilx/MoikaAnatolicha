@@ -3,10 +3,24 @@ from rest_framework import serializers
 from .models import VehicleOrTrailerClass, VehicleOrTrailerType
 
 
+class VehicleOrTrailerTypeMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehicleOrTrailerType
+        fields = [
+            'id',
+            'name',
+        ]
+
+
 class VehicleOrTrailerClassSerializer(serializers.ModelSerializer):
+    vehicle_types = VehicleOrTrailerTypeMiniSerializer(many=True)
     class Meta:
         model = VehicleOrTrailerClass
-        fields = '__all__'
+        fields = [
+            'id',
+            'name',
+            'vehicle_types',
+        ]
 
 
 class VehicleOrTrailerTypeSerializer(serializers.ModelSerializer):

@@ -3,10 +3,10 @@
 @import "../node_modules/bootstrap/scss/mixins";
 
 $theme-colors: (
-  "primary": #2498ce,
-  "secondary": #e0bb75,
-  "danger": #962c17,
-  "success": #1aad3a,
+  "primary": #1c81a6,
+  "secondary": #a6861c,
+  "danger": #a61c3c,
+  "success": #1ca641,
   "contrast": #EBDB4C,
   "text-color": #272727,
 );
@@ -27,8 +27,8 @@ $font-sizes: (
 $pagination-color: #272727;
 $pagination-hover-color: #272727;
 $pagination-active-color: #e7e7e7;
-$pagination-active-bg: #26a4df;
-$pagination-active-border-color: #26a4df;
+$pagination-active-bg: #1c81a6;
+$pagination-active-border-color: #1c81a6;
 $pagination-disabled-color: #08202b;
 $pagination-disabled-bg: rgb(#08202b, 0.15);
 $pagination-disabled-border-color:  rgb(#08202b, 0.15);
@@ -36,11 +36,11 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
 @import "bootstrap/scss/bootstrap";
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-  background-color: rgb(#26a4df, 0.5);
+  background-color: rgb(#1c81a6, 0.5);
 }
 
 .paginator-hover:hover {
-  background-color: rgb(#26a4df, 0.65);
+  background-color: rgb(#1c81a6, 0.65);
 }
 
 
@@ -61,8 +61,8 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
 
 .btn-bd-primary {
   --bs-btn-font-weight: 600;
-  --bs-btn-color: #e7e7e7;
-  --bs-btn-bg: #2498ce;
+  --bs-btn-color: #f5f5f5;
+  --bs-btn-bg: #1c81a6;
   --bs-btn-border-color: #228ec0;
   --bs-btn-hover-color: #e7e7e7;
   --bs-btn-hover-bg: #{shade-color(#228ec0, 10%)};

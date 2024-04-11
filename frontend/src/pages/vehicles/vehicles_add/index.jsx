@@ -348,7 +348,7 @@ const EmployerAdd = (props) => {
                       type="button"
                       disabled={false}
                     >
-                       <>УДАЛИТЬ ЗАПИСЬ О СОТРУДНИКЕ</>
+                      <>УДАЛИТЬ ЗАПИСЬ О СОТРУДНИКЕ</>
                     </Button>
                   </>
                 )}

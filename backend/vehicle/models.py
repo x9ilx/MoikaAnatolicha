@@ -26,6 +26,7 @@ class VehicleOrTrailerType(models.Model):
         VehicleOrTrailerClass,
         verbose_name='Класс ТС или ППЦ',
         on_delete=models.SET_NULL,
+        related_name='vehicle_types',
         null=True,
     )
     is_tractor_with_trailer = models.BooleanField('Тягач с прицепом?')

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
+import Button from "../../components/button";
 
 const DeletePage = (props) => {
   const [DELETE, setDELETE] = React.useState(false);
@@ -29,25 +30,23 @@ const DeletePage = (props) => {
           Удалить данные
         </label>
       </div>
-      <button
+      <Button
+        clickHandler={()=>navigate(-1)}
+        colorClass="btn-primary"
         type="button"
-        className="w-100 btn btn-primary mt-2 text-white fw-medium lh-lg"
-        style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
-        onClick={() => {
-          navigate(-1);
-        }}
+        disabled={false}
       >
-        Отмена
-      </button>
+        <>Вернуться</>
+      </Button>
       {DELETE && (
-        <button
-          type="button"
-          className="w-100 btn btn-danger mt-2 mb-5 text-white fw-medium lh-lg"
-          style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
-          onClick={() => props.onDelete()}
-        >
-          УДАЛИТЬ
-        </button>
+        <Button
+        clickHandler={()=>  props.onDelete()}
+        colorClass="btn-danger"
+        type="button"
+        disabled={false}
+      >
+        <>УДАЛИТЬ</>
+      </Button>
       )}
     </>
   );

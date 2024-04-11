@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../../api";
 import { prettyPhone } from "../../../utils/string_utils";
 import Paginator from "../../../components/paginator";
+import Button from "../../../components/button";
 
 const EmployeesSettings = () => {
   const [loading, setLoading] = React.useState(true);
@@ -13,7 +14,6 @@ const EmployeesSettings = () => {
   const [total_page, setTotalPage] = React.useState(1)
 
   const navigate = useNavigate();
-
 
   let items_limit = 8;
 
@@ -54,20 +54,21 @@ const EmployeesSettings = () => {
     return (
       <>
         {loading && (
-          <p className="grid h-screen place-items-center text-center">
+          <p className="grid h-screen place-items-center text-center mb-2">
             Загрузка списка сотрудников...
           </p>
         )}
         {!loading && (
           <>
-           <button
-                  type="button"
-                  className="btn btn-sm btn-success text-white w-100 mb-2"
-                  style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
-                  onClick={() => navigate("/employees/add")}
-                >
-                  Добавить сотрудника
-                </button>
+          <div className="mt-4">
+            <Button
+              clickHandler={()=>navigate("/employees/add")}
+              colorClass="btn-success"
+              type="button"
+              disabled={false}
+            >
+              <>Добавить сотрудника</>
+            </Button>
             <div className="row mb-3">
            
               <div className="vstack gap-3">
@@ -106,13 +107,14 @@ const EmployeesSettings = () => {
                         </p>
                       </div>
                       <div className="row mx-3 gap-1 my-2">
-                        <button
+                        <Button
+                          clickHandler={()=>navigate("/employees/" + employer?.id)}
+                          colorClass="btn-primary"
                           type="button"
-                          className="col btn btn-sm btn-primary"
-                          onClick={() => navigate("/employees/" + employer?.id)}
+                          disabled={false}
                         >
-                          Редактировать
-                        </button>
+                          <>Редактировать</>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -120,6 +122,7 @@ const EmployeesSettings = () => {
               </div>
             </div>
             <Paginator total_page={total_page} current_page={current_page} OnChangePage={ChangePage}/>
+            </div>
           </>
         )}
       </>
@@ -134,20 +137,17 @@ const EmployeesSettings = () => {
         )}
         {!loading && (
           <>
+           <div className="mt-4">
             <div className="row">
-              <div className="col">
                 <p className="text-text-color fs-5">Сотрудники:</p>
-              </div>
-              <div className="col text-end">
-                <button
+                <Button
+                  clickHandler={()=>navigate("/employees/add")}
+                  colorClass="btn-success"
                   type="button"
-                  className="btn btn-sm btn-success text-white"
-                  style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
-                  onClick={() => navigate("/employees/add")}
+                  disabled={false}
                 >
-                  Добавить сотрудника
-                </button>
-              </div>
+                  <>Добавить сотрудника</>
+                </Button>
             </div>
 
             <div className="table-responsive-sm">
@@ -194,6 +194,7 @@ const EmployeesSettings = () => {
               </table>
             </div>
             <Paginator total_page={total_page} current_page={current_page} OnChangePage={ChangePage}/>
+            </div>
           </>
         )}
       </>

@@ -182,6 +182,41 @@ class Api {
     }).then(this.checkResponse);
   }
   
+  getFreeWashers() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/get_free_washers_count/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
+  /////////////////////////////// VEHICLES
+
+  getVehicleClasses(page = 1, items_limit = 8) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicle_class/?page=${page}&limit=${items_limit}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getVehicleTypesForVehicleClass(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicle_class/${id}/get_vehicle_types/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
   // getRecipe ({
   //   recipe_id
   // }) {

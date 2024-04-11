@@ -1,30 +1,28 @@
+import React from "react";
+import PropTypes from "prop-types";
 
-const Button = ({
-  children,
-  modifier = 'style_light-blue',
-  href,
-  clickHandler,
-  className,
-  disabled,
-  type = 'button'
-}) => {
+const Button = (props) => {
+  return (
+    <>
+      <button
+        type={props.type}
+        className={`btn ${props.colorClass} text-white w-100 mb-3 fw-medium lh-lg`}
+        style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
+        onClick={props.clickHandler}
+        disabled={props.disabled}
+      >
+        {props.children}
+      </button>
+    </>
+  );
+};
 
-  if (href) {
-    return <a
-      className=''
-      href={href}
-    >
-      {children}
-    </a>
-  }
-  return <button
-    className='form-control'
-    disabled={disabled}
-    onClick={_ => clickHandler && clickHandler()}
-  >
-    {children}
-  </button>
-}
+Button.propTypes = {
+  children: PropTypes.object,
+  colorClass: PropTypes.string.isRequired,
+  clickHandler: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
+  type: PropTypes.string.isRequired,
+};
 
-
-export default Button
+export default Button;

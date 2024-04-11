@@ -64,9 +64,19 @@ class EmployerViewSet(viewsets.ModelViewSet):
         url_path='get_all_position',
         url_name='get-all-position',
     )
-    def get_all_position(self, request, id=-1):
+    def get_all_position(self, request):
         positions = [
             {'name': name, 'verbose_name': name.label}
             for name in EmployerPositions
         ]
         return Response(positions, status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='get_free_washers_count',
+        url_name='get-free-washers-count',
+    )
+    def get_free_washers_count(self, request):
+        washers = Employer.objects.filter(position=EmployerPositions.WASHER, is_busy_working=False).count()
+        return Response({'free_washers_count': washers}, status=status.HTTP_200_OK)
