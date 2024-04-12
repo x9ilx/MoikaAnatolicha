@@ -74,8 +74,7 @@ class VehicleOrTrailerClassSerializer(serializers.ModelSerializer):
         ).delete()
         new_vehilce_types = [
             VehicleOrTrailerType(
-                name=vehicle_type['name'],
-                vehicle_class_id=instance.pk
+                name=vehicle_type['name'], vehicle_class_id=instance.pk
             )
             for vehicle_type in vehicle_types_add_list
         ]

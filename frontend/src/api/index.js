@@ -68,6 +68,32 @@ class Api {
     }).then(this.checkResponse);
   }
 
+//////////////////////////////////////////////////// COMPANY
+
+getRequisites() {
+  const token = cookies.get("auth_token");
+  return fetch(URL + `/api/company/1/`, {
+    method: "GET",
+    headers: {
+      ...this._headers,
+      authorization: `Token ${token}`,
+    },
+  }).then(this.checkResponse);
+}
+
+setRequisites(requisites) {
+  const token = cookies.get("auth_token");
+  return fetch(URL + `/api/company/1/`, {
+    method: "PUT",
+    headers: {
+      ...this._headers,
+      authorization: `Token ${token}`,
+    },
+    body: JSON.stringify({
+      ...requisites,
+    })
+  }).then(this.checkResponse);
+}
 //////////////////////////////////////////////////// EMPLOYES
 
   createEmployer ({

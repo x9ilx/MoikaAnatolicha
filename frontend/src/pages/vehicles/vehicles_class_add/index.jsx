@@ -66,7 +66,7 @@ const VehicleClassAdd = (props) => {
               type="button"
               disabled={false}
             >
-              <>Отмена</>
+              <>Назад</>
             </Button>
           </form>
         </>

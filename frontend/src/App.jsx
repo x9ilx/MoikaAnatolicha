@@ -12,6 +12,7 @@ import { EmployerPosition } from "./constants.jsx";
 import AccessDenidedPage from "./pages/access_denided/index.jsx";
 import EmployeesController from "./pages/employees/employes_controller/index.jsx";
 import VehiclesController from "./pages/vehicles/vehicles_controller/index.jsx";
+import OrganistaionSettings from "./pages/organisation_Settings/index.jsx";
 
 function App() {
   const auth = useAuth();
@@ -51,6 +52,19 @@ function App() {
               }
             />
           </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+              <Route
+                path="/company/"
+                element={
+                  <>
+                    <OrganistaionSettings />
+                  </>
+                }
+              />
+            </Route>
+          </Route>
+          
           <Route element={<ProtectedRoute />}>
             <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
               <Route

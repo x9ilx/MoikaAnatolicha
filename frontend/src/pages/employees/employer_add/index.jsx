@@ -317,7 +317,7 @@ const EmployerAdd = (props) => {
               type="button"
               disabled={false}
             >
-              <>Отмена</>
+              <>Назад</>
             </Button>
 
             {employer_id && (

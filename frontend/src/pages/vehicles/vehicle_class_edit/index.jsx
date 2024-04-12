@@ -108,7 +108,7 @@ const VehicleClassEdit = (props) => {
           type="button"
           disabled={false}
         >
-          <>Отмена</>
+          <>Назад</>
         </Button>
         
         {vehicle_class_id && (

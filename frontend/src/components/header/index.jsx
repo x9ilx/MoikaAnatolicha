@@ -10,6 +10,9 @@ import { HiDocumentRemove } from "react-icons/hi";
 import { HiDocumentReport } from "react-icons/hi";
 import { HiDocumentText } from "react-icons/hi";
 import { FaMoneyCheckAlt } from "react-icons/fa";
+import { IoLogOutSharp } from "react-icons/io5";
+import { IoIosListBox } from "react-icons/io";
+
 import { EmployerPosition } from "../../constants";
 import { useNavigate } from "react-router-dom";
 
@@ -157,6 +160,23 @@ const Header = () => {
                           className="me-2 text-text-color"
                         />
                         Расходы
+                      </a>
+                      <div className="dropdown-divider"></div>
+                      <a className="dropdown-item" href="#" onClick={() => {
+                          navigate("/company/");
+                        }}>
+                        <IoIosListBox
+                          size={14}
+                          className="me-2 text-text-color"
+                        />
+                        Реквизиты
+                      </a>
+                      <a className="dropdown-item" href="#" onClick={() => {auth.logOut()}}>
+                        <IoLogOutSharp
+                          size={14}
+                          className="me-2 text-text-color"
+                        />
+                        Выход
                       </a>
                     </div>
                   </li>

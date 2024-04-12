@@ -74,22 +74,23 @@ const EmployeesSettings = () => {
               <div className="vstack gap-3">
                 {employees?.map((employer) => (
                   <div className="card shadow" key={employer?.id}>
-                    <div className="card-header bg-secondary pl-2 pr-2 pt-1 pb-1">
+                    <div className="card-header bg-primary pl-2 pr-2 pt-1 pb-1">
                       <div className="row fs-8 fw-medium">
-                        <div className="col-7 text-start text-body-secondary">
+                        <div className="col-7 text-start  text-white fs-7 fw-medium"
+                        style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>
                           {employer?.short_name}
                         </div>
-                        <div className="col-5 text-end text-body-secondary">
+                        <div className="col-5 text-end  text-white fs-7 fw-medium">
                           {employer?.position_verbose}
                         </div>
                       </div>
                     </div>
-                    <div className="card-body p-1 pb-0">
+                    <div className="card-body p-1 pb-1">
                       <div className="row px-4 d-sm-flex flex-sm-row flex-column fs-8">
                         <p className="pt-1 mx-1 my-0">
                           <b>Имя:</b> {employer?.name}
                         </p>
-                        <p className="py-0 mx-1 my-0">
+                        <p className="py-1 mx-1 my-0">
                           <b>Телефон:</b>{" "}
                           {employer?.phone ? (
                             <a
