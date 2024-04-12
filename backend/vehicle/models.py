@@ -29,7 +29,9 @@ class VehicleOrTrailerType(models.Model):
         related_name='vehicle_types',
         null=True,
     )
-    is_tractor_with_trailer = models.BooleanField('Тягач с прицепом?')
+    is_tractor_with_trailer = models.BooleanField(
+        'Тягач с прицепом?', default=False
+    )
 
     class Meta:
         """Meta definition for VehicleOrTrailerClass."""

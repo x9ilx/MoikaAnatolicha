@@ -78,5 +78,9 @@ class EmployerViewSet(viewsets.ModelViewSet):
         url_name='get-free-washers-count',
     )
     def get_free_washers_count(self, request):
-        washers = Employer.objects.filter(position=EmployerPositions.WASHER, is_busy_working=False).count()
-        return Response({'free_washers_count': washers}, status=status.HTTP_200_OK)
+        washers = Employer.objects.filter(
+            position=EmployerPositions.WASHER, is_busy_working=False
+        ).count()
+        return Response(
+            {'free_washers_count': washers}, status=status.HTTP_200_OK
+        )

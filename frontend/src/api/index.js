@@ -206,6 +206,17 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getVehicleClass(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicle_class/${id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
   getVehicleTypesForVehicleClass(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/vehicle_class/${id}/get_vehicle_types/`, {
@@ -219,6 +230,7 @@ class Api {
 
   createVehicleClass ({
     name,
+    vehicle_types = [],
   }
   ) {
     const token = cookies.get("auth_token");
@@ -232,12 +244,51 @@ class Api {
         },
         body: JSON.stringify({
           name,
+          vehicle_types
         })
       }
     ).then(this.checkResponse)
   }
   
+  updateVehicleClass ({
+    id,
+    name,
+    vehicle_types,
+  }
+  ) {
+    const token = cookies.get("auth_token");
+    return fetch(
+      `${URL}/api/vehicle_class/${id}/`,
+      {
+        method: 'PATCH',
+        headers: {
+          ...this._headers,
+          'authorization': `Token ${token}`
+        },
+        body: JSON.stringify({
+          name,
+          vehicle_types
+        })
+      }
+    ).then(this.checkResponse)
+  }
+
+  deleteVehicleClass (id) {
+    const token = cookies.get("auth_token");
+    return fetch(
+       `${URL}/api/vehicle_class/${id}/`,
+      {
+        method: 'DELETE',
+        headers: {
+          ...this._headers,
+          'authorization': `Token ${token}`
+        },
+      }
+    ).then(this.checkResponse)
+  }
 }
+
+
 
 export default new Api(process.env.API_URL || "http://localhost", {
   "content-type": "application/json",

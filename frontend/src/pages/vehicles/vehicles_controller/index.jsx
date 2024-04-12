@@ -9,6 +9,7 @@ import UserRoleRouter from "../../../components/user_role_router";
 import DeletePage from "../../DELETE_page";
 import VehicleClassSettings from "../vehicles_class_settings";
 import VehicleClassAdd from "../vehicles_class_add";
+import VehicleClassEdit from "../vehicle_class_edit";
 
 function VehiclesController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -18,18 +19,18 @@ function VehiclesController() {
   const navigate = useNavigate();
 
   const deleteVehicleClass = () => {
-    // api
-    //   .deleteVehicle(id)
-    //   .then((res) => {
-    //     navigate('/employees/')
-    //     toast.success("Сотрудник успешно удалён");
-    //   })
-    //   .catch((err) => {
-    //     const errors = Object.values(err);
-    //     if (errors) {
-    //       toast.error(errors.join(", "));
-    //     }
-    //   });
+    api
+      .deleteVehicleClass(id)
+      .then((res) => {
+        navigate('/vehicles/classes/')
+        toast.success("Класс ТС/ПЦ/ППЦ успешно удалён");
+      })
+      .catch((err) => {
+        const errors = Object.values(err);
+        if (errors) {
+          toast.error(errors.join(", "));
+        }
+      });
   };
 
   return (
@@ -69,6 +70,21 @@ function VehiclesController() {
               element={
                 <>
                   <VehicleClassAdd />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/classes/:vehicle_class_id/"
+              element={
+                <>
+                  <VehicleClassEdit
+                    setInfoStringForDelete={set_info_string_for_delete}
+                    setId={set_id}
+                  />
                 </>
               }
             />

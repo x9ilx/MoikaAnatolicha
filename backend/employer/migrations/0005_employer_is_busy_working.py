@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='employer',
             name='is_busy_working',
-            field=models.BooleanField(default=False, verbose_name='Занят работой?'),
+            field=models.BooleanField(
+                default=False, verbose_name='Занят работой?'
+            ),
         ),
     ]

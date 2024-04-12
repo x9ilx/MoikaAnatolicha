@@ -18,7 +18,7 @@ const VehicleClassAdd = (props) => {
       .createVehicleClass(data)
       .then((data) => {
         toast.success("Класс ТС/ПЦ/ППЦ " + data.name + " успешно добавлен");
-        navigate(-1);
+        navigate(`../classes/${data.id}`);
       })
       .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));

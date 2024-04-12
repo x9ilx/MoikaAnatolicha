@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django_filters.rest_framework import filters, FilterSet
+from django_filters.rest_framework import FilterSet, filters
 
 from vehicle.models import VehicleOrTrailerClass
 

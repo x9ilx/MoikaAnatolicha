@@ -1,10 +1,11 @@
+from django.shortcuts import get_object_or_404
 import django_filters.rest_framework as django_filters
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from vehicle.filters import VehicleOrTrailerClassSearchFilter
 from service.serializers import VehicleTypeServiceSerializer
+from vehicle.filters import VehicleOrTrailerClassSearchFilter
 
 from .models import VehicleOrTrailerClass, VehicleOrTrailerType
 from .serializers import (VehicleOrTrailerClassSerializer,
@@ -18,6 +19,21 @@ class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
         django_filters.DjangoFilterBackend,
     ]
     filterset_class = VehicleOrTrailerClassSearchFilter
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
+
+    def destroy(self, request, *args, **kwargs):
+        vehicle_class = get_object_or_404(
+            VehicleOrTrailerClass, pk=kwargs['pk']
+        )
+        vehicle_class.vehicle_types.all().delete()
+        vehicle_class.delete()
+        return Response(
+            {'details': 'delete - ok'}, status=status.HTTP_204_NO_CONTENT
+        )
 
     @action(
         detail=True,

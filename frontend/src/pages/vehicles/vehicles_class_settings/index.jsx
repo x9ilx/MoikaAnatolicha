@@ -11,9 +11,7 @@ const VehicleClassSettings = () => {
   const navigate = useNavigate();
 
   function updateRef(e) {
-    console.log(refList.current);
     refList.current.setSearch(e.target.value);
-
   }
   
   {
