@@ -32,7 +32,7 @@ const VehicleClassEdit = (props) => {
       });
   };
 
-  const getVehicleClass = React.useCallback(async () => {
+  const getVehicleClass = React.useCallback(() => {
     setLoading(true);
     api
       .getVehicleClass(vehicle_class_id)

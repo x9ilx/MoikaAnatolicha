@@ -21,7 +21,7 @@ const EmployeesSettings = () => {
     items_limit = 4
   }
 
-  const getEmployeesList = React.useCallback(async () => {
+  const getEmployeesList = React.useCallback(() => {
     setLoading(true);
     api
       .getEmployeesList(current_page, items_limit)

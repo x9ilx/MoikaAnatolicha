@@ -1,10 +1,12 @@
 import React from "react";
-import Button from "../../components/button";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import api from "../../api";
 
-const OrganistaionSettings = () => {
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../../api";
+import Button from "../../../components/button";
+
+
+const LegalEntityAdd = () => {
   const [requisites, setRequisites] = React.useState({
     name: "",
     address: "",
@@ -19,14 +21,20 @@ const OrganistaionSettings = () => {
     email: "",
     phone: "",
     director_name: "",
+    mechanic_name: "",
+    accountent_name: "",
+    mechanic_phone: "",
+    accountent_phone: ""
   });
   const [loading, setLoading] = React.useState(true);
 
   const navigate = useNavigate();
+  const { legal_entity_id } = useParams();
 
-  const getRequisites = React.useCallback(() => {
+
+  const getLegalEntity = React.useCallback(() => {
     api
-      .getRequisites()
+      .getLegalEntity(legal_entity_id)
       .then((res) => {
         setRequisites(res);
       })
@@ -39,11 +47,11 @@ const OrganistaionSettings = () => {
       });
   }, []);
 
-  const changeRequisites = () => {
+  const createLegalEntity = () => {
     api
-      .setRequisites(requisites)
+      .createLegalEntity(requisites)
       .then((data) => {
-        toast.success("Данные успешно обновлены");
+        toast.success(`Контрагент "${data.name}" успешно создан`);
         navigate("/");
       })
       .catch((err) => {
@@ -52,10 +60,34 @@ const OrganistaionSettings = () => {
   };
 
   React.useEffect(() => {
-    setLoading(true);
-    getRequisites();
-    setLoading(false);
-  }, [getRequisites]);
+    if (legal_entity_id) {
+        setLoading(true);
+        getLegalEntity();
+        setLoading(false);
+    }
+  }, [getLegalEntity, legal_entity_id]);
+
+  
+  const updateLegalEntity = () => {
+    api
+      .updateLegalEntity(legal_entity_id, requisites)
+      .then((data) => {
+        toast.success(`Данные "${data.name}" успешно обновлены`);
+        navigate(-1);
+      })
+      .catch((err) => {
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+      });
+  };
+
+  React.useEffect(() => {
+    if (legal_entity_id) {
+        setLoading(true);
+        getLegalEntity();
+        setLoading(false);
+    }
+  }, [getLegalEntity, legal_entity_id]);
+
 
   const onChangeInput = (e) => {
     setRequisites((prevState) => ({
@@ -64,7 +96,7 @@ const OrganistaionSettings = () => {
     }));
   };
 
-  if (loading) {
+  if (loading & legal_entity_id) {
     <>
       <p className="grid h-screen place-items-center text-center">
         Загрузка...
@@ -73,7 +105,7 @@ const OrganistaionSettings = () => {
   } else {
     return (
       <>
-        <p className="fw-medium">Реквизиты организации:</p>
+        <p className="fw-medium">Создание контрагента:</p>
         <p className="blockquote-footer">
           Не используемые реквизиты необходимо оставить пустыми
         </p>
@@ -82,9 +114,7 @@ const OrganistaionSettings = () => {
           className="my-3"
           onSubmit={(e) => {
             e.preventDefault();
-            {
-              changeRequisites();
-            }
+            {legal_entity_id ? updateLegalEntity() : createLegalEntity()}
           }}
         >
           <div className="accordion accordion-flush" id="accordionFlushExample">
@@ -109,6 +139,7 @@ const OrganistaionSettings = () => {
                 <div className="accordion-body">
                   <div className="form-floating mb-3">
                     <input
+                        required
                       className="form-control text"
                       id="name"
                       placeholder="name"
@@ -162,6 +193,7 @@ const OrganistaionSettings = () => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
+                        
                       className="form-control text"
                       id="director_name"
                       placeholder="director_name"
@@ -328,6 +360,107 @@ const OrganistaionSettings = () => {
                 </div>
               </div>
             </div>
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapse4"
+                  aria-expanded="false"
+                  aria-controls="flush-collapse4"
+                >
+                  Прочее
+                </button>
+              </h2>
+              <div
+                id="flush-collapse4"
+                className="accordion-collapse collapse"
+                data-bs-parent="#accordionFlushExample"
+              >
+                <div className="accordion-body">
+                  <div className="form-floating mb-3">
+                    <input
+                      className="form-control text"
+                      id="mechanic_name"
+                      placeholder="mechanic_name"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={requisites.mechanic_name}
+                      name="mechanic_name"
+                    />
+                    <label htmlFor="mechanic_name">Ф. И. О. механика</label>
+                  </div>
+                  <div className="form-floating mb-3">
+                    <input
+                    type="number"
+                      className="form-control text"
+                      id="mechanic_phone"
+                      placeholder="mechanic_phone"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={requisites.mechanic_phone}
+                      name="mechanic_phone"
+                    />
+                    <label htmlFor="mechanic_phone">
+                      Телефон механика
+                    </label>
+                  </div>
+                  <div className="form-floating mb-3">
+                    <input
+                      className="form-control text"
+                      id="accountent_name"
+                      placeholder="accountent_name"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={requisites.accountent_name}
+                      name="accountent_name"
+                    />
+                    <label htmlFor="accountent_name">Ф. И. О. бухгалтера</label>
+                  </div>
+                  <div className="form-floating mb-3">
+                    <input
+                    type="number"
+                      className="form-control text"
+                      id="accountent_phone"
+                      placeholder="accountent_phone"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={requisites.accountent_phone}
+                      name="accountent_phone"
+                    />
+                    <label htmlFor="accountent_phone">Телефон бухгалтера</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapse5"
+                  aria-expanded="false"
+                  aria-controls="flush-collapse5"
+                >
+                  Связные автомобили
+                </button>
+              </h2>
+              <div
+                id="flush-collapse5"
+                className="accordion-collapse collapse"
+                data-bs-parent="#accordionFlushExample"
+              >
+                <div className="accordion-body">
+
+                </div>
+              </div>
+            </div>
           </div>
 
           <Button
@@ -354,4 +487,4 @@ const OrganistaionSettings = () => {
   }
 };
 
-export default OrganistaionSettings;
+export default LegalEntityAdd;

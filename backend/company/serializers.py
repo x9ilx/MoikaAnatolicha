@@ -12,6 +12,7 @@ class CompanyRequisitesSerializer(serializers.ModelSerializer):
             'ogrn',
             'inn',
             'okved',
+            'okpo',
             'name_of_bank',
             'correspondent_account_of_bank',
             'bik_of_bank',

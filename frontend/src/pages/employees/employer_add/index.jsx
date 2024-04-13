@@ -28,7 +28,7 @@ const EmployerAdd = (props) => {
   const navigate = useNavigate();
   const { employer_id } = useParams();
 
-  const getEmployeesPositionsList = React.useCallback(async () => {
+  const getEmployeesPositionsList = React.useCallback(() => {
     setLoading(true);
     api
       .getEmployeesPositions()
@@ -46,7 +46,7 @@ const EmployerAdd = (props) => {
       });
   }, []);
 
-  const getEmployer = React.useCallback(async () => {
+  const getEmployer = React.useCallback(() => {
     setLoading(true);
     api
       .getEmployer(employer_id)

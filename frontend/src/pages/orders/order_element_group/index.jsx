@@ -7,8 +7,8 @@ const OrderElementGroup = (props) => {
       <div className="p-1">
         <p className="px-2 pb-1 fs-7 m-0 fw-medium">{props?.header}</p>
         <ul className="list-group  px-2 ">
-          {props?.elements_with_badge?.map((value) => (
-            <li className="list-group-item p-2 " key={value.name}>
+          {props?.elements_with_badge?.map((value, index) => (
+            <li className="list-group-item p-2 " key={value.name + index}>
               <div className="row">
                 <div className="col text-start">{value.name}</div>
                 {value.badge && (

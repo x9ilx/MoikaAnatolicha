@@ -27,7 +27,7 @@ const VehicleClassList = forwardRef(function MyInput(props, ref) {
     setSearch
   }));
 
-  const getVehicleClasses = React.useCallback(async () => {
+  const getVehicleClasses = React.useCallback(() => {
     setLoading(true);
     api
       .getVehicleClasses(current_page, items_limit, search)

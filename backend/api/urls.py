@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
+from counterparty.views import LegalEntityViewSet
 from company.views import CompanyRequisitesViewSet
 from employer.views import CHGUserViewSet, EmployerViewSet
 from service.views import ServiceViewSet
@@ -33,6 +34,11 @@ v1_router.register(
     'employees',
     EmployerViewSet,
     basename='Employer',
+)
+v1_router.register(
+    'legal_entity',
+    LegalEntityViewSet,
+    basename='LegalEntity',
 )
 
 urlpatterns = [

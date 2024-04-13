@@ -80,7 +80,7 @@ const Header = () => {
                 <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                   <li className="nav-item dropdown">
                     <a
-                      className="nav-link dropdown-toggle "
+                      className="nav-link dropdown-toggle me-3"
                       href="#"
                       id="navbarDropdown"
                       role="button"
@@ -91,10 +91,12 @@ const Header = () => {
                       Меню
                     </a>
                     <div
-                      className="dropdown-menu"
+                      className="dropdown-menu me-5"
                       aria-labelledby="navbarDropdown"
                     >
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" href="#" onClick={() => {
+                          navigate("/legal_entity/");
+                        }}>
                         <HiBuildingOffice2
                           size={14}
                           className="me-2 text-text-color"

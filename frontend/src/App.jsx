@@ -13,6 +13,7 @@ import AccessDenidedPage from "./pages/access_denided/index.jsx";
 import EmployeesController from "./pages/employees/employes_controller/index.jsx";
 import VehiclesController from "./pages/vehicles/vehicles_controller/index.jsx";
 import OrganistaionSettings from "./pages/organisation_Settings/index.jsx";
+import LegalEntityController from "./pages/legal_entity/legal_entity_controller/index.jsx";
 
 function App() {
   const auth = useAuth();
@@ -84,6 +85,18 @@ function App() {
                 element={
                   <>
                     <VehiclesController />
+                  </>
+                }
+              />
+            </Route>
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+              <Route
+                path="/legal_entity/*"
+                element={
+                  <>
+                    <LegalEntityController />
                   </>
                 }
               />
