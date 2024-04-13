@@ -1,15 +1,17 @@
 import django_filters.rest_framework as django_filters
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from service.serializers import VehicleTypeServiceSerializer
-from vehicle.filters import VehicleOrTrailerClassSearchFilter
+from vehicle.filters import (VehicleOrTrailerClassSearchFilter,
+                             VehicleSearchFilter)
 
-from .models import VehicleOrTrailerClass, VehicleOrTrailerType
+from .models import Vehicle, VehicleOrTrailerClass, VehicleOrTrailerType
 from .serializers import (VehicleOrTrailerClassSerializer,
-                          VehicleOrTrailerTypeSerializer)
+                          VehicleOrTrailerTypeSerializer, VehicleSerializer)
 
 
 class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
@@ -88,3 +90,30 @@ class VehicleOrTrailerTypeViewSet(viewsets.ModelViewSet):
         services = vehicle.service_vehicle_types.all()
         serializer = VehicleTypeServiceSerializer(services, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class VehicleViewSet(viewsets.ModelViewSet):
+    serializer_class = VehicleSerializer
+
+    def get_queryset(self):
+        queryset = Vehicle.objects.all()
+        excludes = self.request.GET.getlist('exclude', [])
+        search = self.request.GET.get('search', '')
+        print(excludes)
+        filters = Q()
+        if excludes:
+            filters &= ~Q(plate_number__in=excludes)
+
+        if search:
+            filters &= Q(plate_number__istartswith=search)
+
+        return (
+            queryset.filter(filters)
+            .select_related('owner', 'vehicle_type')
+            .order_by('plate_number')
+        )
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context

@@ -1,12 +1,12 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../api";
 import Button from "../../../components/button";
+import DataListVehicle from "../../../components/data_list_vehicle";
 
-
-const LegalEntityAdd = () => {
+const LegalEntityAdd = (props) => {
   const [requisites, setRequisites] = React.useState({
     name: "",
     address: "",
@@ -24,35 +24,37 @@ const LegalEntityAdd = () => {
     mechanic_name: "",
     accountent_name: "",
     mechanic_phone: "",
-    accountent_phone: ""
+    accountent_phone: "",
+    vehicles: {},
   });
   const [loading, setLoading] = React.useState(true);
+  const [DELETE, setDELETE] = React.useState(false);
+  const [vehicleList, setVehicleList] = React.useState([]);
 
   const navigate = useNavigate();
   const { legal_entity_id } = useParams();
-
 
   const getLegalEntity = React.useCallback(() => {
     api
       .getLegalEntity(legal_entity_id)
       .then((res) => {
+        setVehicleList(res.vehicles)
         setRequisites(res);
       })
       .catch((err) => {
-        console.log(err);
         const errors = Object.values(err);
         if (errors) {
           toast.error(errors.join(", "));
         }
       });
-  }, []);
+  }, [legal_entity_id]);
 
   const createLegalEntity = () => {
     api
       .createLegalEntity(requisites)
       .then((data) => {
         toast.success(`Контрагент "${data.name}" успешно создан`);
-        navigate("/");
+        navigate(-1);
       })
       .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
@@ -61,9 +63,9 @@ const LegalEntityAdd = () => {
 
   React.useEffect(() => {
     if (legal_entity_id) {
-        setLoading(true);
-        getLegalEntity();
-        setLoading(false);
+      setLoading(true);
+      getLegalEntity();
+      setLoading(false);
     }
   }, [getLegalEntity, legal_entity_id]);
 
@@ -80,21 +82,13 @@ const LegalEntityAdd = () => {
       });
   };
 
-  React.useEffect(() => {
-    if (legal_entity_id) {
-        setLoading(true);
-        getLegalEntity();
-        setLoading(false);
-    }
-  }, [getLegalEntity, legal_entity_id]);
-
-
   const onChangeInput = (e) => {
     setRequisites((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
+
 
   if (loading & legal_entity_id) {
     <>
@@ -114,10 +108,15 @@ const LegalEntityAdd = () => {
           className="my-3"
           onSubmit={(e) => {
             e.preventDefault();
-            {legal_entity_id ? updateLegalEntity() : createLegalEntity()}
+            {
+              legal_entity_id ? updateLegalEntity() : createLegalEntity();
+            }
           }}
         >
-          <div className="accordion accordion-flush" id="accordionFlushExample">
+          <div
+            className="accordion accordion-flush mb-3"
+            id="accordionFlushExample"
+          >
             <div className="accordion-item">
               <h2 className="accordion-header">
                 <button
@@ -139,7 +138,7 @@ const LegalEntityAdd = () => {
                 <div className="accordion-body">
                   <div className="form-floating mb-3">
                     <input
-                        required
+                      required
                       className="form-control text"
                       id="name"
                       placeholder="name"
@@ -179,7 +178,7 @@ const LegalEntityAdd = () => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                    type="number"
+                      type="number"
                       className="form-control text"
                       id="phone"
                       placeholder="phone"
@@ -193,7 +192,6 @@ const LegalEntityAdd = () => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                        
                       className="form-control text"
                       id="director_name"
                       placeholder="director_name"
@@ -394,7 +392,7 @@ const LegalEntityAdd = () => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                    type="number"
+                      type="number"
                       className="form-control text"
                       id="mechanic_phone"
                       placeholder="mechanic_phone"
@@ -404,9 +402,7 @@ const LegalEntityAdd = () => {
                       value={requisites.mechanic_phone}
                       name="mechanic_phone"
                     />
-                    <label htmlFor="mechanic_phone">
-                      Телефон механика
-                    </label>
+                    <label htmlFor="mechanic_phone">Телефон механика</label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
@@ -423,7 +419,7 @@ const LegalEntityAdd = () => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                    type="number"
+                      type="number"
                       className="form-control text"
                       id="accountent_phone"
                       placeholder="accountent_phone"
@@ -448,16 +444,20 @@ const LegalEntityAdd = () => {
                   aria-expanded="false"
                   aria-controls="flush-collapse5"
                 >
-                  Связные автомобили
+                  Связные ТС/ПЦ/ППЦ
                 </button>
               </h2>
               <div
                 id="flush-collapse5"
-                className="accordion-collapse collapse"
+                className="accordion-collapse collapse "
                 data-bs-parent="#accordionFlushExample"
               >
                 <div className="accordion-body">
-
+                  <DataListVehicle 
+                    vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
+                    setVehicleListFinal={setVehicleList}
+                    ownerName={requisites.name}
+                  />
                 </div>
               </div>
             </div>
@@ -481,10 +481,52 @@ const LegalEntityAdd = () => {
           >
             <>Назад</>
           </Button>
+
+          {legal_entity_id && (
+            <>
+              <div className="form-check form-switch form-check-reverse pb-2">
+                <input
+                  className="form-check-input "
+                  type="checkbox"
+                  id="DELETE"
+                  name="DELETE"
+                  onChange={() => {
+                    setDELETE(!DELETE);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="DELETE">
+                  Удалить данные о контрагенте
+                </label>
+              </div>
+              {DELETE && (
+                <>
+                  <Button
+                    clickHandler={() => {
+                      props.setInfoStringForDelete(
+                        "контрагента " + requisites.name
+                      );
+                      props.setId(legal_entity_id);
+                      navigate("./delete/");
+                    }}
+                    colorClass="btn-danger"
+                    type="button"
+                    disabled={false}
+                  >
+                    <>УДАЛИТЬ ЗАПИСЬ О КОНТРАГЕНТЕ</>
+                  </Button>
+                </>
+              )}
+            </>
+          )}
         </form>
       </>
     );
   }
+};
+
+LegalEntityAdd.propTypes = {
+  setInfoStringForDelete: PropTypes.func,
+  setId: PropTypes.func,
 };
 
 export default LegalEntityAdd;

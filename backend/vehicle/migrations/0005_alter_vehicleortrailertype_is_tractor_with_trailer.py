@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vehicleortrailertype',
             name='is_tractor_with_trailer',
-            field=models.BooleanField(default=False, verbose_name='Тягач с прицепом?'),
+            field=models.BooleanField(
+                default=False, verbose_name='Тягач с прицепом?'
+            ),
         ),
     ]

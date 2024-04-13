@@ -4,7 +4,7 @@ import api from "../../../api";
 import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import Button from "../../../components/button";
-import VehicleTypesEditList from "../vehicle_types_edit_list";
+import VehicleTypesEditList from "../../../components/vehicle_types_edit_list";
 
 const VehicleClassEdit = (props) => {
   const [loading, setLoading] = React.useState(true);

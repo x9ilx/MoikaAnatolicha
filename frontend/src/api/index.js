@@ -313,6 +313,20 @@ setRequisites(requisites) {
     ).then(this.checkResponse)
   }
 
+  getVehicles(search="", excludes=[]) {
+    const token = cookies.get("auth_token");
+    console.log(excludes)
+    const excludesString = excludes ? excludes.map(exclude => `&exclude=${exclude}`).join('') : ''
+    console.log(excludesString)
+    return fetch(URL + `/api/vehicles/?search=${search}${excludesString}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
 ////////////////////////////////////////// LEGAL ENTITIES
 getLegalEntities(page = 1, items_limit = 8, search="") {
   const token = cookies.get("auth_token");
@@ -364,7 +378,16 @@ createLegalEntity(requisites) {
   }).then(this.checkResponse);
 }
 
-
+deleteLegalEntity(id) {
+  const token = cookies.get("auth_token");
+  return fetch(URL + `/api/legal_entity/${id}/`, {
+    method: "DELETE",
+    headers: {
+      ...this._headers,
+      authorization: `Token ${token}`,
+    },
+  }).then(this.checkResponse);
+}
 
 
 

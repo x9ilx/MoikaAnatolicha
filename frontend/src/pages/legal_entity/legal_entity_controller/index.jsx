@@ -8,6 +8,7 @@ import DeletePage from "../../DELETE_page"
 import { EmployerPosition } from "../../../constants";
 import LegalEntitySettings from "../legal_entity_settings";
 import LegalEntityAdd from "../legal_entity_add";
+import api from "../../../api";
 
 function LegalEntityController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -16,12 +17,12 @@ function LegalEntityController() {
 
   const navigate = useNavigate();
 
-  const deleteVehicleClass = () => {
+  const deleteLegalEntity = () => {
     api
-      .deleteVehicleClass(id)
+      .deleteLegalEntity(id)
       .then((res) => {
-        navigate('/vehicles/classes/')
-        toast.success("Класс ТС/ПЦ/ППЦ успешно удалён");
+        navigate('/legal_entity/')
+        toast.success("Контрагент успешно удалён");
       })
       .catch((err) => {
         const errors = Object.values(err);
@@ -41,7 +42,7 @@ function LegalEntityController() {
               element={
                 <>
                   <DeletePage
-                    onDelete={deleteVehicleClass}
+                    onDelete={deleteLegalEntity}
                     info_string={info_string_for_delete}
                   />
                 </>

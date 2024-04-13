@@ -49,27 +49,27 @@ class Vehicle(models.Model):
     """Model definition for VehicleOrTrailerClass."""
 
     plate_number = models.CharField('Гос. номер', max_length=25)
-    trailer_plate_number = models.CharField(
-        'Гос. номер ППЦ', max_length=25, blank=True, null=True
-    )
+
     vehicle_model = models.CharField(
         'Модель',
         max_length=255,
-        null=True,
         blank=True,
     )
-    vehicle_class = models.ForeignKey(
-        VehicleOrTrailerClass,
+    vehicle_type = models.ForeignKey(
+        VehicleOrTrailerType,
         verbose_name='Класс ТС или ППЦ',
         on_delete=models.SET_NULL,
-        null=True,
+        related_name='vehicles',
         blank=True,
+        null=True,
     )
     owner = models.ForeignKey(
         'counterparty.LegalEntity',
         verbose_name='Владелец ТС/ППЦ',
         related_name='vehicles',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
 
     class Meta:
@@ -77,7 +77,7 @@ class Vehicle(models.Model):
 
         verbose_name = 'ТС и/или ППЦ'
         verbose_name_plural = 'ТС и/или ППЦ'
-        ordering = ['plate_number', 'trailer_plate_number']
+        ordering = ['plate_number']
 
     def __str__(self):
         """Unicode representation of VehicleOrTrailerClass."""

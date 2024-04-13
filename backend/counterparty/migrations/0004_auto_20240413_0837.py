@@ -18,11 +18,15 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='legalentity',
             name='accountent_phone',
-            field=models.TextField(blank=True, null=True, verbose_name='Телефон бухгалтера'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Телефон бухгалтера'
+            ),
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='mechanic_phone',
-            field=models.TextField(blank=True, null=True, verbose_name='Телефон механика'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Телефон механика'
+            ),
         ),
     ]

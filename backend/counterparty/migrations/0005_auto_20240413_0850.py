@@ -13,49 +13,69 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='legalentity',
             name='account_number_of_IP',
-            field=models.TextField(blank=True, default='', verbose_name='Расчётный счёт ИП'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Расчётный счёт ИП'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='accountent_name',
-            field=models.TextField(blank=True, default='', verbose_name='ФИО бухгалтера'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ФИО бухгалтера'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='accountent_phone',
-            field=models.TextField(blank=True, default='', verbose_name='Телефон бухгалтера'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Телефон бухгалтера'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='address',
-            field=models.TextField(blank=True, default='', verbose_name='Адрес'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Адрес'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='bik_of_bank',
-            field=models.TextField(blank=True, default='', verbose_name='БИК банка ИП'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='БИК банка ИП'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='correspondent_account_of_bank',
-            field=models.TextField(blank=True, default='', verbose_name='Корреспондентский счёт банка ИП'),
+            field=models.TextField(
+                blank=True,
+                default='',
+                verbose_name='Корреспондентский счёт банка ИП',
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='director_name',
-            field=models.TextField(blank=True, default='', verbose_name='Должность/ФИО руководителя'),
+            field=models.TextField(
+                blank=True,
+                default='',
+                verbose_name='Должность/ФИО руководителя',
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='email',
-            field=models.TextField(blank=True, default='', verbose_name='E-mail'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='E-mail'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -73,49 +93,65 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='legalentity',
             name='mechanic_name',
-            field=models.TextField(blank=True, default='', verbose_name='ФИО механика'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ФИО механика'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='mechanic_phone',
-            field=models.TextField(blank=True, default='', verbose_name='Телефон механика'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Телефон механика'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='name',
-            field=models.TextField(blank=True, default='', verbose_name='Наименование'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Наименование'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='name_of_bank',
-            field=models.TextField(blank=True, default='', verbose_name='Наименование банка ИП'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Наименование банка ИП'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='ogrn',
-            field=models.TextField(blank=True, default='', verbose_name='ОГРН'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ОГРН'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='okpo',
-            field=models.TextField(blank=True, default='', verbose_name='ОКПО'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ОКПО'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='okved',
-            field=models.TextField(blank=True, default='', verbose_name='ОКВЭД'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ОКВЭД'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='legalentity',
             name='phone',
-            field=models.TextField(blank=True, default='', verbose_name='Телефон'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Телефон'
+            ),
             preserve_default=False,
         ),
     ]

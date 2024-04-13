@@ -13,37 +13,51 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='companyrequisites',
             name='account_number_of_IP',
-            field=models.TextField(blank=True, default='', verbose_name='Расчётный счёт ИП'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Расчётный счёт ИП'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='address',
-            field=models.TextField(blank=True, default='', verbose_name='Адрес'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Адрес'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='bik_of_bank',
-            field=models.TextField(blank=True, default='', verbose_name='БИК банка ИП'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='БИК банка ИП'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='correspondent_account_of_bank',
-            field=models.TextField(blank=True, default='', verbose_name='Корреспондентский счёт банка ИП'),
+            field=models.TextField(
+                blank=True,
+                default='',
+                verbose_name='Корреспондентский счёт банка ИП',
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='director_name',
-            field=models.TextField(blank=True, default='', verbose_name='ФИО руководителя'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ФИО руководителя'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='email',
-            field=models.TextField(blank=True, default='', verbose_name='E-mail'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='E-mail'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -55,37 +69,49 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='companyrequisites',
             name='name',
-            field=models.TextField(blank=True, default='', verbose_name='Наименование'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Наименование'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='name_of_bank',
-            field=models.TextField(blank=True, default='', verbose_name='Наименование банка ИП'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Наименование банка ИП'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='ogrn',
-            field=models.TextField(blank=True, default='', verbose_name='ОГРН'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ОГРН'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='okpo',
-            field=models.TextField(blank=True, default='', verbose_name='ОКПО'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ОКПО'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='okved',
-            field=models.TextField(blank=True, default='', verbose_name='ОКВЭД'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='ОКВЭД'
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
             model_name='companyrequisites',
             name='phone',
-            field=models.TextField(blank=True, default='', verbose_name='Телефон'),
+            field=models.TextField(
+                blank=True, default='', verbose_name='Телефон'
+            ),
             preserve_default=False,
         ),
     ]

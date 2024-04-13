@@ -12,37 +12,57 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='legalentity',
-            options={'ordering': ['name'], 'verbose_name': 'Контрагент', 'verbose_name_plural': 'Контрагенты'},
+            options={
+                'ordering': ['name'],
+                'verbose_name': 'Контрагент',
+                'verbose_name_plural': 'Контрагенты',
+            },
         ),
         migrations.AddField(
             model_name='legalentity',
             name='account_number_of_IP',
-            field=models.TextField(blank=True, null=True, verbose_name='Расчётный счёт ИП'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Расчётный счёт ИП'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='address',
-            field=models.TextField(blank=True, null=True, verbose_name='Адрес'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Адрес'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='bik_of_bank',
-            field=models.TextField(blank=True, null=True, verbose_name='БИК банка ИП'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='БИК банка ИП'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='correspondent_account_of_bank',
-            field=models.TextField(blank=True, null=True, verbose_name='Корреспондентский счёт банка ИП'),
+            field=models.TextField(
+                blank=True,
+                null=True,
+                verbose_name='Корреспондентский счёт банка ИП',
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='director_name',
-            field=models.TextField(blank=True, null=True, verbose_name='Должность/ФИО руководителя'),
+            field=models.TextField(
+                blank=True,
+                null=True,
+                verbose_name='Должность/ФИО руководителя',
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='email',
-            field=models.TextField(blank=True, null=True, verbose_name='E-mail'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='E-mail'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
@@ -57,12 +77,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='legalentity',
             name='name',
-            field=models.TextField(blank=True, null=True, verbose_name='Наименование'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Наименование'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='name_of_bank',
-            field=models.TextField(blank=True, null=True, verbose_name='Наименование банка ИП'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Наименование банка ИП'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
@@ -72,11 +96,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='legalentity',
             name='okved',
-            field=models.TextField(blank=True, null=True, verbose_name='ОКВЭД'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='ОКВЭД'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='phone',
-            field=models.TextField(blank=True, null=True, verbose_name='Телефон'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='Телефон'
+            ),
         ),
     ]

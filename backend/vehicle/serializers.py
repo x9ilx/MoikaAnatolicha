@@ -1,7 +1,10 @@
 from django.db.models import Q
 from rest_framework import serializers
 
-from .models import VehicleOrTrailerClass, VehicleOrTrailerType
+from counterparty.models import LegalEntity
+from counterparty.serializers import LegalEntitySerializer
+
+from .models import Vehicle, VehicleOrTrailerClass, VehicleOrTrailerType
 
 
 class VehicleOrTrailerTypeMiniSerializer(serializers.ModelSerializer):
@@ -99,5 +102,47 @@ class VehicleOrTrailerTypeSerializer(serializers.ModelSerializer):
             'name',
             'vehicle_class',
             'vehicle_class_name',
-            'is_tractor_with_trailer',
         ]
+
+
+class VehicleSerializer(serializers.ModelSerializer):
+    vehicle_type = VehicleOrTrailerTypeSerializer(read_only=True)
+    owner = LegalEntitySerializer(read_only=True)
+
+    class Meta:
+        model = Vehicle
+        fields = [
+            'id',
+            'plate_number',
+            'vehicle_model',
+            'owner',
+            'vehicle_type',
+        ]
+
+    def validate(self, attrs):
+        filter = Q(name=attrs['plate_number'])
+        response = (
+            {
+                'Невозможно изменить на гос. номер': f"Гос. номер \"{attrs['plate_number']}\" уже используется"
+            }
+            if self.context['request'].method == 'PATCH'
+            else {
+                'Невозможно добавить гос. номер': f"Гос. номер \"{attrs['plate_number']}\" уже используется"
+            }
+        )
+
+        if self.context['request'].method == 'PATCH':
+            filter &= ~Q(pk=self.instance.pk)
+
+        if VehicleOrTrailerClass.objects.filter(filter).exists():
+            raise serializers.ValidationError(response)
+        return attrs
+
+    def create(self, validated_data):
+        validated_data.pop('to_be_added')
+        validated_data.pop('to_be_removed')
+        vehicle = Vehicle.objects.create(**validated_data)
+        return vehicle
+
+    def update(self, instance, validated_data):
+        return instance

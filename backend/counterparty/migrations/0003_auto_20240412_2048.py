@@ -13,21 +13,29 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='legalentity',
             name='accountent_name',
-            field=models.TextField(blank=True, null=True, verbose_name='ФИО бухгалтера'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='ФИО бухгалтера'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='accountent_phone',
-            field=models.TextField(blank=True, null=True, verbose_name='ФИО бухгалтера'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='ФИО бухгалтера'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='mechanic_name',
-            field=models.TextField(blank=True, null=True, verbose_name='ФИО механика'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='ФИО механика'
+            ),
         ),
         migrations.AddField(
             model_name='legalentity',
             name='mechanic_phone',
-            field=models.TextField(blank=True, null=True, verbose_name='ФИО механика'),
+            field=models.TextField(
+                blank=True, null=True, verbose_name='ФИО механика'
+            ),
         ),
     ]
