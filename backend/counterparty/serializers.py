@@ -2,7 +2,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from core.string_utils import normalize_plate_number
-from vehicle.models import Vehicle, VehicleOrTrailerType
+from vehicle.models import Vehicle, VehicleModel, VehicleOrTrailerType
 
 from .models import LegalEntity
 
@@ -119,5 +119,10 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                         vehicle_type=vehicle['vehicle_type'],
                     )
                     new_vehicle.save()
+
+                    new_model, _ = VehicleModel.objects.update_or_create(
+                        name=vehicle['vehicle_model']
+                    )
+                    new_model.save()
 
         return instance

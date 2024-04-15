@@ -54,7 +54,7 @@ const SelectVehicleClassAndType = (props) => {
         classes[0]?.name
       );
     }
-  }, [currentClassIndex, vehicleClasses]);
+  }, [props, currentClassIndex, vehicleClasses]);
 
   React.useEffect(() => {
     getVehicleTypesByClass();

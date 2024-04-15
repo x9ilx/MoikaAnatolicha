@@ -91,7 +91,6 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
                     <div className="row d-sm-flex flex-sm-row flex-column fs-7">
                       <div className="col  pt-1" id="services">
                         <OrderElementGroup
-                        
                           header="Информация"
                           elements_with_badge={[
                             {
@@ -127,18 +126,27 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
                       <div className="col  pt-1" id="washers">
                         <OrderElementGroup
                           header="Связные ТС/ПЦ/ППЦ"
-                          elements_with_badge={[
-                            {
-                              name: "СДЕЛАТЬ АВТОМОБИЛИ",
+                          elements_with_badge={legal_entity?.vehicles?.map(
+                            (vehicle) => ({
+                              name: (
+                                <>
+                                  <b>{vehicle?.plate_number}:</b>{" "}
+                                  {vehicle?.vehicle_class_name}{" "}
+                                  {vehicle?.vehicle_model} {isMobile ? <br></br> : ""} (
+                                  {vehicle?.vehicle_type_name})
+                                </>
+                              ),
                               badge: "",
-                            },
-                          ]}
+                            })
+                          )}
                         />
                       </div>
                     </div>
                     <div className="row mx-3 gap-1 my-2">
                       <Button
-                        clickHandler={() => {navigate(`./${legal_entity.id}/`)}}
+                        clickHandler={() => {
+                          navigate(`./${legal_entity.id}/`);
+                        }}
                         colorClass="btn-primary"
                         type="button"
                         disabled={false}
