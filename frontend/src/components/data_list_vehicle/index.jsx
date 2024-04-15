@@ -6,7 +6,8 @@ import { ImCross } from "react-icons/im";
 import { FaTrashRestore } from "react-icons/fa";
 import { isMobile } from "react-device-detect";
 import Button from "../button";
-
+import VehicleModelPicker from "../vehicle_model_picker";
+import CreateNewVehicle from "../create_new_vehicle";
 
 const DataListVehicle = (props) => {
   const [showList, setShowList] = React.useState(false);
@@ -14,7 +15,8 @@ const DataListVehicle = (props) => {
   const [vehicleListFinal, setVehicleListFinal] = React.useState([]);
   const [excludes, setExcludes] = React.useState([]);
   const [currentPlateNumber, setCurrentPlateNumber] = React.useState("");
-  const [myModal, setMyModal] = React.useState(null)
+  const [showVehicleList, setShowVehicleList] = React.useState(true);
+  const [createVehicle, setCreateVehicle] = React.useState(false);
 
   React.useEffect(() => {
     setVehicleListFinal(props.vehicleListFinal);
@@ -99,151 +101,208 @@ const DataListVehicle = (props) => {
     }
   };
 
+  const createNewVehicle = (vehicle) => {
+    setCurrentPlateNumber("");
+    setShowList(false);
+    let newState = [...vehicleListFinal, vehicle];
+    props.setVehicleListFinal(newState);
+    setShowVehicleList(true);
+    setCreateVehicle(false);
+  };
+
   document.addEventListener("mousedown", closeOpenMenus);
   return (
     <>
-      <input
-        className="form-control text"
-        type="search"
-        placeholder="Привязать (поиск по гос. номеру)"
-        aria-label="Search"
-        value={currentPlateNumber}
-        onChange={(e) => {
-          changeInput(e.target.value);
-        }}
-      />
-      {showList && (
+      {showVehicleList && (
         <>
-          {vehicleList.length > 0 && (
-            <div id="vehicleelement" className="shadow p-2 m-0 vehicle_datalist_container">
-              <div id="vehicleelement" className="list-group vehicle_datalist_listgroup">
-                {vehicleList?.map((vehicle, index) => {
-                  return (
-                    <a
-                      id="vehicleelement"
-                      key={"vehicleList" + vehicle?.plate_number + index}
-                      style={{ cursor: "pointer" }}
-                      className="list-group-item list-group-item-action"
-                      aria-current="true"
-                      onClick={() => vehicleChange(vehicle)}
-                    >
-                      <b>{vehicle?.plate_number}:</b>{" "}
-                      {vehicle?.vehicle_type?.vehicle_class_name}{" "}
-                      {vehicle?.vehicle_model} ({vehicle?.vehicle_type?.name})
-                      {vehicle?.owner ? " / " + vehicle?.owner?.name : ""}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-          {vehicleList.length === 0 && currentPlateNumber.length >= 8 && (
+          <input
+            key={"vehiclexcvxczvdfh5675467456List" }
+            className="form-control text"
+            type="search"
+            placeholder="Привязать (поиск по гос. номеру)"
+            aria-label="Search"
+            value={currentPlateNumber}
+            onChange={(e) => {
+              changeInput(e.target.value);
+            }}
+          />
+          {showList && (
             <>
-              <div id="vehicleelement" className="shadow p-2 m-0 vehicle_datalist_container">
-                <div id="vehicleelement" className="list-group vehicle_datalist_listgroup">
-                  <Button
+              {vehicleList.length > 0 && (
+                <div
+                  key="lolololol12"
+                  id="vehicleelement"
+                  className="shadow p-2 m-0 vehicle_datalist_container"
+                >
+                  <div
+                  key={"vehisdfsdfasd2q3423cleList"}
                     id="vehicleelement"
-                    clickHandler={() => {alert("test")}}
-                    colorClass="btn-success btn-sm"
-                    disabled={false}
-                    type="button"
-                    hint={"Добавить новый ТС/ПЦ/ППЦ " + currentPlateNumber}
+                    className="list-group vehicle_datalist_listgroup"
                   >
-                    Создать ТС/ПЦ/ППЦ {currentPlateNumber }
-                  </Button>
+                    {vehicleList?.map((vehicle, index) => (
+                      <>
+                        <a
+                          id="vehicleelement"
+                          key={"vehicleList" + vehicle?.plate_number + index}
+                          style={{ cursor: "pointer" }}
+                          className="list-group-item list-group-item-action"
+                          aria-current="true"
+                          onClick={() => vehicleChange(vehicle)}
+                        >
+                          <b>{vehicle?.plate_number}:</b>{" "}
+                          {vehicle?.vehicle_type?.vehicle_class_name}{" "}
+                          {vehicle?.vehicle_model} (
+                          {vehicle?.vehicle_type?.name})
+                          {vehicle?.owner ? " / " + vehicle?.owner?.name : ""}
+                        </a>
+                      </>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {vehicleList.length === 0 && currentPlateNumber.length >= 8 && (
+                <>
+                  <div
+                    key="ololololol25"
+                    id="vehicleelement"
+                    className="shadow p-2 m-0 vehicle_datalist_container"
+                  >
+                    <div
+                      key={"vehicleListFina123sdfl5675675752323421342"}
+                      id="vehicleelement"
+                      className="list-group vehicle_datalist_listgroup"
+                    >
+                      <Button
+                        key={"vehicleListFina123scvvbb222378887dfl"}
+                        id="vehicleelement"
+                        clickHandler={() => {
+                          setShowVehicleList(false);
+                          setCreateVehicle(true);
+                        }}
+                        colorClass="btn-success btn-sm"
+                        disabled={false}
+                        type="button"
+                        hint={"Добавить новый ТС/ПЦ/ППЦ " + currentPlateNumber}
+                      >
+                        <>Создать ТС/ПЦ/ППЦ {currentPlateNumber}</>
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
             </>
           )}
-        </>
-      )}
 
-      <p className="fw-medium mt-3">Список ТС/ПЦ/ППЦ:</p>
-      <ul className="list-group my-3">
-        {vehicleListFinal?.map((vehicle, index) => (
-          <>
-            <li
-              key={"vehicleListFinal" + vehicle.plate_number + index}
-              className={`list-group-item fs-7
+          <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">Список ТС/ПЦ/ППЦ:</p>
+          <ul key={"vehicleListF345345ina123sdfl"} className="list-group my-3">
+            {vehicleListFinal?.map((vehicle, index) => (
+              <>
+                <li
+                  key={"vehicleListFinal" + vehicle.plate_number + index}
+                  className={`list-group-item fs-7
               ${vehicle.to_be_removed ? " bg-danger text-white" : ""} 
               ${vehicle.to_be_added ? " bg-success text-white" : ""}`}
-            >
-              <div className="row">
-                <div
-                  className="col-10"
-                  style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
                 >
-                  <b>{vehicle?.plate_number}:</b> {vehicle?.vehicle_class_name}{" "}
-                  {vehicle?.vehicle_model} ({vehicle?.vehicle_type_name})
-                  <br></br>
-                  {vehicle?.owner_name}
-                </div>
-                <>
-                  {!vehicle.to_be_added > 0 && (
+                  <div key={"vehicleListFinal123" + vehicle.plate_number + index} className="row">
+                    <div
+                      key={"vehicleListFinal3332" + vehicle.plate_number + index}
+                      className="col-10"
+                      style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
+                    >
+                      <b key={"vehicleListFinal554" + vehicle.plate_number + index}>{vehicle?.plate_number}:</b>{" "}
+                      {vehicle?.vehicle_class_name} {vehicle?.vehicle_model} (
+                      {vehicle?.vehicle_type_name})<br></br>
+                      {vehicle?.owner_name}
+                    </div>
                     <>
-                      {!vehicle.to_be_removed && (
+                      {!vehicle.to_be_added > 0 && (
                         <>
-                          <div
-                            className={`col-2 ${
-                              isMobile ? "text-center" : "text-end"
-                            }`}
-                            title="Пометить на удаление"
-                          >
-                            <ImCross
-                              size={14}
-                              className="text-danger"
-                              style={{ cursor: "pointer" }}
-                              onClick={() => {
-                                markDelete(index, true);
-                              }}
-                            />
-                          </div>
+                          {!vehicle.to_be_removed && (
+                            <>
+                              <div
+                                key={"vehicleListFina434343434l" + vehicle.plate_number + index}
+                                className={`col-2 ${
+                                  isMobile ? "text-center" : "text-end"
+                                }`}
+                                title="Пометить на удаление"
+                              >
+                                <ImCross
+                                  key={"vehicleListFinweweweal" + vehicle.plate_number + index}
+                                  size={14}
+                                  className="text-danger"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    markDelete(index, true);
+                                  }}
+                                />
+                              </div>
+                            </>
+                          )}
+                          {vehicle.to_be_removed && (
+                            <>
+                              key={"vehicleListFinjhjjal" + vehicle.plate_number + index}
+                              <div
+                                className={`col-2 ${
+                                  isMobile ? "text-center" : "text-end"
+                                }`}
+                                title="Отменить удаление"
+                              >
+                                <FaTrashRestore
+                                  key={"vehicleListFinxcvxzcvzal" + vehicle.plate_number + index}
+                                  size={18}
+                                  className="text-white fw-medium"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => {
+                                    markDelete(index, false);
+                                  }}
+                                />
+                              </div>
+                            </>
+                          )}
                         </>
                       )}
-                      {vehicle.to_be_removed && (
-                        <>
-                          <div
-                            className={`col-2 ${
-                              isMobile ? "text-center" : "text-end"
-                            }`}
-                            title="Отменить удаление"
-                          >
-                            <FaTrashRestore
-                              size={18}
-                              className="text-white fw-medium"
-                              style={{ cursor: "pointer" }}
-                              onClick={() => {
-                                markDelete(index, false);
-                              }}
-                            />
-                          </div>
-                        </>
+                      {vehicle.to_be_added && (
+                        <div
+                          key={"vehicleListFina123sdfl" + vehicle.plate_number + index}
+                          className={`col-2 ${
+                            isMobile ? "text-center" : "text-end"
+                          }`}
+                          title="Отменить добавление"
+                        >
+                          <ImCross
+                            key={"vehicleListFinalcvbn3432" + vehicle.plate_number + index}
+                            size={14}
+                            className="text-white"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              cancelAddNew(index);
+                            }}
+                          />
+                        </div>
                       )}
                     </>
-                  )}
-                  {vehicle.to_be_added && (
-                    <div
-                      className={`col-2 ${
-                        isMobile ? "text-center" : "text-end"
-                      }`}
-                      title="Отменить добавление"
-                    >
-                      <ImCross
-                        size={14}
-                        className="text-white"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          cancelAddNew(index);
-                        }}
-                      />
-                    </div>
-                  )}
-                </>
-              </div>
-            </li>
-          </>
-        ))}
-      </ul>
+                  </div>
+                </li>
+              </>
+            ))}
+          </ul>
+        </>
+      )}
+      {createVehicle && (
+        <>
+          <CreateNewVehicle
+            currentPlateNumber={currentPlateNumber}
+            ownerName={props.ownerName}
+            ownerID={props.ownerId}
+            onCreate={createNewVehicle}
+            onCancel={() => {
+              setShowVehicleList(true);
+              setCreateVehicle(false);
+            }}
+          />
+        </>
+      )}
     </>
   );
 };
@@ -252,6 +311,7 @@ DataListVehicle.propTypes = {
   vehicleListFinal: PropTypes.array.isRequired,
   setVehicleListFinal: PropTypes.func.isRequired,
   ownerId: PropTypes.number.isRequired,
+  ownerName: PropTypes.string.isRequired,
 };
 
 export default DataListVehicle;

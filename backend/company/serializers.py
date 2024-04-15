@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from core.string_utils import normalize_phone
+
 from .models import CompanyRequisites
 
 

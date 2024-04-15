@@ -3,6 +3,7 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 from pkg_resources import require
 from rest_framework import serializers
 
+from core.string_utils import normalize_phone
 from employer.models import Employer, EmployerPositions
 
 user_model = get_user_model()
@@ -55,6 +56,7 @@ class EmployerSerializer(serializers.ModelSerializer):
         add_user = validated_data.pop('add_user')
         username = validated_data.pop('username')
         password = validated_data.pop('password')
+        phone = normalize_phone(validated_data.pop('phone'))
 
         new_user = None
         if add_user:
@@ -66,12 +68,13 @@ class EmployerSerializer(serializers.ModelSerializer):
             new_user.set_password(password)
             new_user.save()
 
-        employer = Employer.objects.create(**validated_data, user=new_user)
+        employer = Employer.objects.create(
+            **validated_data, user=new_user, phone=phone
+        )
 
         return employer
 
     def update(self, instance, validated_data):
-        print(validated_data)
         add_user = validated_data.pop('add_user')
         username = validated_data.pop('username')
         password = validated_data.pop('password')
@@ -101,7 +104,9 @@ class EmployerSerializer(serializers.ModelSerializer):
         instance.short_name = validated_data.get(
             'short_name', instance.short_name
         )
-        instance.phone = validated_data.get('phone', instance.phone)
+        instance.phone = normalize_phone(
+            validated_data.get('phone', instance.phone)
+        )
         instance.save()
 
         return instance

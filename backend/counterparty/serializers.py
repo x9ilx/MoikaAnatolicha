@@ -1,6 +1,7 @@
 from django.db.models import Q
 from rest_framework import serializers
 
+from core.string_utils import normalize_plate_number
 from vehicle.models import Vehicle, VehicleOrTrailerType
 
 from .models import LegalEntity
@@ -40,12 +41,10 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        print("VehicleMiniSerializer")
         print(validated_data)
         return None
 
     def update(self, instance, validated_data):
-        print("VehicleMiniSerializer")
         print(validated_data)
         return instance
 
@@ -87,6 +86,8 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         vehicles = validated_data.pop('vehicles')
         
         for attr, value in validated_data.items():
+            if (attr == 'plate_number'):
+                value = normalize_plate_number(value)
             setattr(instance, attr, value)
         
         instance.save()
@@ -100,15 +101,23 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                 current_vehicle.save()
 
             if vehicle['to_be_added']:
-                added_vehicle = Vehicle.objects.get(
+                added_vehicle_exist = Vehicle.objects.filter(
                     plate_number=vehicle['plate_number']
-                )
+                ).exists()
 
-                if added_vehicle:
+                if added_vehicle_exist:
+                    added_vehicle = Vehicle.objects.get(
+                        plate_number=vehicle['plate_number']
+                    )
                     added_vehicle.owner = instance
                     added_vehicle.save()
                 else:
-                    ...
-
+                    new_vehicle = Vehicle.objects.create(
+                        plate_number=vehicle['plate_number'],
+                        owner=vehicle['owner'],
+                        vehicle_model=vehicle['vehicle_model'],
+                        vehicle_type=vehicle['vehicle_type'],
+                    )
+                    new_vehicle.save()
 
         return instance

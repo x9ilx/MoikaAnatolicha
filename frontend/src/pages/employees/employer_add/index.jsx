@@ -41,7 +41,7 @@ const EmployerAdd = (props) => {
         console.log(err);
         const errors = Object.values(err);
         if (errors) {
-          alert(errors.join(", "));
+          toast.error(errors.join(", "));
         }
       });
   }, []);

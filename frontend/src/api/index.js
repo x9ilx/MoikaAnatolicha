@@ -256,6 +256,17 @@ setRequisites(requisites) {
     }).then(this.checkResponse);
   }
 
+  getVehicleModels(search) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicles/models/?search=${search}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
   getVehicleTypesForVehicleClass(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/vehicle_class/${id}/get_vehicle_types/`, {

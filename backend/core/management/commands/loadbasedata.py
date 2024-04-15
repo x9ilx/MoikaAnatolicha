@@ -82,6 +82,36 @@ class Command(BaseCommand):
         )
         return False
 
+    def load_requisites(self, data_file_path, model):
+        with open(data_file_path, newline='', encoding='UTF-8') as csvfile:
+            csv_reader = csv.DictReader(f=csvfile)
+
+            index = 0
+            index_all = 0
+            with transaction.atomic():
+                for row in csv_reader:
+                    try:
+                        index = index + 1
+                        index_all = index_all + 1
+                        requisites = model.objects.filter(pk=1)
+                        if requisites:
+                            requisites.update(**row)
+                        else:
+                            model.objects.create(**row)
+                        
+                    except Exception as ex:
+                        index = index - 1
+                        self.stdout.write(
+                            self.style.ERROR(
+                                f'Запись "{row}" не добавлена: {ex}'
+                            )
+                        )
+            self.stdout.write(
+                self.style.SUCCESS(
+                    (f'\nДобавлено {index} записей ' f'из {index_all}\n\n')
+                )
+            )
+
     def load_no_foreign_key_table(self, data_file_path, model):
         with open(data_file_path, newline='', encoding='UTF-8') as csvfile:
             csv_reader = csv.DictReader(f=csvfile)
@@ -169,7 +199,7 @@ class Command(BaseCommand):
                 'company',
                 'CompanyRequisites',
                 './data/company_requisites.csv',
-                self.load_no_foreign_key_table,
+                self.load_requisites,
             )
 
         if self.check_installed_apps('vehicle'):

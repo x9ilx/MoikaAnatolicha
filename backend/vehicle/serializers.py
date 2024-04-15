@@ -1,6 +1,7 @@
 from django.db.models import Q
 from rest_framework import serializers
 
+from core.string_utils import normalize_plate_number
 from counterparty.models import LegalEntity
 from counterparty.serializers import LegalEntitySerializer
 
@@ -156,10 +157,23 @@ class VehicleSerializer(serializers.ModelSerializer):
         del validated_data['owner_id']
         validated_data['vehicle_type'] = validated_data['vehicle_type_id']
         del validated_data['vehicle_type_id']
-
-        vehicle = Vehicle.objects.create(**validated_data)
+        plate_number = normalize_plate_number(validated_data.pop('plate_number'))
+        
+        vehicle = Vehicle.objects.create(
+            **validated_data, plate_number=plate_number
+        )
 
         return vehicle
 
     def update(self, instance, validated_data):
+        validated_data['owner'] = validated_data['owner_id']
+        del validated_data['owner_id']
+        validated_data['vehicle_type'] = validated_data['vehicle_type_id']
+        del validated_data['vehicle_type_id']
+        plate_number = normalize_plate_number(validated_data.pop('plate_number'))
+        
+        instance.update(
+            **validated_data, plate_number=plate_number
+        )
+        instance.save()
         return instance
