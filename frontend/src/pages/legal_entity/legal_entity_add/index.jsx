@@ -458,7 +458,7 @@ const LegalEntityAdd = (props) => {
                   <DataListVehicle 
                     vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
                     setVehicleListFinal={setVehicleList}
-                    ownerId={requisites?.id ? requisites?.id : -1}
+                    ownerId={requisites?.id ? requisites?.id : null}
                     ownerName={requisites.name}
                   />
                 </div>

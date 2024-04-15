@@ -36,7 +36,7 @@ const CreateNewVehicle = (props) => {
         owner_name: newVehicleOwnerName,
         vehicle_type_name: newVehicleTypeName,
         vehicle_class_name: newVehicleClassName,
-        owner: newVehicleOwner,
+        owner: newVehicleOwner ? newVehicleOwner: null,
         vehicle_type: newVehicleType,
         to_be_removed: false,
         to_be_added: true,

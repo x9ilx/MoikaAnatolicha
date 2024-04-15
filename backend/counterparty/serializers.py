@@ -10,7 +10,7 @@ from .models import LegalEntity
 class VehicleMiniSerializer(serializers.ModelSerializer):
     plate_number = serializers.CharField(max_length=25)
     owner = serializers.PrimaryKeyRelatedField(
-        queryset=LegalEntity.objects.all()
+        read_only=True
     )
     vehicle_type = serializers.PrimaryKeyRelatedField(
         queryset=VehicleOrTrailerType.objects.all()
@@ -39,6 +39,14 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
             'to_be_removed',
             'to_be_added',
         ]
+
+    def validate_owner(self, value):
+        print(value)
+        return value
+
+    def validate(self, attrs):
+        print(attrs)
+        return attrs
 
     def create(self, validated_data):
         print(validated_data)
@@ -76,23 +84,8 @@ class LegalEntitySerializer(serializers.ModelSerializer):
             'vehicles',
         ]
 
-
-    def create(self, validated_data):
-        print("LegalEntitySerializer")
-        print(validated_data)
-        return None
-
-    def update(self, instance, validated_data):
-        vehicles = validated_data.pop('vehicles')
-        
-        for attr, value in validated_data.items():
-            if (attr == 'plate_number'):
-                value = normalize_plate_number(value)
-            setattr(instance, attr, value)
-        
-        instance.save()
-        
-        for vehicle in vehicles:
+    def update_create_vehicle(self, vehicle_list, instance):
+        for vehicle in vehicle_list:
             if vehicle['to_be_removed']:
                 current_vehicle = instance.vehicles.get(
                 plate_number=vehicle['plate_number']
@@ -114,7 +107,7 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                 else:
                     new_vehicle = Vehicle.objects.create(
                         plate_number=vehicle['plate_number'],
-                        owner=vehicle['owner'],
+                        owner=instance,
                         vehicle_model=vehicle['vehicle_model'],
                         vehicle_type=vehicle['vehicle_type'],
                     )
@@ -125,4 +118,27 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                     )
                     new_model.save()
 
+
+    def create(self, validated_data):
+        vehicles = validated_data.pop('vehicles')
+        
+        instance = LegalEntity.objects.create(**validated_data)
+        instance.save()
+        
+        self.update_create_vehicle(vehicles, instance)
+
+        return instance
+
+    def update(self, instance, validated_data):
+        vehicles = validated_data.pop('vehicles')
+        
+        for attr, value in validated_data.items():
+            if (attr == 'plate_number'):
+                value = normalize_plate_number(value)
+            setattr(instance, attr, value)
+        
+        instance.save()
+        
+        self.update_create_vehicle(vehicles, instance)
+        
         return instance
