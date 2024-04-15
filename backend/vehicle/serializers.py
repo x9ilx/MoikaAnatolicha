@@ -4,7 +4,16 @@ from rest_framework import serializers
 from counterparty.models import LegalEntity
 from counterparty.serializers import LegalEntitySerializer
 
-from .models import Vehicle, VehicleOrTrailerClass, VehicleOrTrailerType
+from .models import Vehicle, VehicleModel, VehicleOrTrailerClass, VehicleOrTrailerType
+
+
+class VehicleModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehicleModel
+        fields = [
+            'id',
+            'name',
+        ]
 
 
 class VehicleOrTrailerTypeMiniSerializer(serializers.ModelSerializer):
@@ -108,7 +117,9 @@ class VehicleOrTrailerTypeSerializer(serializers.ModelSerializer):
 class VehicleSerializer(serializers.ModelSerializer):
     vehicle_type = VehicleOrTrailerTypeSerializer(read_only=True)
     owner = LegalEntitySerializer(read_only=True)
-
+    vehicle_type_id = serializers.PrimaryKeyRelatedField(queryset=VehicleOrTrailerType.objects.all(), write_only=True)
+    owner_id = serializers.PrimaryKeyRelatedField(queryset=LegalEntity.objects.all(), write_only=True)
+    
     class Meta:
         model = Vehicle
         fields = [
@@ -117,6 +128,8 @@ class VehicleSerializer(serializers.ModelSerializer):
             'vehicle_model',
             'owner',
             'vehicle_type',
+            'owner_id',
+            'vehicle_type_id',
         ]
 
     def validate(self, attrs):
@@ -139,9 +152,13 @@ class VehicleSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('to_be_added')
-        validated_data.pop('to_be_removed')
+        validated_data['owner'] = validated_data['owner_id']
+        del validated_data['owner_id']
+        validated_data['vehicle_type'] = validated_data['vehicle_type_id']
+        del validated_data['vehicle_type_id']
+
         vehicle = Vehicle.objects.create(**validated_data)
+
         return vehicle
 
     def update(self, instance, validated_data):

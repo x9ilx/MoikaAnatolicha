@@ -6,11 +6,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from service.serializers import VehicleTypeServiceSerializer
-from vehicle.filters import (VehicleOrTrailerClassSearchFilter,
-                             VehicleSearchFilter)
+from vehicle.filters import (VehicleOrTrailerClassSearchFilter)
 
-from .models import Vehicle, VehicleOrTrailerClass, VehicleOrTrailerType
-from .serializers import (VehicleOrTrailerClassSerializer,
+from .models import Vehicle, VehicleModel, VehicleOrTrailerClass, VehicleOrTrailerType
+from .serializers import (VehicleModelSerializer, VehicleOrTrailerClassSerializer,
                           VehicleOrTrailerTypeSerializer, VehicleSerializer)
 
 
@@ -99,7 +98,6 @@ class VehicleViewSet(viewsets.ModelViewSet):
         queryset = Vehicle.objects.all()
         excludes = self.request.GET.getlist('exclude', [])
         search = self.request.GET.get('search', '')
-        print(excludes)
         filters = Q()
         if excludes:
             filters &= ~Q(plate_number__in=excludes)
@@ -117,3 +115,20 @@ class VehicleViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context.update({'request': self.request})
         return context
+
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='models',
+        url_name='models',
+    )
+    def get_vehicle_models(self, request):
+        search = request.GET.get('search', '')
+
+        models = VehicleModel.objects.filter(
+            Q(name__icontains=search)
+        ).order_by('name')
+         
+        serializer = VehicleModelSerializer(models, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

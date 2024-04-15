@@ -1,6 +1,7 @@
 import React from "react";
 import { isMobile } from "react-device-detect";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import api from "../../../api";
 import { prettyPhone } from "../../../utils/string_utils";
 import Paginator from "../../../components/paginator";
@@ -33,7 +34,7 @@ const EmployeesSettings = () => {
       .catch((err) => {
         const errors = Object.values(err);
         if (errors) {
-          alert(errors.join(", "));
+          toast.error(errors.join(", "));
         }
       });
   }, [current_page, items_limit]);

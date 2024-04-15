@@ -50,8 +50,9 @@ const LegalEntityAdd = (props) => {
   }, [legal_entity_id]);
 
   const createLegalEntity = () => {
+    const new_vehicle_requisites = {...requisites, vehicles: vehicleList}
     api
-      .createLegalEntity(requisites)
+      .createLegalEntity(new_vehicle_requisites)
       .then((data) => {
         toast.success(`Контрагент "${data.name}" успешно создан`);
         navigate(-1);
@@ -71,8 +72,9 @@ const LegalEntityAdd = (props) => {
 
   
   const updateLegalEntity = () => {
+    const new_vehicle_requisites = {...requisites, vehicles: vehicleList}
     api
-      .updateLegalEntity(legal_entity_id, requisites)
+      .updateLegalEntity(legal_entity_id, new_vehicle_requisites)
       .then((data) => {
         toast.success(`Данные "${data.name}" успешно обновлены`);
         navigate(-1);
@@ -456,7 +458,7 @@ const LegalEntityAdd = (props) => {
                   <DataListVehicle 
                     vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
                     setVehicleListFinal={setVehicleList}
-                    ownerName={requisites.name}
+                    ownerId={requisites.id}
                   />
                 </div>
               </div>

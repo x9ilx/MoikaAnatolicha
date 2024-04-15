@@ -1,6 +1,23 @@
 from django.db import models
 
 
+class VehicleModel(models.Model):
+    """Model definition for VehicleOrTrailerClass."""
+
+    name = models.CharField('Наименование', max_length=255)
+
+    class Meta:
+        """Meta definition for VehicleOrTrailerClass."""
+
+        verbose_name = 'Модель ТС или ППЦ'
+        verbose_name_plural = 'Модели ТС или ППЦ'
+        ordering = ['name']
+
+    def __str__(self):
+        """Unicode representation of VehicleOrTrailerClass."""
+        return self.name 
+
+
 class VehicleOrTrailerClass(models.Model):
     """Model definition for VehicleOrTrailerClass."""
 
@@ -83,5 +100,5 @@ class Vehicle(models.Model):
         """Unicode representation of VehicleOrTrailerClass."""
         return (
             f'{self.plate_number} ({self.vehicle_model} / '
-            f'{self.vehicle_class})'
+            f'{self.vehicle_type.vehicle_class} ({self.vehicle_type})'
         )

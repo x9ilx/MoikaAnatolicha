@@ -1,7 +1,7 @@
 version: '3.3'
 
 volumes:
-  pg_data:
+  pg_data_chg:
   static:
 
 services:
@@ -9,10 +9,10 @@ services:
     restart: always
     image: postgres:13
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data_chg:/var/lib/postgresql/data
     env_file: ./backend/.env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U django_user -d CHG_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,6 +22,8 @@ services:
     env_file: ./backend/.env
     volumes:
       - static:/static/
+    depends_on:
+      - db
 
   frontend:
     build:

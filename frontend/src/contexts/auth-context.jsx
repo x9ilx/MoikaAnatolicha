@@ -1,5 +1,6 @@
 import React from "react";
 import Cookies from "universal-cookie";
+import { toast } from "react-toastify";
 import api from "../api";
 import { COOKIES_LIFE_TIME } from "../constants";
 
@@ -56,7 +57,7 @@ const set_logged_in_cookie = (value) => {
       .catch((err) => {
         const errors = Object.values(err);
         if (errors) {
-          alert(errors.join(", "));
+          toast.error(errors.join(", "));
         }
         setLoggedIn(false);
       });
@@ -75,7 +76,7 @@ const set_logged_in_cookie = (value) => {
       .catch((err) => {
         const errors = Object.values(err);
         if (errors) {
-          alert(errors.join(", "));
+          toast.error(errors.join(", "));
         }
       });
   };

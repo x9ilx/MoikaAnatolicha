@@ -1,18 +1,31 @@
-const URL = "http://localhost:8000";
+import React from "react";
+const URL = "http://localhost:8000/";
+import { Navigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { COOKIES_LIFE_TIME } from "../constants";
+
 
 const cookies = new Cookies(null, { path: "/" });
 class Api {
   constructor(url, headers) {
     this._url = url;
     this._headers = headers;
+    
   }
-
 
   checkResponse(res) {
     return new Promise((resolve, reject) => {
       if (res.status === 204) {
         return resolve(res);
+      }
+      if (res.status === 401) {
+        cookies.remove("auth_token");
+        cookies.remove("employer_info");
+        cookies.set("loggedIn", false, {
+          path: "/",
+          maxAge: COOKIES_LIFE_TIME,
+        });
+        window.location.replace("/");
       }
       const func = res.status < 400 ? resolve : reject;
       res.json().then((data) => {
@@ -315,9 +328,7 @@ setRequisites(requisites) {
 
   getVehicles(search="", excludes=[]) {
     const token = cookies.get("auth_token");
-    console.log(excludes)
     const excludesString = excludes ? excludes.map(exclude => `&exclude=${exclude}`).join('') : ''
-    console.log(excludesString)
     return fetch(URL + `/api/vehicles/?search=${search}${excludesString}`, {
       method: "GET",
       headers: {

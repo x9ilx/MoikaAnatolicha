@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../../components/button";
 import Paginator from "../../../components/paginator";
 import OrderElementGroup from "../../orders/order_element_group";
+import { toast } from "react-toastify";
 import api from "../../../api";
 
 const VehicleClassList = forwardRef(function MyInput(props, ref) {
@@ -39,7 +40,7 @@ const VehicleClassList = forwardRef(function MyInput(props, ref) {
       .catch((err) => {
         const errors = Object.values(err);
         if (errors) {
-          alert(errors.join(", "));
+          toast.error(errors.join(", "));
         }
       });
   }, [current_page, items_limit, search]);

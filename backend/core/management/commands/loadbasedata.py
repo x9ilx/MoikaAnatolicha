@@ -7,7 +7,10 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
-
+from django.db import connection
+from django.apps import apps
+from io import StringIO
+from django.core.management import call_command
 from employer.models import Employer, EmployerPositions
 
 User = get_user_model()
@@ -15,6 +18,20 @@ User = get_user_model()
 
 class Command(BaseCommand):
     help = 'Загружает данные из приложенных CSV-файлов (../data/)'
+
+    def call_sqlsequence_all_app(self):
+        commands = StringIO()
+        cursor = connection.cursor()
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                (f'\nНачинаем: sqlsequencereset')
+            )
+        )
+        for app in apps.get_app_configs():
+            call_command('sqlsequencereset', app.label, stdout=commands)
+
+        cursor.execute(commands.getvalue())
 
     def print_divider(self):
         """Печатает разделитель в вывод."""
@@ -168,6 +185,12 @@ class Command(BaseCommand):
                 './data/vehicle_or_trailer_type.csv',
                 self.load_no_foreign_key_table,
             )
+            self.load_data(
+                'vehicle',
+                'VehicleModel',
+                './data/vehicle_models.csv',
+                self.load_no_foreign_key_table,
+            )
         if self.check_installed_apps('service'):
             self.load_data(
                 'service',
@@ -182,4 +205,5 @@ class Command(BaseCommand):
                 self.load_no_foreign_key_table,
             )
 
+        self.call_sqlsequence_all_app()
         self.print_divider()

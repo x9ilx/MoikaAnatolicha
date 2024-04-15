@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./components/protected-route";
 import { useAuth } from "./contexts/auth-context";
@@ -17,6 +17,7 @@ import LegalEntityController from "./pages/legal_entity/legal_entity_controller/
 
 function App() {
   const auth = useAuth();
+  const navigate = useNavigate();
   const tooltipTriggerList = document.querySelectorAll(
     '[data-bs-toggle="tooltip"]'
   );
@@ -27,6 +28,7 @@ function App() {
   {
     document.title = "CRM Чистый Грузовик";
   }
+
   return (
     <>
       <div className="container mb-3">

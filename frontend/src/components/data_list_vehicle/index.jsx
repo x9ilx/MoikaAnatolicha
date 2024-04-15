@@ -5,6 +5,8 @@ import api from "../../api";
 import { ImCross } from "react-icons/im";
 import { FaTrashRestore } from "react-icons/fa";
 import { isMobile } from "react-device-detect";
+import Button from "../button";
+
 
 const DataListVehicle = (props) => {
   const [showList, setShowList] = React.useState(false);
@@ -12,15 +14,24 @@ const DataListVehicle = (props) => {
   const [vehicleListFinal, setVehicleListFinal] = React.useState([]);
   const [excludes, setExcludes] = React.useState([]);
   const [currentPlateNumber, setCurrentPlateNumber] = React.useState("");
+  const [myModal, setMyModal] = React.useState(null)
 
   React.useEffect(() => {
     setVehicleListFinal(props.vehicleListFinal);
     let excludes_plate_number = [];
-    props.vehicleListFinal?.map((vehicle) => (
+    props.vehicleListFinal?.map((vehicle) =>
       excludes_plate_number.push(vehicle.plate_number)
-    ))
-    setExcludes(excludes_plate_number)
+    );
+    setExcludes(excludes_plate_number);
   }, [props.vehicleListFinal]);
+
+  React.useEffect(() => {
+    let excludes_plate_number = [];
+    vehicleListFinal.map((vehicle) =>
+      excludes_plate_number.push(vehicle.plate_number)
+    );
+    setExcludes(excludes_plate_number);
+  }, [vehicleListFinal]);
 
   const markDelete = (index, mark) => {
     let newState = [...vehicleListFinal];
@@ -34,20 +45,22 @@ const DataListVehicle = (props) => {
     setVehicleListFinal(copyValues);
   };
 
-  const getVehicles = React.useCallback((search) => {
-    
-    api
-      .getVehicles(search, excludes)
-      .then((res) => {
-        setVehicleList(res.results);
-      })
-      .catch((err) => {
-        const errors = Object.values(err);
-        if (errors) {
-          toast.error(errors.join(", "));
-        }
-      });
-  }, [excludes]);
+  const getVehicles = React.useCallback(
+    (search) => {
+      api
+        .getVehicles(search, excludes)
+        .then((res) => {
+          setVehicleList(res.results);
+        })
+        .catch((err) => {
+          const errors = Object.values(err);
+          if (errors) {
+            toast.error(errors.join(", "));
+          }
+        });
+    },
+    [excludes]
+  );
 
   const changeInput = (value) => {
     setCurrentPlateNumber(value);
@@ -65,62 +78,89 @@ const DataListVehicle = (props) => {
     let newData = {
       id: vehicle.id ? vehicle.id : -1,
       plate_number: vehicle.plate_number,
-      owner_name: props.ownerName,
+      vehicle_model: vehicle.vehicle_model,
+      owner_name: vehicle.owner?.name ? vehicle.owner?.name : "",
       vehicle_type_name: vehicle.vehicle_type.name,
       vehicle_class_name: vehicle.vehicle_type.vehicle_class_name,
+      owner: vehicle.owner?.id ? vehicle.owner?.id : props.ownerId,
+      vehicle_type: vehicle.vehicle_type.id,
       to_be_removed: false,
-      to_be_added : true,
-
+      to_be_added: true,
     };
     let newState = [...vehicleListFinal, newData];
-    props.setVehicleListFinal(newState)
+    props.setVehicleListFinal(newState);
   };
 
+  const closeOpenMenus = (e) => {
+    let a_click = e.target.id === "vehicleelement";
+    if (!a_click) {
+      setCurrentPlateNumber("");
+      setShowList(false);
+    }
+  };
+
+  document.addEventListener("mousedown", closeOpenMenus);
   return (
     <>
-      <p className="fw-medium"></p>
-      <div className="form-floating ">
-        <input
-          className="form-control text"
-          id="name"
-          placeholder="name"
-          onChange={(e) => {
-            changeInput(e.target.value);
-          }}
-          value={currentPlateNumber}
-          name="name"
-        />
-        <label htmlFor="name">Привязать (введите гос. номер)</label>
-      </div>
-
-      {showList && vehicleList.length > 0 && (
-        <div className="shadow p-2 m-0">
-          <div className="list-group">
-            {vehicleList?.map((vehicle, index) => {
-              return (
-                <a
-                  key={"vehicleList" + vehicle?.plate_number + index}
-                  href="#"
-                  className="list-group-item list-group-item-action"
-                  aria-current="true"
-                  onClick={() =>
-                    vehicleChange(vehicle)
-                  }
-                >
-                  {vehicle?.plate_number}:{" "}
-                  {vehicle?.vehicle_type?.vehicle_class_name}{" "}
-                  {vehicle?.vehicle_model} ({vehicle?.vehicle_type?.name})
-                </a>
-              );
-            })}
-          </div>
-        </div>
+      <input
+        className="form-control text"
+        type="search"
+        placeholder="Привязать (поиск по гос. номеру)"
+        aria-label="Search"
+        value={currentPlateNumber}
+        onChange={(e) => {
+          changeInput(e.target.value);
+        }}
+      />
+      {showList && (
+        <>
+          {vehicleList.length > 0 && (
+            <div id="vehicleelement" className="shadow p-2 m-0 vehicle_datalist_container">
+              <div id="vehicleelement" className="list-group vehicle_datalist_listgroup">
+                {vehicleList?.map((vehicle, index) => {
+                  return (
+                    <a
+                      id="vehicleelement"
+                      key={"vehicleList" + vehicle?.plate_number + index}
+                      style={{ cursor: "pointer" }}
+                      className="list-group-item list-group-item-action"
+                      aria-current="true"
+                      onClick={() => vehicleChange(vehicle)}
+                    >
+                      <b>{vehicle?.plate_number}:</b>{" "}
+                      {vehicle?.vehicle_type?.vehicle_class_name}{" "}
+                      {vehicle?.vehicle_model} ({vehicle?.vehicle_type?.name})
+                      {vehicle?.owner ? " / " + vehicle?.owner?.name : ""}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {vehicleList.length === 0 && currentPlateNumber.length >= 8 && (
+            <>
+              <div id="vehicleelement" className="shadow p-2 m-0 vehicle_datalist_container">
+                <div id="vehicleelement" className="list-group vehicle_datalist_listgroup">
+                  <Button
+                    id="vehicleelement"
+                    clickHandler={() => {alert("test")}}
+                    colorClass="btn-success btn-sm"
+                    disabled={false}
+                    type="button"
+                    hint={"Добавить новый ТС/ПЦ/ППЦ " + currentPlateNumber}
+                  >
+                    Создать ТС/ПЦ/ППЦ {currentPlateNumber }
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </>
       )}
 
-      <p className="fw-medium">Список ТС/ПЦ/ППЦ:</p>
+      <p className="fw-medium mt-3">Список ТС/ПЦ/ППЦ:</p>
       <ul className="list-group my-3">
         {vehicleListFinal?.map((vehicle, index) => (
-          
           <>
             <li
               key={"vehicleListFinal" + vehicle.plate_number + index}
@@ -133,12 +173,13 @@ const DataListVehicle = (props) => {
                   className="col-10"
                   style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
                 >
-                  {vehicle?.plate_number}:{" "}
-                  {vehicle?.vehicle_class_name}{" "}
+                  <b>{vehicle?.plate_number}:</b> {vehicle?.vehicle_class_name}{" "}
                   {vehicle?.vehicle_model} ({vehicle?.vehicle_type_name})
+                  <br></br>
+                  {vehicle?.owner_name}
                 </div>
                 <>
-                  {vehicle.id > 0 && (
+                  {!vehicle.to_be_added > 0 && (
                     <>
                       {!vehicle.to_be_removed && (
                         <>
@@ -180,7 +221,7 @@ const DataListVehicle = (props) => {
                       )}
                     </>
                   )}
-                  {vehicle.id <= 0 && (
+                  {vehicle.to_be_added && (
                     <div
                       className={`col-2 ${
                         isMobile ? "text-center" : "text-end"
@@ -210,7 +251,7 @@ const DataListVehicle = (props) => {
 DataListVehicle.propTypes = {
   vehicleListFinal: PropTypes.array.isRequired,
   setVehicleListFinal: PropTypes.func.isRequired,
-  ownerName: PropTypes.string.isRequired,
+  ownerId: PropTypes.number.isRequired,
 };
 
 export default DataListVehicle;

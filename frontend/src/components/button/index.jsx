@@ -5,6 +5,7 @@ const Button = (props) => {
   return (
     <>
       <button
+        id={props.id}
         type={props.type}
         className={`btn ${props.colorClass} text-white w-100 mb-3 fw-medium lh-lg`}
         style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
@@ -25,6 +26,7 @@ Button.propTypes = {
   disabled: PropTypes.bool.isRequired,
   type: PropTypes.string.isRequired,
   hint: PropTypes.string,
+  id: PropTypes.string,
 };
 
 export default Button;
