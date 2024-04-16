@@ -29,6 +29,7 @@ const LegalEntityAdd = (props) => {
   });
   const [loading, setLoading] = React.useState(true);
   const [DELETE, setDELETE] = React.useState(false);
+  const [showAddVehicle, setShowAddVehicle] = React.useState(false);
   const [vehicleList, setVehicleList] = React.useState([]);
 
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const LegalEntityAdd = (props) => {
     api
       .getLegalEntity(legal_entity_id)
       .then((res) => {
-        setVehicleList(res.vehicles)
+        setVehicleList(res.vehicles);
         setRequisites(res);
       })
       .catch((err) => {
@@ -50,7 +51,7 @@ const LegalEntityAdd = (props) => {
   }, [legal_entity_id]);
 
   const createLegalEntity = () => {
-    const new_vehicle_requisites = {...requisites, vehicles: vehicleList}
+    const new_vehicle_requisites = { ...requisites, vehicles: vehicleList };
     api
       .createLegalEntity(new_vehicle_requisites)
       .then((data) => {
@@ -70,9 +71,8 @@ const LegalEntityAdd = (props) => {
     }
   }, [getLegalEntity, legal_entity_id]);
 
-  
   const updateLegalEntity = () => {
-    const new_vehicle_requisites = {...requisites, vehicles: vehicleList}
+    const new_vehicle_requisites = { ...requisites, vehicles: vehicleList };
     api
       .updateLegalEntity(legal_entity_id, new_vehicle_requisites)
       .then((data) => {
@@ -90,7 +90,6 @@ const LegalEntityAdd = (props) => {
       [e.target.name]: e.target.value,
     }));
   };
-
 
   if (loading & legal_entity_id) {
     <>
@@ -455,68 +454,73 @@ const LegalEntityAdd = (props) => {
                 data-bs-parent="#accordionFlushExample"
               >
                 <div className="accordion-body">
-                  <DataListVehicle 
+                  <DataListVehicle
                     vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
                     setVehicleListFinal={setVehicleList}
                     ownerId={requisites?.id ? requisites?.id : null}
                     ownerName={requisites.name}
+                    onShowAdd={setShowAddVehicle}
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <Button
-            clickHandler={() => {}}
-            colorClass="btn-success"
-            type="submit"
-            disabled={false}
-          >
-            <>Сохранить данные</>
-          </Button>
-          <Button
-            clickHandler={() => {
-              navigate(-1);
-            }}
-            colorClass="btn-primary"
-            type="button"
-            disabled={false}
-          >
-            <>Назад</>
-          </Button>
-
-          {legal_entity_id && (
+          {!showAddVehicle && (
             <>
-              <div className="form-check form-switch form-check-reverse pb-2">
-                <input
-                  className="form-check-input "
-                  type="checkbox"
-                  id="DELETE"
-                  name="DELETE"
-                  onChange={() => {
-                    setDELETE(!DELETE);
-                  }}
-                />
-                <label className="form-check-label" htmlFor="DELETE">
-                  Удалить данные о контрагенте
-                </label>
-              </div>
-              {DELETE && (
+              <Button
+                clickHandler={() => {}}
+                colorClass="btn-success"
+                type="submit"
+                disabled={false}
+              >
+                <>Сохранить данные</>
+              </Button>
+              <Button
+                clickHandler={() => {
+                  navigate(-1);
+                }}
+                colorClass="btn-primary"
+                type="button"
+                disabled={false}
+              >
+                <>Назад</>
+              </Button>
+
+              {legal_entity_id && (
                 <>
-                  <Button
-                    clickHandler={() => {
-                      props.setInfoStringForDelete(
-                        "контрагента " + requisites.name
-                      );
-                      props.setId(legal_entity_id);
-                      navigate("./delete/");
-                    }}
-                    colorClass="btn-danger"
-                    type="button"
-                    disabled={false}
-                  >
-                    <>УДАЛИТЬ ЗАПИСЬ О КОНТРАГЕНТЕ</>
-                  </Button>
+                  <div className="form-check form-switch form-check-reverse pb-2">
+                    <input
+                      className="form-check-input "
+                      type="checkbox"
+                      id="DELETE"
+                      name="DELETE"
+                      onChange={() => {
+                        setDELETE(!DELETE);
+                      }}
+                    />
+                    <label className="form-check-label" htmlFor="DELETE">
+                      Удалить данные о контрагенте
+                    </label>
+                  </div>
+                  {DELETE && (
+                    <>
+                      <Button
+                        clickHandler={() => {
+                          props.setInfoStringForDelete(
+                            "контрагента " + requisites.name
+                          );
+                          props.setId(legal_entity_id);
+                          navigate("./delete/");
+                        }}
+                        colorClass="btn-danger"
+                        type="button"
+                        disabled={false}
+                      >
+                        <>УДАЛИТЬ ЗАПИСЬ О КОНТРАГЕНТЕ</>
+                      </Button>
+                    </>
+                  )}
                 </>
               )}
             </>

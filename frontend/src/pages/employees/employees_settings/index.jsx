@@ -51,7 +51,7 @@ const EmployeesSettings = () => {
   {
     document.title = "Редактирование сотрудников Чистый Грузовик";
   }
-  if (isMobile) {
+
     return (
       <>
         {loading && (
@@ -129,79 +129,79 @@ const EmployeesSettings = () => {
         )}
       </>
     );
-  } else {
-    return (
-      <>
-        {loading && (
-          <p className="grid h-screen place-items-center text-center">
-            Загрузка списка сотрудников...
-          </p>
-        )}
-        {!loading && (
-          <>
-           <div className="mt-4">
-            <div className="row">
-                <p className="text-text-color fs-5">Сотрудники:</p>
-                <Button
-                  clickHandler={()=>navigate("/employees/add")}
-                  colorClass="btn-success"
-                  type="button"
-                  disabled={false}
-                >
-                  <>Добавить сотрудника</>
-                </Button>
-            </div>
+  // } else {
+  //   return (
+  //     <>
+  //       {loading && (
+  //         <p className="grid h-screen place-items-center text-center">
+  //           Загрузка списка сотрудников...
+  //         </p>
+  //       )}
+  //       {!loading && (
+  //         <>
+  //          <div className="mt-4">
+  //           <div className="row">
+  //               <p className="text-text-color fs-5">Сотрудники:</p>
+  //               <Button
+  //                 clickHandler={()=>navigate("/employees/add")}
+  //                 colorClass="btn-success"
+  //                 type="button"
+  //                 disabled={false}
+  //               >
+  //                 <>Добавить сотрудника</>
+  //               </Button>
+  //           </div>
 
-            <div className="table-responsive-sm">
-              <table className="table table-hover  text-text-color fs-7 ">
-                <thead>
-                  <tr>
-                    <th scope="row" className="text-text-color ">
-                      Имя
-                    </th>
-                    <th scope="row" className="text-text-color ">
-                      Короткое имя
-                    </th>
-                    <th scope="row" className="text-text-color ">
-                      Должность
-                    </th>
-                    <th scope="row" className="text-text-color">
-                      Телефон
-                    </th>
-                    <th scope="row" className="text-text-color ">
-                      Пользователь CRM
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="">
-                  {employees?.map((employer) => (
-                    <tr
-                      className="align-middle"
-                      key={employer?.id}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => navigate("/employees/" + employer?.id)}
-                    >
-                      <td>{employer?.name}</td>
-                      <td>{employer?.short_name}</td>
-                      <td className="">{employer?.position_verbose}</td>
-                      <td className="">
-                        {employer?.phone
-                          ? prettyPhone(employer.phone)
-                          : "Не указан"}
-                      </td>
-                      <td className="">{employer?.user_name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Paginator total_page={total_page} current_page={current_page} OnChangePage={ChangePage}/>
-            </div>
-          </>
-        )}
-      </>
-    );
-  }
+  //           <div className="table-responsive-sm">
+  //             <table className="table table-hover  text-text-color fs-7 ">
+  //               <thead>
+  //                 <tr>
+  //                   <th scope="row" className="text-text-color ">
+  //                     Имя
+  //                   </th>
+  //                   <th scope="row" className="text-text-color ">
+  //                     Короткое имя
+  //                   </th>
+  //                   <th scope="row" className="text-text-color ">
+  //                     Должность
+  //                   </th>
+  //                   <th scope="row" className="text-text-color">
+  //                     Телефон
+  //                   </th>
+  //                   <th scope="row" className="text-text-color ">
+  //                     Пользователь CRM
+  //                   </th>
+  //                 </tr>
+  //               </thead>
+  //               <tbody className="">
+  //                 {employees?.map((employer) => (
+  //                   <tr
+  //                     className="align-middle"
+  //                     key={employer?.id}
+  //                     style={{ cursor: "pointer" }}
+  //                     onClick={() => navigate("/employees/" + employer?.id)}
+  //                   >
+  //                     <td>{employer?.name}</td>
+  //                     <td>{employer?.short_name}</td>
+  //                     <td className="">{employer?.position_verbose}</td>
+  //                     <td className="">
+  //                       {employer?.phone
+  //                         ? prettyPhone(employer.phone)
+  //                         : "Не указан"}
+  //                     </td>
+  //                     <td className="">{employer?.user_name}</td>
+  //                   </tr>
+  //                 ))}
+  //               </tbody>
+  //             </table>
+  //           </div>
+  //           <Paginator total_page={total_page} current_page={current_page} OnChangePage={ChangePage}/>
+  //           </div>
+  //         </>
+  //       )}
+  //     </>
+  //   );
+  // }
 };
 
 export default EmployeesSettings;

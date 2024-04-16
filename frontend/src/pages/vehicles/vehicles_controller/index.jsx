@@ -10,6 +10,10 @@ import DeletePage from "../../DELETE_page";
 import VehicleClassSettings from "../vehicles_class_settings";
 import VehicleClassAdd from "../vehicles_class_add";
 import VehicleClassEdit from "../vehicle_class_edit";
+import VehiclesList from "../vehicles_list";
+import VehicleListSettings from "../vehicle_list_settings";
+import VehicleAdd from "../vehicle_add";
+import VehicleModelsSettings from "../vihicle_models_settings";
 
 function VehiclesController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -85,6 +89,57 @@ function VehiclesController() {
                     setInfoStringForDelete={set_info_string_for_delete}
                     setId={set_id}
                   />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/"
+              element={
+                <>
+                  <VehicleListSettings />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/models/"
+              element={
+                <>
+                  <VehicleModelsSettings />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/:vehicle_id/"
+              element={
+                <>
+                  <VehicleAdd
+                    setInfoStringForDelete={set_info_string_for_delete}
+                    setId={set_id}
+                  />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/add/"
+              element={
+                <>
+                  <VehicleAdd />
                 </>
               }
             />

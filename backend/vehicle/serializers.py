@@ -134,7 +134,7 @@ class VehicleSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        filter = Q(name=attrs['plate_number'])
+        filter = Q(plate_number=attrs['plate_number'])
         response = (
             {
                 'Невозможно изменить на гос. номер': f"Гос. номер \"{attrs['plate_number']}\" уже используется"
@@ -148,7 +148,7 @@ class VehicleSerializer(serializers.ModelSerializer):
         if self.context['request'].method == 'PATCH':
             filter &= ~Q(pk=self.instance.pk)
 
-        if VehicleOrTrailerClass.objects.filter(filter).exists():
+        if Vehicle.objects.filter(filter).exists():
             raise serializers.ValidationError(response)
         return attrs
 
@@ -170,10 +170,11 @@ class VehicleSerializer(serializers.ModelSerializer):
         del validated_data['owner_id']
         validated_data['vehicle_type'] = validated_data['vehicle_type_id']
         del validated_data['vehicle_type_id']
-        plate_number = normalize_plate_number(validated_data.pop('plate_number'))
         
-        instance.update(
-            **validated_data, plate_number=plate_number
-        )
+        for attr, value in validated_data.items():
+            if (attr == 'plate_number'):
+                value = normalize_plate_number(value)
+            setattr(instance, attr, value)
+
         instance.save()
         return instance

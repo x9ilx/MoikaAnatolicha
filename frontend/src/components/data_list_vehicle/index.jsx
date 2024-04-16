@@ -108,6 +108,7 @@ const DataListVehicle = (props) => {
     props.setVehicleListFinal(newState);
     setShowVehicleList(true);
     setCreateVehicle(false);
+    props.onShowAdd(false)
   };
 
   document.addEventListener("mousedown", closeOpenMenus);
@@ -179,6 +180,7 @@ const DataListVehicle = (props) => {
                         clickHandler={() => {
                           setShowVehicleList(false);
                           setCreateVehicle(true);
+                          props.onShowAdd(true)
                         }}
                         colorClass="btn-success btn-sm"
                         disabled={false}
@@ -208,7 +210,6 @@ const DataListVehicle = (props) => {
                     <div
                       key={"vehicleListFinal3332" + vehicle.plate_number + index}
                       className="col-10"
-                      style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
                     >
                       <b key={"vehicleListFinal554" + vehicle.plate_number + index}>{vehicle?.plate_number}:</b>{" "}
                       {vehicle?.vehicle_class_name} {vehicle?.vehicle_model} (
@@ -300,6 +301,7 @@ const DataListVehicle = (props) => {
             onCancel={() => {
               setShowVehicleList(true);
               setCreateVehicle(false);
+              props.onShowAdd(false)
             }}
           />
         </>
@@ -313,6 +315,7 @@ DataListVehicle.propTypes = {
   setVehicleListFinal: PropTypes.func.isRequired,
   ownerId: PropTypes.number.isRequired,
   ownerName: PropTypes.string.isRequired,
+  onShowAdd: PropTypes.func,
 };
 
 export default DataListVehicle;

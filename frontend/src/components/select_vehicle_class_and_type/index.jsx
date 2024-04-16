@@ -5,15 +5,39 @@ import api from "../../api";
 
 const SelectVehicleClassAndType = (props) => {
   const [loading, setLoading] = React.useState(true);
-  const [currentClass, setCurrentClass] = React.useState(-1);
+  const [fisrtLoad, setFisrtLoad] = React.useState(true);
+  const [currentClass, setCurrentClass] = React.useState(
+    props.currentVehicleClass
+  );
   const [currentClassIndex, setCurrentClassIndex] = React.useState(-1);
-  const [currentType, setCurrentType] = React.useState(-1);
+  const [currentType, setCurrentType] = React.useState(
+    props.currentVehicleType
+  );
   const [currentTypeIndex, setCurrentTypeIndex] = React.useState(-1);
-  const [currentClassName, setCurrentClassName] = React.useState("");
-  const [currentTypeName, setCurrentTypeName] = React.useState("");
+  const [currentClassName, setCurrentClassName] = React.useState(
+    props.currentVehicleClassName
+  );
+  const [currentTypeName, setCurrentTypeName] = React.useState(
+    props.currentVehicleTypeName
+  );
 
   const [vehicleClasses, setVehicleClasses] = React.useState([]);
   const [vehicleTypes, setVehicleTypes] = React.useState([]);
+
+  const setVehicleClassIndexAndVehicleTypeIndex = React.useCallback(() => {
+    if (props.currentVehicleClass && vehicleClasses.length > 0) {
+      const index = vehicleClasses.findIndex(v_class => v_class.id === props.currentVehicleClass);
+      // setCurrentClassName(vehicleClasses[index].name)
+      setCurrentClass(vehicleClasses[index].id)
+      props.onSelectClass(vehicleClasses[index].id, vehicleClasses[index].name);
+      setCurrentClassIndex(index)
+    }
+    setFisrtLoad(false);
+  }, [props.currentVehicleClass, vehicleClasses]);
+
+  React.useEffect(() => {
+    setVehicleClassIndexAndVehicleTypeIndex();
+  }, [vehicleClasses, setVehicleClassIndexAndVehicleTypeIndex]);
 
   const getVehicleClassesAndTypes = React.useCallback(() => {
     setLoading(true);
@@ -21,7 +45,7 @@ const SelectVehicleClassAndType = (props) => {
       .getVehicleClasses(1, 999999, "")
       .then((res) => {
         setVehicleClasses(res.results);
-        setVehicleTypes(res.results[0]?.vehicle_types)
+        setVehicleTypes(res.results[0]?.vehicle_types);
         setCurrentClassIndex(0);
         setCurrentTypeIndex(0);
         setCurrentClass(res.results[0]?.id);
@@ -49,28 +73,19 @@ const SelectVehicleClassAndType = (props) => {
       setCurrentType(classes[0]?.id);
       setCurrentTypeName(classes[0]?.name);
       setCurrentTypeIndex(0);
-      props.onSelectType(
-        classes[0]?.id,
-        classes[0]?.name
-      );
+      props.onSelectType(classes[0]?.id, classes[0]?.name);
     }
   }, [currentClassIndex, vehicleClasses]);
 
-  
   React.useEffect(() => {
-    console.log("select_class")
     getVehicleTypesByClass();
   }, [currentClassIndex, getVehicleTypesByClass]);
 
   React.useEffect(() => {
-    console.log("selectType")
-    props.onSelectType(
-      currentType,
-      currentTypeName,
-    );
+    props.onSelectType(currentType, currentTypeName);
   }, [currentTypeName, currentType]);
 
-  if (loading) {
+  if (loading || fisrtLoad) {
     return (
       <>
         <p className="grid h-screen place-items-center text-center">
@@ -88,7 +103,7 @@ const SelectVehicleClassAndType = (props) => {
           className="form-select text p-3"
           id="currentClass"
           placeholder="currentClass"
-          defaultValue={currentClassIndex}
+          value={currentClass}
           onChange={(e) => {
             setCurrentClass(e.target.value);
             setCurrentClassIndex(e.target.selectedIndex);
@@ -116,14 +131,14 @@ const SelectVehicleClassAndType = (props) => {
               className="form-select text p-3"
               id="currentType"
               placeholder="currentType"
-              defaultValue={currentTypeIndex}
+              value={currentType}
               onChange={(e) => {
                 props.onSelectType(
                   e.target.value,
                   e.target[e.target.selectedIndex].text
                 );
-                setCurrentTypeIndex(e.target.selectedIndex);
                 setCurrentType(e.target.value);
+                setCurrentTypeIndex(e.target.selectedIndex);
                 setCurrentTypeName(e.target[e.target.selectedIndex].text);
               }}
               name="currentType"
@@ -142,6 +157,10 @@ const SelectVehicleClassAndType = (props) => {
 };
 
 SelectVehicleClassAndType.propTypes = {
+  currentVehicleClass: PropTypes.number,
+  currentVehicleClassName: PropTypes.string,
+  currentVehicleType: PropTypes.number,
+  currentVehicleTypeName: PropTypes.string,
   onSelectClass: PropTypes.func.isRequired,
   onSelectType: PropTypes.func.isRequired,
 };

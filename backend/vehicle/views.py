@@ -1,7 +1,7 @@
 import django_filters.rest_framework as django_filters
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status, viewsets
+from rest_framework import filters, status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -11,6 +11,16 @@ from vehicle.filters import (VehicleOrTrailerClassSearchFilter)
 from .models import Vehicle, VehicleModel, VehicleOrTrailerClass, VehicleOrTrailerType
 from .serializers import (VehicleModelSerializer, VehicleOrTrailerClassSerializer,
                           VehicleOrTrailerTypeSerializer, VehicleSerializer)
+
+
+class VehicleModelDelete(viewsets.GenericViewSet, mixins.DestroyModelMixin):
+    def destroy(self, request, *args, **kwargs):
+        vehicle_model = get_object_or_404(VehicleModel, pk=kwargs['pk'])
+        vehicle_model.delete()
+        return Response(
+            {'result': 'Модель успешно удалена'},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
@@ -104,6 +114,8 @@ class VehicleViewSet(viewsets.ModelViewSet):
 
         if search:
             filters &= Q(plate_number__istartswith=search)
+            filters |= Q(owner__name__icontains=search)
+            filters |= Q(owner__inn__istartswith=search)
 
         return (
             queryset.filter(filters)

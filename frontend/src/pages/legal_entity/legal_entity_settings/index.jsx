@@ -11,7 +11,7 @@ const LegalEntitySettings = () => {
   const navigate = useNavigate();
 
   function updateRef(e) {
-    refList.current.setSearch(e.target.value);
+    refList.current.setSearch(e.target.value); 
   }
   
   {

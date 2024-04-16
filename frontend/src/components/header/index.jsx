@@ -12,7 +12,7 @@ import { HiDocumentText } from "react-icons/hi";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import { IoLogOutSharp } from "react-icons/io5";
 import { IoIosListBox } from "react-icons/io";
-import { FaCarSide } from "react-icons/fa6";
+import { GiCarDoor } from "react-icons/gi";
 import { GiCarKey } from "react-icons/gi";
 
 import { EmployerPosition } from "../../constants";
@@ -136,6 +136,20 @@ const Header = () => {
                         />
                         Классы ТС/ПЦ/ППЦ
                       </a>
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={() => {
+                          navigate("/vehicles/models/");
+                        }}
+                      >
+                        <GiCarDoor
+                          size={14}
+                          className="me-2 text-text-color"
+                        />
+                        Модели ТС/ПЦ/ППЦ
+                      </a>
+                      
                       <a
                         className="dropdown-item"
                         href="#"

@@ -5,7 +5,7 @@ from company.views import CompanyRequisitesViewSet
 from counterparty.views import LegalEntityViewSet
 from employer.views import CHGUserViewSet, EmployerViewSet
 from service.views import ServiceViewSet
-from vehicle.views import (VehicleOrTrailerClassViewSet,
+from vehicle.views import (VehicleModelDelete, VehicleOrTrailerClassViewSet,
                            VehicleOrTrailerTypeViewSet, VehicleViewSet)
 
 app_name = 'api'
@@ -14,6 +14,9 @@ v1_router = routers.DefaultRouter()
 v1_router.register('users', CHGUserViewSet, basename='User')
 v1_router.register(
     'company', CompanyRequisitesViewSet, basename='CompanyRequisites'
+)
+v1_router.register(
+    'vehicle_models/delete', VehicleModelDelete, basename='VehicleModel'
 )
 v1_router.register(
     'vehicle_class',

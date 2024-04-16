@@ -1,0 +1,259 @@
+import React from "react";
+import { toast } from "react-toastify";
+import PropTypes from "prop-types";
+import { useNavigate, useParams } from "react-router-dom";
+import Button from "../../../components/button";
+import CreateNewVehicle from "../../../components/create_new_vehicle";
+import api from "../../../api";
+
+const VehicleAdd = (props) => {
+  const ref = React.useRef(null);
+
+  const [loading, setLoading] = React.useState(false);
+  const [saveAccept, setSaveAccept] = React.useState(false);
+  const [DELETE, setDELETE] = React.useState(false);
+
+  const [plateNumber, setPlateNumber] = React.useState("");
+  const [vehicleModel, setVehicleModel] = React.useState("");
+  const [owner, setOwner] = React.useState(-1);
+  const [ownerName, setOwnerName] = React.useState("");
+  const [vehicleType, setvehicleType] = React.useState(-1);
+  const [vehicleTypeName, setvehicleTypeName] = React.useState("");
+  const [vehicleClass, setvehicleClass] = React.useState("");
+  const [vehicleClassName, setvehicleClassName] = React.useState("");
+
+  const navigate = useNavigate();
+  const { vehicle_id } = useParams();
+
+  const getVehicle = React.useCallback(() => {
+    setLoading(true);
+    api
+      .getVehicle(vehicle_id)
+      .then((res) => {
+        setPlateNumber(res.plate_number);
+        setVehicleModel(res.vehicle_model);
+        setOwner(res.owner?.id);
+        setvehicleType(res.vehicle_type.id);
+        setOwnerName(res.owner?.name);
+        setvehicleTypeName(res.vehicle_type.name);
+        setvehicleClass(res.vehicle_type.vehicle_class);
+        setvehicleClassName(res.vehicle_type.vehicle_class_name);
+        setLoading(false);
+      })
+      .catch((err) => {
+        const errors = Object.values(err);
+        if (errors) {
+          toast.error(errors.join(", "));
+        }
+      });
+  }, []);
+
+  const setVehicleInfo = (vehicle) => {
+    console.log("setVehicleInfo");
+    setPlateNumber(vehicle.plate_number);
+    setVehicleModel(vehicle.vehicle_model);
+    setOwner(vehicle.owner);
+    setvehicleType(vehicle.vehicle_type);
+    setOwnerName(vehicle.owner_name);
+    setvehicleTypeName(vehicle.vehicle_type_name);
+    setvehicleClass(vehicle.vehicle_class);
+    setvehicleClassName(vehicle.vehicle_class_name);
+    setSaveAccept(true);
+  };
+
+  const getRefVehicleInfo = () => {
+    console.log("getRefVehicleInfo");
+    ref.current.preCreateVehicle();
+  };
+
+  const CreateVehicle = React.useCallback(() => {
+    const data = {
+      plate_number: plateNumber,
+      vehicle_model: vehicleModel,
+      owner_id: owner,
+      vehicle_type_id: vehicleType,
+    };
+    api
+      .createVehicle(data)
+      .then((data) => {
+        toast.success("ТС/ПЦ/ППЦ " + data.plate_number + " успешно добавлено");
+        navigate(-1);
+      })
+      .catch((err) => {
+        setSaveAccept(false);
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+      });
+  }, []);
+
+  const UpdateVehicle = React.useCallback(() => {
+    const data = {
+      plate_number: plateNumber,
+      vehicle_model: vehicleModel,
+      owner_id: owner,
+      vehicle_type_id: vehicleType,
+    };
+    api
+      .updateVehicle(vehicle_id, data)
+      .then((res) => {
+        toast.success("Данные ТС/ПЦ/ППЦ " + res.plate_number + " обновлены");
+        navigate(-1);
+      })
+      .catch((err) => {
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+        setSaveAccept(false);
+      });
+  }, [vehicle_id, plateNumber, vehicleModel, owner, vehicleType, navigate]);
+
+  const validate = React.useCallback(() => {
+    let ok = true;
+    if (!plateNumber || plateNumber.length === 0) {
+      toast.error("Необходимо указать гос. номер");
+      ok = false;
+    }
+    if ( plateNumber.length < 8) {
+        toast.error("Гос. номер должен содержать не меньше 8 символов");
+        ok = false;
+      }
+    if (ok) {
+      return true;
+    }
+
+    setSaveAccept(false);
+    return false;
+  }, [plateNumber, vehicleModel, owner]);
+
+  React.useEffect(() => {
+    if (saveAccept) {
+      if (validate()) {
+        if (vehicle_id > 0) {
+          UpdateVehicle();
+        } else {
+          CreateVehicle();
+        }
+      }
+    }
+  }, [saveAccept, vehicle_id, UpdateVehicle, CreateVehicle, validate]);
+
+  React.useEffect(() => {
+    if (vehicle_id) {
+      getVehicle();
+    }
+  }, [vehicle_id, getVehicle]);
+
+  return (
+    <>
+      {loading && (
+        <p className="grid h-screen place-items-center text-center">
+          Загрузка...
+        </p>
+      )}
+      {!loading && (
+        <>
+          {vehicle_id ? (
+            <p className="text-text-color fs-5">
+              Редактирование данных ТС/ПЦ/ППЦ
+            </p>
+          ) : (
+            <p className="text-text-color fs-5">Добавление нового ТС/ПЦ/ППЦ</p>
+          )}
+          <hr></hr>
+          <form
+            autoComplete="new-password"
+            onSubmit={(e) => {
+              e.preventDefault();
+              {
+                vehicle_id ? UpdateVehicle() : CreateVehicle();
+              }
+            }}
+          >
+            <CreateNewVehicle
+              ref={ref}
+              currentPlateNumber={plateNumber}
+              editPlateNumber={true}
+              currentVehicleClass={vehicleClass}
+              currentVehicleClassName={vehicleClassName}
+              currentVehicleModel={vehicleModel}
+              currentVehicleType={vehicleType}
+              currentVehicleTypeName={vehicleTypeName}
+              editOwner={true}
+              ownerName={ownerName}
+              ownerID={owner}
+              onCreate={setVehicleInfo}
+              onCancel={() => {}}
+              hideButtons={true}
+            />
+
+            <Button
+              clickHandler={() => {
+                getRefVehicleInfo();
+              }}
+              colorClass="btn-success"
+              type="button"
+              disabled={false}
+            >
+              <>
+                {vehicle_id
+                  ? "Сохранить ТС/ПЦ/ППЦ"
+                  : "Добавить новое ТС/ПЦ/ППЦ"}
+              </>
+            </Button>
+            <Button
+              clickHandler={() => {
+                navigate(-1);
+              }}
+              colorClass="btn-primary"
+              type="button"
+              disabled={false}
+            >
+              <>Назад</>
+            </Button>
+
+            {vehicle_id && (
+              <>
+                <div className="form-check form-switch form-check-reverse pb-2">
+                  <input
+                    className="form-check-input "
+                    type="checkbox"
+                    id="DELETE"
+                    name="DELETE"
+                    onChange={() => {
+                      setDELETE(!DELETE);
+                    }}
+                  />
+                  <label className="form-check-label" htmlFor="DELETE">
+                    Удалить данные о ТС/ПЦ/ППЦ
+                  </label>
+                </div>
+                {DELETE && (
+                  <>
+                    <Button
+                      clickHandler={() => {
+                        props.setInfoStringForDelete(
+                          "ТС/ПЦ/ППЦ  " + plateNumber
+                        );
+                        props.setId(vehicle_id);
+                        navigate("./delete/");
+                      }}
+                      colorClass="btn-danger"
+                      type="button"
+                      disabled={false}
+                    >
+                      <>УДАЛИТЬ ЗАПИСЬ О ТС/ПЦ/ППЦ</>
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          </form>
+        </>
+      )}
+    </>
+  );
+};
+
+VehicleAdd.propTypes = {
+  setInfoStringForDelete: PropTypes.func,
+  setId: PropTypes.func,
+};
+
+export default VehicleAdd;

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import api from "../../api";
 
 const VehicleModelPicker = (props) => {
-  const [currentModel, setCurrentModel] = React.useState("");
+  const [currentModel, setCurrentModel] = React.useState(props.currentVehicleModel);
   const [showList, setShowList] = React.useState(false);
   const [vehicleModelsList, setVehicleModelsList] = React.useState([]);
 
@@ -111,6 +111,7 @@ const VehicleModelPicker = (props) => {
 
 VehicleModelPicker.propTypes = {
   setVehicleModelValue: PropTypes.func.isRequired,
+  currentVehicleModel: PropTypes.string
 };
 
 export default VehicleModelPicker;
