@@ -38,13 +38,13 @@ const DataListVehicle = (props) => {
   const markDelete = (index, mark) => {
     let newState = [...vehicleListFinal];
     newState[index].to_be_removed = mark;
-    setVehicleListFinal(newState);
+    props.setVehicleListFinal(newState);
   };
 
   const cancelAddNew = (index) => {
     const copyValues = [...vehicleListFinal];
     copyValues.splice(index, 1);
-    setVehicleListFinal(copyValues);
+    props.setVehicleListFinal(copyValues);
   };
 
   const getVehicles = React.useCallback(
@@ -135,7 +135,7 @@ const DataListVehicle = (props) => {
                   className="shadow p-2 m-0 vehicle_datalist_container"
                 >
                   <div
-                  key={"vehisdfsdfasd2q3423cleList"}
+                    key="vehisdfsdfasd2q3423cleList"
                     id="vehicleelement"
                     className="list-group vehicle_datalist_listgroup"
                   >
@@ -241,8 +241,9 @@ const DataListVehicle = (props) => {
                           )}
                           {vehicle.to_be_removed && (
                             <>
-                              key={"vehicleListFinjhjjal" + vehicle.plate_number + index}
+                             
                               <div
+                                key={"vehicleListFinjhjjal" + vehicle.plate_number + index}
                                 className={`col-2 ${
                                   isMobile ? "text-center" : "text-end"
                                 }`}

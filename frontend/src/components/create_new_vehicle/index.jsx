@@ -25,6 +25,7 @@ const CreateNewVehicle = (props) => {
   const selectVehicleType = (id, name) => {
     setNewVehicleType(id);
     setNewVehicleTypeName(name);
+
   }
   
 

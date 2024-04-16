@@ -12,6 +12,8 @@ import { HiDocumentText } from "react-icons/hi";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import { IoLogOutSharp } from "react-icons/io5";
 import { IoIosListBox } from "react-icons/io";
+import { FaCarSide } from "react-icons/fa6";
+import { GiCarKey } from "react-icons/gi";
 
 import { EmployerPosition } from "../../constants";
 import { useNavigate } from "react-router-dom";
@@ -134,6 +136,20 @@ const Header = () => {
                         />
                         Классы ТС/ПЦ/ППЦ
                       </a>
+                      <a
+                        className="dropdown-item"
+                        href="#"
+                        onClick={() => {
+                          navigate("/vehicles/");
+                        }}
+                      >
+                        <GiCarKey
+                          size={14}
+                          className="me-2 text-text-color"
+                        />
+                         ТС/ПЦ/ППЦ
+                      </a>
+                     
                       <div className="dropdown-divider"></div>
                       <a className="dropdown-item" href="#">
                         <HiDocumentReport

@@ -30,7 +30,7 @@ const LegalEntitySettings = () => {
               <>Добавить контрагента</>
             </Button>
             <form className="d-flex mb-3" role="search">
-              <input className="form-control me-2" type="search" placeholder="Поиск по названию, ИНН" aria-label="Search" onChange={(e) => {updateRef(e)}}/>
+              <input className="form-control me-2" type="search" placeholder="Поиск по названию, ИНН, гос. номеру" aria-label="Search" onChange={(e) => {updateRef(e)}}/>
             </form>
               <LegalEntityList ref={refList}/>
             </div>

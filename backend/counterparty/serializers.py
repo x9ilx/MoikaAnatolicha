@@ -40,21 +40,6 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
             'to_be_added',
         ]
 
-    def validate_owner(self, value):
-        print(value)
-        return value
-
-    def validate(self, attrs):
-        print(attrs)
-        return attrs
-
-    def create(self, validated_data):
-        print(validated_data)
-        return None
-
-    def update(self, instance, validated_data):
-        print(validated_data)
-        return instance
 
 class LegalEntitySerializer(serializers.ModelSerializer):
     vehicles = VehicleMiniSerializer(many=True)

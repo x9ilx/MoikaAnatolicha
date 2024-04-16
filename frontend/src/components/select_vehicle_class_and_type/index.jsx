@@ -54,11 +54,21 @@ const SelectVehicleClassAndType = (props) => {
         classes[0]?.name
       );
     }
-  }, [props, currentClassIndex, vehicleClasses]);
+  }, [currentClassIndex, vehicleClasses]);
 
+  
   React.useEffect(() => {
+    console.log("select_class")
     getVehicleTypesByClass();
   }, [currentClassIndex, getVehicleTypesByClass]);
+
+  React.useEffect(() => {
+    console.log("selectType")
+    props.onSelectType(
+      currentType,
+      currentTypeName,
+    );
+  }, [currentTypeName, currentType]);
 
   if (loading) {
     return (
@@ -108,13 +118,13 @@ const SelectVehicleClassAndType = (props) => {
               placeholder="currentType"
               defaultValue={currentTypeIndex}
               onChange={(e) => {
-                setCurrentType(e.target.value);
-                setCurrentTypeName(e.target[e.target.selectedIndex].text);
-                setCurrentTypeIndex(e.target.selectedIndex);
                 props.onSelectType(
                   e.target.value,
                   e.target[e.target.selectedIndex].text
                 );
+                setCurrentTypeIndex(e.target.selectedIndex);
+                setCurrentType(e.target.value);
+                setCurrentTypeName(e.target[e.target.selectedIndex].text);
               }}
               name="currentType"
             >
