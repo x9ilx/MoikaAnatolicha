@@ -372,7 +372,7 @@ setRequisites(requisites) {
     }).then(this.checkResponse);
   }
 
-  createVehicle(requisites) {
+  createVehicle(vehicle) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/vehicles/`, {
       method: "POST",
@@ -381,7 +381,7 @@ setRequisites(requisites) {
         authorization: `Token ${token}`,
       },
       body: JSON.stringify({
-        ...requisites,
+        ...vehicle,
       })
     }).then(this.checkResponse);
   }

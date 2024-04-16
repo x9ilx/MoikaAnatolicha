@@ -49,7 +49,6 @@ const VehicleAdd = (props) => {
   }, []);
 
   const setVehicleInfo = (vehicle) => {
-    console.log("setVehicleInfo");
     setPlateNumber(vehicle.plate_number);
     setVehicleModel(vehicle.vehicle_model);
     setOwner(vehicle.owner);
@@ -62,12 +61,11 @@ const VehicleAdd = (props) => {
   };
 
   const getRefVehicleInfo = () => {
-    console.log("getRefVehicleInfo");
     ref.current.preCreateVehicle();
   };
 
   const CreateVehicle = React.useCallback(() => {
-    const data = {
+    let data = {
       plate_number: plateNumber,
       vehicle_model: vehicleModel,
       owner_id: owner,
@@ -75,15 +73,15 @@ const VehicleAdd = (props) => {
     };
     api
       .createVehicle(data)
-      .then((data) => {
-        toast.success("ТС/ПЦ/ППЦ " + data.plate_number + " успешно добавлено");
+      .then((res) => {
+        toast.success("ТС/ПЦ/ППЦ " + res.plate_number + " успешно добавлено");
         navigate(-1);
       })
       .catch((err) => {
         setSaveAccept(false);
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
       });
-  }, []);
+  }, [plateNumber, vehicleModel, owner, vehicleType, navigate]);
 
   const UpdateVehicle = React.useCallback(() => {
     const data = {
@@ -104,35 +102,16 @@ const VehicleAdd = (props) => {
       });
   }, [vehicle_id, plateNumber, vehicleModel, owner, vehicleType, navigate]);
 
-  const validate = React.useCallback(() => {
-    let ok = true;
-    if (!plateNumber || plateNumber.length === 0) {
-      toast.error("Необходимо указать гос. номер");
-      ok = false;
-    }
-    if ( plateNumber.length < 8) {
-        toast.error("Гос. номер должен содержать не меньше 8 символов");
-        ok = false;
-      }
-    if (ok) {
-      return true;
-    }
-
-    setSaveAccept(false);
-    return false;
-  }, [plateNumber, vehicleModel, owner]);
 
   React.useEffect(() => {
     if (saveAccept) {
-      if (validate()) {
         if (vehicle_id > 0) {
           UpdateVehicle();
         } else {
           CreateVehicle();
         }
-      }
     }
-  }, [saveAccept, vehicle_id, UpdateVehicle, CreateVehicle, validate]);
+  }, [saveAccept, vehicle_id, UpdateVehicle, CreateVehicle]);
 
   React.useEffect(() => {
     if (vehicle_id) {

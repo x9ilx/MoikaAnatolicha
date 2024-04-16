@@ -30,9 +30,6 @@ const VehicleOwnerPicker = (props) => {
   };
 
   const vehicleOwnerChoise = (id, name) => {
-    if (!id || id <= 0) {
-        toast.error('Необходимо выбрать владельца из списка');
-    }
     props.setVehicleOwnerValue(id, name);
   }
 

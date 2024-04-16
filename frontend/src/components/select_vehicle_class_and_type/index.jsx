@@ -27,7 +27,6 @@ const SelectVehicleClassAndType = (props) => {
   const setVehicleClassIndexAndVehicleTypeIndex = React.useCallback(() => {
     if (props.currentVehicleClass && vehicleClasses.length > 0) {
       const index = vehicleClasses.findIndex(v_class => v_class.id === props.currentVehicleClass);
-      // setCurrentClassName(vehicleClasses[index].name)
       setCurrentClass(vehicleClasses[index].id)
       props.onSelectClass(vehicleClasses[index].id, vehicleClasses[index].name);
       setCurrentClassIndex(index)

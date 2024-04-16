@@ -53,6 +53,18 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       toast.error("Необходимо указать модель");
       return;
     }
+    if (!newVehicleOwner || newVehicleOwner <= 0) {
+      toast.error('Необходимо выбрать владельца из списка');
+      return;
+    }
+    if (!newVehiclePlateNUmber || newVehiclePlateNUmber.length === 0) {
+      toast.error("Необходимо указать гос. номер");
+      return;
+    }
+    if (newVehiclePlateNUmber.length < 8) {
+      toast.error("Гос. номер должен содержать не меньше 8 символов");
+      return;
+    }
     const vehicle = {
       id: -1,
       plate_number: newVehiclePlateNUmber,
