@@ -531,9 +531,45 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  createService(data) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/services/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    }).then(this.checkResponse);
+  }
 
-
-
+  updateService(id, data) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/services/${id}/`, {
+      method: "PATCH",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    }).then(this.checkResponse);
+  }
+  
+  deleteService(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/services/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
 
 
 

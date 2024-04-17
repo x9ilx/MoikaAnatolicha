@@ -42,12 +42,9 @@ class ServiceVehicleType(models.Model):
         on_delete=models.CASCADE,
         related_name='service_vehicle_types',
     )
-    cost = models.DecimalField('Стоимость', max_digits=5, decimal_places=1)
-    employer_salary = models.DecimalField(
-        'Оплата сотруднику', max_digits=5, decimal_places=1
-    )
-    percentage_for_washer = models.IntegerField("% мойщика")
-
+    cost = models.IntegerField('Стоимость')
+    employer_salary = models.IntegerField('Оплата сотруднику')
+    percentage_for_washer = models.IntegerField('% мойщика')
 
     class Meta:
         """Meta definition for Service."""

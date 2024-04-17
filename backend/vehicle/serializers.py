@@ -5,7 +5,8 @@ from core.string_utils import normalize_plate_number
 from counterparty.models import LegalEntity
 from counterparty.serializers import LegalEntitySerializer
 
-from .models import Vehicle, VehicleModel, VehicleOrTrailerClass, VehicleOrTrailerType
+from .models import (Vehicle, VehicleModel, VehicleOrTrailerClass,
+                     VehicleOrTrailerType)
 
 
 class VehicleModelSerializer(serializers.ModelSerializer):
@@ -118,9 +119,13 @@ class VehicleOrTrailerTypeSerializer(serializers.ModelSerializer):
 class VehicleSerializer(serializers.ModelSerializer):
     vehicle_type = VehicleOrTrailerTypeSerializer(read_only=True)
     owner = LegalEntitySerializer(read_only=True)
-    vehicle_type_id = serializers.PrimaryKeyRelatedField(queryset=VehicleOrTrailerType.objects.all(), write_only=True)
-    owner_id = serializers.PrimaryKeyRelatedField(queryset=LegalEntity.objects.all(), write_only=True)
-    
+    vehicle_type_id = serializers.PrimaryKeyRelatedField(
+        queryset=VehicleOrTrailerType.objects.all(), write_only=True
+    )
+    owner_id = serializers.PrimaryKeyRelatedField(
+        queryset=LegalEntity.objects.all(), write_only=True
+    )
+
     class Meta:
         model = Vehicle
         fields = [
@@ -157,8 +162,10 @@ class VehicleSerializer(serializers.ModelSerializer):
         del validated_data['owner_id']
         validated_data['vehicle_type'] = validated_data['vehicle_type_id']
         del validated_data['vehicle_type_id']
-        plate_number = normalize_plate_number(validated_data.pop('plate_number'))
-        
+        plate_number = normalize_plate_number(
+            validated_data.pop('plate_number')
+        )
+
         vehicle = Vehicle.objects.create(
             **validated_data, plate_number=plate_number
         )
@@ -170,9 +177,9 @@ class VehicleSerializer(serializers.ModelSerializer):
         del validated_data['owner_id']
         validated_data['vehicle_type'] = validated_data['vehicle_type_id']
         del validated_data['vehicle_type_id']
-        
+
         for attr, value in validated_data.items():
-            if (attr == 'plate_number'):
+            if attr == 'plate_number':
                 value = normalize_plate_number(value)
             setattr(instance, attr, value)
 

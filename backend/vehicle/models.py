@@ -15,7 +15,7 @@ class VehicleModel(models.Model):
 
     def __str__(self):
         """Unicode representation of VehicleOrTrailerClass."""
-        return self.name 
+        return self.name
 
 
 class VehicleOrTrailerClass(models.Model):

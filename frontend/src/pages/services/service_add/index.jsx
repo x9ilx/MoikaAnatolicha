@@ -18,22 +18,29 @@ const ServiceAdd = (props) => {
   const navigate = useNavigate();
   const { service_id } = useParams();
 
-  //   const UpdateService = () => {
-  //     const data = {
-  //       id: service_id,
-  //       name: name,
-  //       vehicle_types: vehicleTypes,
-  //     };
-  //     api
-  //       .updateService(data)
-  //       .then((data) => {
-  //         toast.success("Услуга " + data.name + " успешно обновлена");
-  //         window.location.reload();
-  //       })
-  //       .catch((err) => {
-  //         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
-  //       });
-  //   };
+  const UpdateService = (data) => {
+    api
+      .updateService(service_id, data)
+      .then((data) => {
+        toast.success("Услуга " + name + " успешно обновлена");
+        navigate("/services/")
+      })
+      .catch((err) => {
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+      });
+  };
+
+  const CreateService = (data) => {
+    api
+      .createService(data)
+      .then((data) => {
+        toast.success("Услуга " + name + " успешно создана");
+        navigate("/services/")
+      })
+      .catch((err) => {
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+      });
+  };
 
   const getVehileTypesAndVehicleClasses = React.useCallback(() => {
     api
@@ -118,7 +125,6 @@ const ServiceAdd = (props) => {
           percentage_for_washer: 0,
         },
       ]);
-
     }
     getVehileTypesAndVehicleClasses();
     setLoading(false);
@@ -143,18 +149,51 @@ const ServiceAdd = (props) => {
     // value = parseInt(value.replace(/^0+/, ""));
     value = Number(value).toString();
     if (max_value > 0) {
-        value = value > max_value ? max_value : value;
+      value = value > max_value ? max_value : value;
     }
     let vehicle_classes_and_types = vehicleClassesAndTypes.map((v_class) => ({
-        ...v_class,
-        vehicle_types: v_class.vehicle_types.map((v_type) => ({
-          ...v_type,
-          [name]: v_type.id === type_id ?  value: v_type[name],
-        })),
-      }));
-  
-      setVehicleClassesAndTypes(vehicle_classes_and_types);
-  }
+      ...v_class,
+      vehicle_types: v_class.vehicle_types.map((v_type) => ({
+        ...v_type,
+        [name]: v_type.id === type_id ? value : v_type[name],
+      })),
+    }));
+
+    setVehicleClassesAndTypes(vehicle_classes_and_types);
+  };
+
+  const serviceSaveUpdate = () => {
+    if (name.trim().length === 0) {
+      toast.error("Необходимо указать название услуги");
+      return;
+    }
+
+    let service_vehicle = [];
+
+    vehicleClassesAndTypes.map((v_class) =>
+      v_class.vehicle_types.map((v_type) =>
+        service_vehicle.push({
+          id: v_type.id,
+          include: v_type.include,
+          cost: v_type.cost,
+          employer_salary: v_type.employer_salary,
+          percentage_for_washer: v_type.percentage_for_washer,
+        })
+      )
+    );
+
+    let data = {
+      service_id: service_id,
+      service_name: name,
+      service_vehicle_types: service_vehicle,
+    };
+
+    if (service_id) {
+      UpdateService(data);
+    } else {
+      CreateService(data);
+    }
+  };
 
   if (loading) {
     return (
@@ -263,18 +302,21 @@ const ServiceAdd = (props) => {
                                     type="number"
                                     placeholder="name"
                                     onChange={(e) => {
-                                        setValue("cost", vehicle_type.id, e.target.value, 0);
+                                      setValue(
+                                        "cost",
+                                        vehicle_type.id,
+                                        e.target.value,
+                                        0
+                                      );
                                     }}
-                                    value={
-                                        vehicle_type.cost || 0
-                                    }
+                                    value={vehicle_type.cost || 0}
                                     name="name"
                                   />
                                   <label htmlFor="name">Стоимость услуги</label>
                                 </div>
                               </div>
                               <div className="col">
-                              <div className="form-floating mb-3">
+                                <div className="form-floating mb-3">
                                   <input
                                     required
                                     className="form-control text"
@@ -283,18 +325,23 @@ const ServiceAdd = (props) => {
                                     min={0}
                                     placeholder="name"
                                     onChange={(e) => {
-                                        setValue("employer_salary", vehicle_type.id, e.target.value, 0);
+                                      setValue(
+                                        "employer_salary",
+                                        vehicle_type.id,
+                                        e.target.value,
+                                        0
+                                      );
                                     }}
-                                    value={
-                                        vehicle_type.employer_salary || 0
-                                    }
+                                    value={vehicle_type.employer_salary || 0}
                                     name="name"
                                   />
-                                  <label htmlFor="name">Базовая стоимость услуги</label>
+                                  <label htmlFor="name">
+                                    Базовая стоимость услуги
+                                  </label>
                                 </div>
                               </div>
                               <div className="col">
-                              <div className="form-floating mb-3">
+                                <div className="form-floating mb-3">
                                   <input
                                     required
                                     className="form-control text"
@@ -304,10 +351,15 @@ const ServiceAdd = (props) => {
                                     max={100}
                                     placeholder="name"
                                     onChange={(e) => {
-                                        setValue("percentage_for_washer", vehicle_type.id, e.target.value, 100);
+                                      setValue(
+                                        "percentage_for_washer",
+                                        vehicle_type.id,
+                                        e.target.value,
+                                        100
+                                      );
                                     }}
                                     value={
-                                        vehicle_type.percentage_for_washer || 0
+                                      vehicle_type.percentage_for_washer || 0
                                     }
                                     name="name"
                                   />
@@ -326,9 +378,11 @@ const ServiceAdd = (props) => {
           ))}
         </div>
         <Button
-          clickHandler={() => {}}
+          clickHandler={() => {
+            serviceSaveUpdate();
+          }}
           colorClass="btn-success"
-          type="submit"
+          type="button"
           disabled={false}
         >
           <>Сохранить</>

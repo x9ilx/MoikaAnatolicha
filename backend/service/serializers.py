@@ -16,14 +16,12 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class SerializerForCreateUpdateService(serializers.ModelSerializer):
-
     class Meta:
         model = Service
         fields = [
             'id',
             'name',
             'additional_service',
-            
         ]
 
 

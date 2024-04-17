@@ -13,8 +13,21 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='VehicleModel',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Наименование')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(
+                        max_length=255, verbose_name='Наименование'
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Модель ТС или ППЦ',

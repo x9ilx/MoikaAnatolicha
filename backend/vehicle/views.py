@@ -1,15 +1,17 @@
 import django_filters.rest_framework as django_filters
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status, viewsets, mixins
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from service.serializers import VehicleTypeServiceSerializer
-from vehicle.filters import (VehicleOrTrailerClassSearchFilter)
+from vehicle.filters import VehicleOrTrailerClassSearchFilter
 
-from .models import Vehicle, VehicleModel, VehicleOrTrailerClass, VehicleOrTrailerType
-from .serializers import (VehicleModelSerializer, VehicleOrTrailerClassSerializer,
+from .models import (Vehicle, VehicleModel, VehicleOrTrailerClass,
+                     VehicleOrTrailerType)
+from .serializers import (VehicleModelSerializer,
+                          VehicleOrTrailerClassSerializer,
                           VehicleOrTrailerTypeSerializer, VehicleSerializer)
 
 
@@ -19,7 +21,7 @@ class VehicleModelDelete(viewsets.GenericViewSet, mixins.DestroyModelMixin):
         vehicle_model.delete()
         return Response(
             {'result': 'Модель успешно удалена'},
-            status=status.HTTP_204_NO_CONTENT
+            status=status.HTTP_204_NO_CONTENT,
         )
 
 
@@ -140,7 +142,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
         models = VehicleModel.objects.filter(
             Q(name__icontains=search)
         ).order_by('name')
-         
+
         serializer = VehicleModelSerializer(models, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)

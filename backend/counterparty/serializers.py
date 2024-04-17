@@ -9,9 +9,7 @@ from .models import LegalEntity
 
 class VehicleMiniSerializer(serializers.ModelSerializer):
     plate_number = serializers.CharField(max_length=25)
-    owner = serializers.PrimaryKeyRelatedField(
-        read_only=True
-    )
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
     vehicle_type = serializers.PrimaryKeyRelatedField(
         queryset=VehicleOrTrailerType.objects.all()
     )
@@ -73,8 +71,8 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         for vehicle in vehicle_list:
             if vehicle['to_be_removed']:
                 current_vehicle = instance.vehicles.get(
-                plate_number=vehicle['plate_number']
-            )
+                    plate_number=vehicle['plate_number']
+                )
                 current_vehicle.owner = None
                 current_vehicle.save()
 
@@ -103,27 +101,26 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                     )
                     new_model.save()
 
-
     def create(self, validated_data):
         vehicles = validated_data.pop('vehicles')
-        
+
         instance = LegalEntity.objects.create(**validated_data)
         instance.save()
-        
+
         self.update_create_vehicle(vehicles, instance)
 
         return instance
 
     def update(self, instance, validated_data):
         vehicles = validated_data.pop('vehicles')
-        
+
         for attr, value in validated_data.items():
-            if (attr == 'plate_number'):
+            if attr == 'plate_number':
                 value = normalize_plate_number(value)
             setattr(instance, attr, value)
-        
+
         instance.save()
-        
+
         self.update_create_vehicle(vehicles, instance)
-        
+
         return instance

@@ -1,16 +1,15 @@
 import csv
 import os
+from io import StringIO
 from pathlib import Path
 
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
-from django.db import connection
-from django.apps import apps
-from io import StringIO
-from django.core.management import call_command
+
 from employer.models import Employer, EmployerPositions
 
 User = get_user_model()
@@ -24,9 +23,7 @@ class Command(BaseCommand):
         cursor = connection.cursor()
 
         self.stdout.write(
-            self.style.SUCCESS(
-                (f'\nНачинаем: sqlsequencereset')
-            )
+            self.style.SUCCESS((f'\nНачинаем: sqlsequencereset'))
         )
         for app in apps.get_app_configs():
             call_command('sqlsequencereset', app.label, stdout=commands)
@@ -98,7 +95,7 @@ class Command(BaseCommand):
                             requisites.update(**row)
                         else:
                             model.objects.create(**row)
-                        
+
                     except Exception as ex:
                         index = index - 1
                         self.stdout.write(
