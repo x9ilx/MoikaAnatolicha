@@ -25,7 +25,6 @@ class ServiceViewSet(viewsets.ModelViewSet):
         methods=['GET'],
         url_path='vehicle_types',
         url_name='vehicle-types',
-        # permission_classes=[OnlyAuthor],
     )
     def get_vehicle_types_for_service(self, request, pk):
         service = Service.objects.get(pk=pk)

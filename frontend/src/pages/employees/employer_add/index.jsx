@@ -38,7 +38,6 @@ const EmployerAdd = (props) => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         const errors = Object.values(err);
         if (errors) {
           toast.error(errors.join(", "));
@@ -62,7 +61,6 @@ const EmployerAdd = (props) => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         const errors = Object.values(err);
         if (errors) {
           toast.error(errors.join(", "));

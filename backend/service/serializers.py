@@ -9,8 +9,21 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = [
+            'id',
             'name',
             'additional_service',
+        ]
+
+
+class SerializerForCreateUpdateService(serializers.ModelSerializer):
+
+    class Meta:
+        model = Service
+        fields = [
+            'id',
+            'name',
+            'additional_service',
+            
         ]
 
 
@@ -23,6 +36,7 @@ class ServiceVehicleTypeSerializer(serializers.ModelSerializer):
             'vehicle_type',
             'cost',
             'employer_salary',
+            'percentage_for_washer',
         ]
 
 
@@ -35,4 +49,5 @@ class VehicleTypeServiceSerializer(serializers.ModelSerializer):
             'service',
             'cost',
             'employer_salary',
+            'percentage_for_washer',
         ]

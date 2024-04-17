@@ -28,7 +28,7 @@ const Header = () => {
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top pb-0 ">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" style={{cursor: "pointer"}}>
             <img src={logo} width={80}></img>
           </a>
           <button
@@ -55,7 +55,7 @@ const Header = () => {
               <li className="nav-item">
                 <a
                   className="nav-link text-primary"
-                  href="#"
+                  style={{cursor: "pointer"}}
                   onClick={() => {
                     navigate("/");
                   }}
@@ -65,40 +65,45 @@ const Header = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-primary" href="#">
+                <a className="nav-link text-primary" style={{cursor: "pointer"}}>
                   Выполненные заказы
                   <span className="badge bg-success ms-1">880</span>
                 </a>
               </li>
             </ul>
           </div>
-          {auth.employerInfo.employer_info.position ==
-            EmployerPosition.MANAGER && (
-            <>
-              <div
-                className="collapse navbar-collapse p-2"
-                id="navbarSupportedContent"
-              >
-                <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                  <li className="nav-item dropdown">
-                    <a
-                      className="nav-link dropdown-toggle me-3"
-                      href="#"
-                      id="navbarDropdown"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      Меню
-                    </a>
-                    <div
-                      className="dropdown-menu me-5"
-                      aria-labelledby="navbarDropdown"
-                    >
-                      <a className="dropdown-item" href="#" onClick={() => {
+
+          <div
+            className="collapse navbar-collapse p-2"
+            id="navbarSupportedContent"
+          >
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle me-3"
+                  style={{cursor: "pointer"}}
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Меню ({auth.employerInfo.employer_info.short_name})
+                </a>
+                <div
+                  className="dropdown-menu me-5"
+                  aria-labelledby="navbarDropdown"
+                >
+                  {auth.employerInfo.employer_info.position ==
+                    EmployerPosition.MANAGER && (
+                    <>
+                      <a
+                        className="dropdown-item"
+                        style={{cursor: "pointer"}}
+                        onClick={() => {
                           navigate("/legal_entity/");
-                        }}>
+                        }}
+                      >
                         <HiBuildingOffice2
                           size={14}
                           className="me-2 text-text-color"
@@ -107,7 +112,7 @@ const Header = () => {
                       </a>
                       <a
                         className="dropdown-item"
-                        href="#"
+                        style={{cursor: "pointer"}}
                         onClick={() => {
                           navigate("/employees/");
                         }}
@@ -115,7 +120,10 @@ const Header = () => {
                         <IoMan size={14} className="me-2 text-text-color" />
                         Сотрудники
                       </a>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" style={{cursor: "pointer"}}
+                      onClick={() => {
+                        navigate("/services/");
+                      }}>
                         <MdCleaningServices
                           size={14}
                           className="me-2 text-text-color"
@@ -125,7 +133,7 @@ const Header = () => {
                       <div className="dropdown-divider"></div>
                       <a
                         className="dropdown-item"
-                        href="#"
+                        style={{cursor: "pointer"}}
                         onClick={() => {
                           navigate("/vehicles/classes/");
                         }}
@@ -138,55 +146,49 @@ const Header = () => {
                       </a>
                       <a
                         className="dropdown-item"
-                        href="#"
+                        style={{cursor: "pointer"}}
                         onClick={() => {
                           navigate("/vehicles/models/");
                         }}
                       >
-                        <GiCarDoor
-                          size={14}
-                          className="me-2 text-text-color"
-                        />
+                        <GiCarDoor size={14} className="me-2 text-text-color" />
                         Модели ТС/ПЦ/ППЦ
                       </a>
-                      
+
                       <a
                         className="dropdown-item"
-                        href="#"
+                        style={{cursor: "pointer"}}
                         onClick={() => {
                           navigate("/vehicles/");
                         }}
                       >
-                        <GiCarKey
-                          size={14}
-                          className="me-2 text-text-color"
-                        />
-                         ТС/ПЦ/ППЦ
+                        <GiCarKey size={14} className="me-2 text-text-color" />
+                        ТС/ПЦ/ППЦ
                       </a>
-                     
+
                       <div className="dropdown-divider"></div>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" style={{cursor: "pointer"}}>
                         <HiDocumentReport
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Статистика
                       </a>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" style={{cursor: "pointer"}}>
                         <HiDocumentText
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Отчёты
                       </a>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" style={{cursor: "pointer"}}>
                         <FaMoneyCheckAlt
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Заработная плата
                       </a>
-                      <a className="dropdown-item" href="#">
+                      <a className="dropdown-item" style={{cursor: "pointer"}}>
                         <HiDocumentRemove
                           size={14}
                           className="me-2 text-text-color"
@@ -194,28 +196,56 @@ const Header = () => {
                         Расходы
                       </a>
                       <div className="dropdown-divider"></div>
-                      <a className="dropdown-item" href="#" onClick={() => {
+                      <a
+                        className="dropdown-item"
+                        style={{cursor: "pointer"}}
+                        onClick={() => {
                           navigate("/company/");
-                        }}>
+                        }}
+                      >
                         <IoIosListBox
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Реквизиты
                       </a>
-                      <a className="dropdown-item" href="#" onClick={() => {auth.logOut()}}>
+                      <a
+                        className="dropdown-item"
+                        style={{cursor: "pointer"}}
+                        onClick={() => {
+                          auth.logOut();
+                        }}
+                      >
                         <IoLogOutSharp
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Выход
                       </a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </>
-          )}
+                    </>
+                  )}
+                  {auth.employerInfo.employer_info.position !=
+                    EmployerPosition.MANAGER && (
+                    <>
+                     <a
+                        className="dropdown-item"
+                        style={{cursor: "pointer"}}
+                        onClick={() => {
+                          auth.logOut();
+                        }}
+                      >
+                        <IoLogOutSharp
+                          size={14}
+                          className="me-2 text-text-color"
+                        />
+                        Закрыть смену
+                      </a>
+                    </>
+                    )}
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </>

@@ -37,13 +37,43 @@ function VehiclesController() {
       });
   };
 
+  const deleteVehicle = () => {
+    api
+      .deleteVehicle(id)
+      .then((res) => {
+        navigate('/vehicles/')
+        toast.success("ТС/ПЦ/ППЦ успешно удалён");
+      })
+      .catch((err) => {
+        const errors = Object.values(err);
+        if (errors) {
+          toast.error(errors.join(", "));
+        }
+      });
+  };
+
   return (
     <>
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
             <Route
-              path="/classes/:class_id/delete"
+              path="/:vehicle_id/delete"
+              element={
+                <>
+                  <DeletePage
+                    onDelete={deleteVehicle}
+                    info_string={info_string_for_delete}
+                  />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/classes/:vehicle_id/delete"
               element={
                 <>
                   <DeletePage

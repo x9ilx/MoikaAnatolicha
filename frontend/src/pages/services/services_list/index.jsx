@@ -1,27 +1,31 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { forwardRef } from "react";
-import { ImCross } from "react-icons/im";
+import { MdModeEdit } from "react-icons/md";
 import api from "../../../api";
 import OrderElementGroup from "../../orders/order_element_group";
 
-const VehicleModelsList = forwardRef(function MyInput(props, ref) {
+
+const ServicesList = forwardRef(function MyInput(props, ref) {
   const [loading, setLoading] = React.useState(true);
-  const [vehicleModels, setVehicleModels] = React.useState({});
+  const [services, setServices] = React.useState([]);
 
   const [search, setSearch] = React.useState("");
+
+  const navigate = useNavigate();
 
   React.useImperativeHandle(ref, () => ({
     setSearch,
   }));
 
-  const getVehicleModels = React.useCallback(() => {
+  const getServices = React.useCallback(() => {
     setLoading(true);
     api
-      .getVehicleModels(search)
+      .getServices(search)
       .then((res) => {
-        setVehicleModels(res);
+        setServices(res);
         setLoading(false);
       })
       .catch((err) => {
@@ -32,30 +36,12 @@ const VehicleModelsList = forwardRef(function MyInput(props, ref) {
       });
   }, [search]);
 
-  const deleteVehicleModel = React.useCallback((id) => {
-    api
-      .deleteVehicleModel(id)
-      .then((res) => {
-        getVehicleModels(res);
-        toast.success("Модель ТС/ПЦ/ППЦ успешно удалена");
-      })
-      .catch((err) => {
-        const errors = Object.values(err);
-        if (errors) {
-          toast.error(errors.join(", "));
-        }
-      });
-  }, []);
-
-  const deleteModel = (model_id) => {
-    deleteVehicleModel(model_id);
-  }
 
   React.useEffect(() => {
-    getVehicleModels();
+    getServices();
   }, [search]);
 
-  if (vehicleModels.length === 0) {
+  if (services.length === 0) {
     return (
       <>
         <p className="grid h-screen place-items-center text-center mb-2">
@@ -77,25 +63,23 @@ const VehicleModelsList = forwardRef(function MyInput(props, ref) {
           <div className="row mb-3">
             <div className="vstack gap-3">
               <OrderElementGroup
-                header="Модели:"
-                elements_with_badge={vehicleModels?.map(
-                  (vehicle_model, index) => ({
+                header="Список услуг:"
+                elements_with_badge={services?.map(
+                  (service, index) => ({
                     name: (
                       <>
                         <span key={"qweqweqweqewqsdfsfs" + index}>
-                          {vehicle_model.name}
+                          {service.name}
                         </span>
                       </>
                     ),
                     badge: <>
-                    <ImCross
-                    size={14}
-                    className="text-danger"
-                    style={{cursor: "pointer"}} title="Удалить модель"
+                    <MdModeEdit
+                    size={24}
+                    className="text-text-color"
+                    style={{cursor: "pointer"}} title="Редактировать услугу"
                     onClick={() => {
-                        if (confirm(`Удалить модель "${vehicle_model.name}"?`) == true) {
-                            deleteModel(vehicle_model.id);
-                        }
+                       navigate(`./${service.id}/`)
                     }}
                     />
                     </>,
@@ -110,11 +94,11 @@ const VehicleModelsList = forwardRef(function MyInput(props, ref) {
   );
 });
 
-VehicleModelsList.propTypes = {
+ServicesList.propTypes = {
   //   vehicleClasses: PropTypes.array.isRequired,
   //   total_page: PropTypes.number.isRequired,
   //   current_page: PropTypes.number.isRequired,
   //   ChangePage: PropTypes.func.isRequired,
 };
 
-export default VehicleModelsList;
+export default ServicesList;

@@ -26,7 +26,7 @@ const Paginator = (props) => {
       <li key={i} className="page-item"  onClick={() => {props.OnChangePage(i)}}>
         <a
           className={`page-link  fs-7 fw-medium paginator-hover ${props.current_page == i ? "active": ""}`}
-          href="#"
+          style={{cursor: "pointer"}}
         >
           {i}
         </a>
@@ -42,7 +42,7 @@ const Paginator = (props) => {
             <li className="page-item" onClick={PreviousPage}>
               <a
                 className={`page-link fs-7 fw-medium paginator-hover ${props.current_page == 1 ? "disabled" : ""}`}
-                href="#"
+                style={{cursor: "pointer"}}
                 aria-label="Previous"
               >
                 <span aria-hidden="true">&laquo;</span>
@@ -52,7 +52,7 @@ const Paginator = (props) => {
             <li className="page-item"  onClick={NextPage}>
               <a
                 className={`page-link fs-7 fw-medium paginator-hover ${props.current_page == props.total_page ? "disabled" : ""}`}
-                href="#"
+                style={{cursor: "pointer"}}
                 aria-label="Next"
               >
                 <span aria-hidden="true">&raquo;</span>

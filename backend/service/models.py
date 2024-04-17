@@ -46,6 +46,8 @@ class ServiceVehicleType(models.Model):
     employer_salary = models.DecimalField(
         'Оплата сотруднику', max_digits=5, decimal_places=1
     )
+    percentage_for_washer = models.IntegerField("% мойщика")
+
 
     class Meta:
         """Meta definition for Service."""

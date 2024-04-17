@@ -5,13 +5,11 @@ import { Navigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { COOKIES_LIFE_TIME } from "../constants";
 
-
 const cookies = new Cookies(null, { path: "/" });
 class Api {
   constructor(url, headers) {
     this._url = url;
     this._headers = headers;
-    
   }
 
   checkResponse(res) {
@@ -30,7 +28,7 @@ class Api {
       }
       const func = res.status < 400 ? resolve : reject;
       res.json().then((data) => {
-        func(data)
+        func(data);
       });
     });
   }
@@ -82,111 +80,100 @@ class Api {
     }).then(this.checkResponse);
   }
 
-//////////////////////////////////////////////////// COMPANY
+  //////////////////////////////////////////////////// COMPANY
 
-getRequisites() {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/company/1/`, {
-    method: "GET",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-  }).then(this.checkResponse);
-}
+  getRequisites() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/company/1/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
 
-setRequisites(requisites) {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/company/1/`, {
-    method: "PUT",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-    body: JSON.stringify({
-      ...requisites,
-    })
-  }).then(this.checkResponse);
-}
-//////////////////////////////////////////////////// EMPLOYES
+  setRequisites(requisites) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/company/1/`, {
+      method: "PUT",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...requisites,
+      }),
+    }).then(this.checkResponse);
+  }
+  //////////////////////////////////////////////////// EMPLOYES
 
-  createEmployer ({
+  createEmployer({
     name,
     short_name,
-    phone = '',
+    phone = "",
     position,
     add_user = false,
-    username = '',
-    password = ''
-  }
-  ) {
+    username = "",
+    password = "",
+  }) {
     const token = cookies.get("auth_token");
-    return fetch(
-      URL + '/api/employees/',
-      {
-        method: 'POST',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        },
-        body: JSON.stringify({
-          name,
-          short_name,
-          phone,
-          position,
-          add_user,
-          username,
-          password
-        })
-      }
-    ).then(this.checkResponse)
+    return fetch(URL + "/api/employees/", {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        short_name,
+        phone,
+        position,
+        add_user,
+        username,
+        password,
+      }),
+    }).then(this.checkResponse);
   }
 
-  updateEmployer ({
+  updateEmployer({
     id,
     name,
     short_name,
-    phone = '',
+    phone = "",
     position,
     add_user = false,
-    username = '',
-    password = ''
-  }
-  ) {
+    username = "",
+    password = "",
+  }) {
     const token = cookies.get("auth_token");
-    return fetch(
-       `${URL}/api/employees/${id}/`,
-      {
-        method: 'PATCH',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        },
-        body: JSON.stringify({
-          name,
-          short_name,
-          phone,
-          position,
-          add_user,
-          username,
-          password
-        })
-      }
-    ).then(this.checkResponse)
+    return fetch(`${URL}/api/employees/${id}/`, {
+      method: "PATCH",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        short_name,
+        phone,
+        position,
+        add_user,
+        username,
+        password,
+      }),
+    }).then(this.checkResponse);
   }
 
-  deleteEmployer (id) {
+  deleteEmployer(id) {
     const token = cookies.get("auth_token");
-    return fetch(
-       `${URL}/api/employees/${id}/`,
-      {
-        method: 'DELETE',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        },
-      }
-    ).then(this.checkResponse)
+    return fetch(`${URL}/api/employees/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
   }
 
   getEmployer(id) {
@@ -221,7 +208,7 @@ setRequisites(requisites) {
       },
     }).then(this.checkResponse);
   }
-  
+
   getFreeWashers() {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/employees/get_free_washers_count/`, {
@@ -232,18 +219,22 @@ setRequisites(requisites) {
       },
     }).then(this.checkResponse);
   }
-  
+
   /////////////////////////////// VEHICLES
 
-  getVehicleClasses(page = 1, items_limit = 8, search="") {
+  getVehicleClasses(page = 1, items_limit = 8, search = "") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/vehicle_class/?page=${page}&limit=${items_limit}&search=${search}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL +
+        `/api/vehicle_class/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getVehicleClass(id) {
@@ -267,7 +258,7 @@ setRequisites(requisites) {
       },
     }).then(this.checkResponse);
   }
-  
+
   getVehicleTypesForVehicleClass(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/vehicle_class/${id}/get_vehicle_types/`, {
@@ -279,68 +270,52 @@ setRequisites(requisites) {
     }).then(this.checkResponse);
   }
 
-  createVehicleClass ({
-    name,
-    vehicle_types = [],
-  }
-  ) {
+  createVehicleClass({ name, vehicle_types = [] }) {
     const token = cookies.get("auth_token");
-    return fetch(
-      URL + '/api/vehicle_class/',
-      {
-        method: 'POST',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        },
-        body: JSON.stringify({
-          name,
-          vehicle_types
-        })
-      }
-    ).then(this.checkResponse)
-  }
-  
-  updateVehicleClass ({
-    id,
-    name,
-    vehicle_types,
-  }
-  ) {
-    const token = cookies.get("auth_token");
-    return fetch(
-      `${URL}/api/vehicle_class/${id}/`,
-      {
-        method: 'PATCH',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        },
-        body: JSON.stringify({
-          name,
-          vehicle_types
-        })
-      }
-    ).then(this.checkResponse)
+    return fetch(URL + "/api/vehicle_class/", {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        vehicle_types,
+      }),
+    }).then(this.checkResponse);
   }
 
-  deleteVehicleClass (id) {
+  updateVehicleClass({ id, name, vehicle_types }) {
     const token = cookies.get("auth_token");
-    return fetch(
-       `${URL}/api/vehicle_class/${id}/`,
-      {
-        method: 'DELETE',
-        headers: {
-          ...this._headers,
-          'authorization': `Token ${token}`
-        },
-      }
-    ).then(this.checkResponse)
+    return fetch(`${URL}/api/vehicle_class/${id}/`, {
+      method: "PATCH",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+        vehicle_types,
+      }),
+    }).then(this.checkResponse);
   }
 
-  getVehicles(search="", excludes=[]) {
+  deleteVehicleClass(id) {
     const token = cookies.get("auth_token");
-    const excludesString = excludes ? excludes.map(exclude => `&exclude=${exclude}`).join('') : ''
+    return fetch(`${URL}/api/vehicle_class/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getVehicles(search = "", excludes = []) {
+    const token = cookies.get("auth_token");
+    const excludesString = excludes
+      ? excludes.map((exclude) => `&exclude=${exclude}`).join("")
+      : "";
     return fetch(URL + `/api/vehicles/?search=${search}${excludesString}`, {
       method: "GET",
       headers: {
@@ -361,15 +336,18 @@ setRequisites(requisites) {
     }).then(this.checkResponse);
   }
 
-  getVehiclesList(page = 1, items_limit = 8, search="") {
+  getVehiclesList(page = 1, items_limit = 8, search = "") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/vehicles/?page=${page}&limit=${items_limit}&search=${search}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL + `/api/vehicles/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   createVehicle(vehicle) {
@@ -382,7 +360,7 @@ setRequisites(requisites) {
       },
       body: JSON.stringify({
         ...vehicle,
-      })
+      }),
     }).then(this.checkResponse);
   }
 
@@ -396,21 +374,36 @@ setRequisites(requisites) {
       },
       body: JSON.stringify({
         ...vehicle,
-      })
+      }),
     }).then(this.checkResponse);
   }
 
-  getVehicleOwners(page, items_limit, search="") {
+  getVehicleOwners(page, items_limit, search = "") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/legal_entity/?page=${page}&limit=${items_limit}&search=${search}`, {
-      method: "GET",
+    return fetch(
+      URL +
+        `/api/legal_entity/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
+
+  deleteVehicle(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicles/${id}/`, {
+      method: "DELETE",
       headers: {
         ...this._headers,
         authorization: `Token ${token}`,
       },
     }).then(this.checkResponse);
   }
-  
+
   deleteVehicleModel(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/vehicle_models/delete/${id}/`, {
@@ -421,68 +414,124 @@ setRequisites(requisites) {
       },
     }).then(this.checkResponse);
   }
+
+  getVehicleTypes() {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL +
+        `/api/vehicle_type/`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
   
-////////////////////////////////////////// LEGAL ENTITIES
-getLegalEntities(page = 1, items_limit = 8, search="") {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/legal_entity/?page=${page}&limit=${items_limit}&search=${search}`, {
-    method: "GET",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-  }).then(this.checkResponse);
-}
+  ////////////////////////////////////////// LEGAL ENTITIES
+  getLegalEntities(page = 1, items_limit = 8, search = "") {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL +
+        `/api/legal_entity/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
 
-getLegalEntity(id) {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/legal_entity/${id}/`, {
-    method: "GET",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-  }).then(this.checkResponse);
-}
+  getLegalEntity(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
 
-updateLegalEntity(id, requisites) {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/legal_entity/${id}/`, {
-    method: "PUT",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-    body: JSON.stringify({
-      ...requisites,
-    })
-  }).then(this.checkResponse);
-}
+  updateLegalEntity(id, requisites) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/`, {
+      method: "PUT",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...requisites,
+      }),
+    }).then(this.checkResponse);
+  }
 
-createLegalEntity(requisites) {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/legal_entity/`, {
-    method: "POST",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-    body: JSON.stringify({
-      ...requisites,
-    })
-  }).then(this.checkResponse);
-}
+  createLegalEntity(requisites) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...requisites,
+      }),
+    }).then(this.checkResponse);
+  }
 
-deleteLegalEntity(id) {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/legal_entity/${id}/`, {
-    method: "DELETE",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-  }).then(this.checkResponse);
-}
+  deleteLegalEntity(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  ////////////////////////////////////////// SERVICES
+
+  getServices(search = "") {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/services/?search=${search}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getService(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/services/${id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getVehicleTypesForService(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/services/${id}/vehicle_types/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+
 
 
 
