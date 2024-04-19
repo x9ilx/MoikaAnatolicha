@@ -35,7 +35,7 @@ const LegalEntitySetServices = (props) => {
     api
       .setLegalEntityServicesList(legal_entity_id, servicesList)
       .then((res) => {
-        // window.location.reload();
+        window.location.reload();
         toast.success("Данные успешно обновлены");
       })
       .catch((err) => {
@@ -84,9 +84,9 @@ const LegalEntitySetServices = (props) => {
     [vehicleClassesList, currentVehicleClassIndex, getAllServicesList]
   );
 
-  const getServicesList = React.useCallback(() => {
+  const getVehicleServicesList = React.useCallback(() => {
     api
-      .getLegalEntityServicesList(legal_entity_id)
+      .getLegalEntityVehicleServicesList(legal_entity_id)
       .then((res) => {
         setServicesList(res);
         if (res.length > 0) {
@@ -94,6 +94,20 @@ const LegalEntitySetServices = (props) => {
         } else {
           toast.info("Список услуг не загружен. Нет данных.");
         }
+      })
+      .catch((err) => {
+        const errors = Object.values(err);
+        if (errors) {
+          toast.error(errors.join(", "));
+        }
+      });
+  }, [legal_entity_id]);
+
+  const getServicesList = React.useCallback(() => {
+    api
+      .getLegalEntityServicesList(legal_entity_id)
+      .then((res) => {
+        setServicesList(res);
       })
       .catch((err) => {
         const errors = Object.values(err);
@@ -137,6 +151,7 @@ const LegalEntitySetServices = (props) => {
     setLoading(true);
     if (legal_entity_id) {
       getLegalEntity();
+      getServicesList();
     }
     getVehicleClasses();
     setLoading(false);
@@ -144,7 +159,7 @@ const LegalEntitySetServices = (props) => {
 
   const LoadServicesDefault = () => {
     if (confirm(`Данное действие обновит весь список. Продолжить?`) == true) {
-      getServicesList();
+      getVehicleServicesList();
     }
   };
 
@@ -779,7 +794,7 @@ const LegalEntitySetServices = (props) => {
                                                               clickHandler={() => {
                                                                 if (
                                                                   confirm(
-                                                                    `Действительно удалить услугу "${service.name}" для типа ${vehicle_type.vehicle_type_name}, класса ${vehicle_class.vehicle_class_name}?`
+                                                                    `Действительно удалить услугу "${service.name}" для типа "${vehicle_type.vehicle_type_name}", класса "${vehicle_class.vehicle_class_name}"?`
                                                                   ) == true
                                                                 ) {
                                                                   deleteService(

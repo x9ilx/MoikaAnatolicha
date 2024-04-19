@@ -507,7 +507,7 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  getLegalEntityServicesList(id) {
+  getLegalEntityVehicleServicesList(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/legal_entity/${id}/get_vehicle_services/`, {
       method: "GET",
@@ -519,6 +519,18 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getLegalEntityServicesList(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/get_services/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      
+    }).then(this.checkResponse);
+  }
+  
   setLegalEntityServicesList(id, data) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/legal_entity/${id}/set_vehicle_services/`, {
