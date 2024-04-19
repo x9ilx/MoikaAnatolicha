@@ -53,7 +53,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       toast.error("Необходимо указать модель");
       return;
     }
-    if (!newVehicleOwner || newVehicleOwner <= 0) {
+    if (!props.editOwner && (!newVehicleOwner || newVehicleOwner <= 0)) {
       toast.error('Необходимо выбрать владельца из списка');
       return;
     }

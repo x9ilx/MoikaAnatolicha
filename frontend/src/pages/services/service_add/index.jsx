@@ -139,6 +139,9 @@ const ServiceAdd = (props) => {
       vehicle_types: v_class.vehicle_types.map((v_type) => ({
         ...v_type,
         include: v_type.id === type_id ? !include : v_type.include || false,
+        cost: v_type.cost || 0,
+        employer_salary: v_type.employer_salary || 0,
+        percentage_for_washer: v_type.percentage_for_washer || 30,
       })),
     }));
 
@@ -175,9 +178,9 @@ const ServiceAdd = (props) => {
         service_vehicle.push({
           id: v_type.id,
           include: v_type.include,
-          cost: v_type.cost,
-          employer_salary: v_type.employer_salary,
-          percentage_for_washer: v_type.percentage_for_washer,
+          cost: v_type.cost || 0,
+          employer_salary: v_type.employer_salary || 0,
+          percentage_for_washer: v_type.percentage_for_washer || 30,
         })
       )
     );
