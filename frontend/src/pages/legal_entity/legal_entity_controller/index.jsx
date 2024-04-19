@@ -9,6 +9,7 @@ import { EmployerPosition } from "../../../constants";
 import LegalEntitySettings from "../legal_entity_settings";
 import LegalEntityAdd from "../legal_entity_add";
 import api from "../../../api";
+import LegalEntitySetServices from "../legal_entity_set_service";
 
 function LegalEntityController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -89,6 +90,19 @@ function LegalEntityController() {
             />
           </Route>
         </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/:legal_entity_id/services/"
+              element={
+                <>
+                  <LegalEntitySetServices />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        
       </Routes>
     </>
   );

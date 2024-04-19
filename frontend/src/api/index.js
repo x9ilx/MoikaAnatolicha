@@ -311,6 +311,17 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getServicesForVehicleType(vehicle_type_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicle_type/${vehicle_type_id}/services/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
   getVehicles(search = "", excludes = []) {
     const token = cookies.get("auth_token");
     const excludesString = excludes
@@ -496,6 +507,17 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getLegalEntityServicesList(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/get_vehicle_services/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
   ////////////////////////////////////////// SERVICES
 
   getServices(search = "") {

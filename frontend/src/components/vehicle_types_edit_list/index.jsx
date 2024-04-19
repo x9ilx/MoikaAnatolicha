@@ -68,7 +68,7 @@ const VehicleTypesEditList = (props) => {
           }}
         />
         <button
-          className="btn btn-success text-white"
+          className="btn btn-info text-white"
           style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
           type="button"
           onClick={() => {addNew()}}

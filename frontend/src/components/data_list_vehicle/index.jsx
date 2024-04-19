@@ -182,7 +182,7 @@ const DataListVehicle = (props) => {
                           setCreateVehicle(true);
                           props.onShowAdd(true)
                         }}
-                        colorClass="btn-success btn-sm"
+                        colorClass="btn-info btn-sm"
                         disabled={false}
                         type="button"
                         hint={"Добавить новый ТС/ПЦ/ППЦ " + currentPlateNumber}

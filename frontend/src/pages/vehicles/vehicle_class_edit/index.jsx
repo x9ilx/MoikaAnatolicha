@@ -91,6 +91,7 @@ const VehicleClassEdit = (props) => {
           vehicleTypesList={vehicleTypes}
           setVehicleTypesList={setVehicleTypes}
         />
+        <hr></hr>
         <Button
           clickHandler={() => {}}
           colorClass="btn-success"

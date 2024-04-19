@@ -84,11 +84,11 @@ const ServiceAdd = (props) => {
         cost:
           serviceVehicleTypes.filter(
             (item) => item.vehicle_type.id == v_type.id
-          )[0]?.cost || 0.0,
+          )[0]?.cost || 0,
         employer_salary:
           serviceVehicleTypes.filter(
             (item) => item.vehicle_type.id == v_type.id
-          )[0]?.employer_salary || 0.0,
+          )[0]?.employer_salary || 0,
         percentage_for_washer:
           serviceVehicleTypes.filter(
             (item) => item.vehicle_type.id == v_type.id
@@ -206,7 +206,7 @@ const ServiceAdd = (props) => {
   }
   return (
     <>
-      <p className="text-text-color fs-5">Редактирование услуги</p>
+      <p className="text-text-color fs-5">{service_id ? "Редактирование услуги" : "Создание услуги"}</p>
       <hr></hr>
       <form
         autoComplete="new-password"
@@ -359,7 +359,7 @@ const ServiceAdd = (props) => {
                                       );
                                     }}
                                     value={
-                                      vehicle_type.percentage_for_washer || 0
+                                      vehicle_type.percentage_for_washer || 30
                                     }
                                     name="name"
                                   />
@@ -377,6 +377,7 @@ const ServiceAdd = (props) => {
             </div>
           ))}
         </div>
+        <hr></hr>
         <Button
           clickHandler={() => {
             serviceSaveUpdate();

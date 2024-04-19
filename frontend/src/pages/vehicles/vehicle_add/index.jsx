@@ -161,7 +161,7 @@ const VehicleAdd = (props) => {
               onCancel={() => {}}
               hideButtons={true}
             />
-
+<hr></hr>
             <Button
               clickHandler={() => {
                 getRefVehicleInfo();

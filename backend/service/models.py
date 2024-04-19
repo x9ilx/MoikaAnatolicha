@@ -56,3 +56,39 @@ class ServiceVehicleType(models.Model):
     def __str__(self):
         """Unicode representation of Service."""
         return f'{self.service.name}: {self.vehicle_type.name}'
+
+
+class ServiceVehicleTypeLegalEntyty(models.Model):
+    """Model definition for Service."""
+
+    legal_entity = models.ForeignKey(
+        Service,
+        verbose_name='Владелец техники',
+        on_delete=models.CASCADE,
+        related_name='service_legal_entity',
+    )
+    service_vehicle_type = models.ForeignKey(
+        Service,
+        verbose_name='Услуга',
+        on_delete=models.SET_NULL,
+        related_name='legal_entity_services',
+        null=True,
+    )
+
+    cost = models.IntegerField('Стоимость')
+    employer_salary = models.IntegerField('Оплата сотруднику')
+    percentage_for_washer = models.IntegerField('% мойщика')
+
+    class Meta:
+        """Meta definition for Service."""
+
+        verbose_name = 'Услуга для типов ТС/ППЦ для юр. лиц'
+        verbose_name_plural = 'Услуги для типов ТС/ППЦ для юр. лиц'
+        ordering = ['legal_entity']
+
+    def __str__(self):
+        """Unicode representation of Service."""
+        return (
+            f'{self.legal_entity.name}: '
+            f'{self.service_vehicle_type.service.name}'
+        )

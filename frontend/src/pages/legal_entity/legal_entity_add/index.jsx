@@ -104,6 +104,7 @@ const LegalEntityAdd = (props) => {
         <p className="blockquote-footer">
           Не используемые реквизиты необходимо оставить пустыми
         </p>
+
         <form
           autoComplete="new-password"
           className="my-3"
@@ -114,6 +115,17 @@ const LegalEntityAdd = (props) => {
             }
           }}
         >
+          {legal_entity_id && (
+            <Button
+              clickHandler={() => {navigate("./services/")}}
+              colorClass="btn-info btn-sm"
+              type="button"
+              disabled={false}
+            >
+              <>Назначить услуги</>
+            </Button>
+          )}
+          <hr></hr>
           <div
             className="accordion accordion-flush mb-3"
             id="accordionFlushExample"
@@ -466,6 +478,7 @@ const LegalEntityAdd = (props) => {
             </div>
           </div>
 
+<hr></hr>
           {!showAddVehicle && (
             <>
               <Button

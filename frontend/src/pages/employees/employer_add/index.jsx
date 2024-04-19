@@ -296,7 +296,7 @@ const EmployerAdd = (props) => {
                 </div>
               </>
             )}
-
+<hr></hr>
             <Button
               clickHandler={() => {}}
               colorClass="btn-success"
