@@ -1,5 +1,7 @@
 from django.db import models
 
+from counterparty.models import LegalEntity
+
 
 class Service(models.Model):
     """Model definition for Service."""
@@ -62,13 +64,13 @@ class ServiceVehicleTypeLegalEntyty(models.Model):
     """Model definition for Service."""
 
     legal_entity = models.ForeignKey(
-        Service,
+        LegalEntity,
         verbose_name='Владелец техники',
         on_delete=models.CASCADE,
         related_name='service_legal_entity',
     )
     service_vehicle_type = models.ForeignKey(
-        Service,
+        ServiceVehicleType,
         verbose_name='Услуга',
         on_delete=models.SET_NULL,
         related_name='legal_entity_services',

@@ -30,6 +30,22 @@ const LegalEntitySetServices = (props) => {
   const navigate = useNavigate();
   const { legal_entity_id } = useParams();
 
+
+  const setLegalEntityServicesList = React.useCallback(() => {
+    api
+      .setLegalEntityServicesList(legal_entity_id, servicesList)
+      .then((res) => {
+        // window.location.reload();
+        toast.success("Данные успешно обновлены");
+      })
+      .catch((err) => {
+        const errors = Object.values(err);
+        if (errors) {
+          toast.error(errors.join(", "));
+        }
+      });
+  }, [legal_entity_id, servicesList]);
+  
   const getAllServicesList = React.useCallback((vehicle_type_id) => {
     api
       .getServicesForVehicleType(vehicle_type_id)
@@ -166,23 +182,15 @@ const LegalEntitySetServices = (props) => {
   };
 
   const setValue = React.useCallback(
-    (name, service_id, value, max_value) => {
+    (name, class_index, type_index, service_index, value, max_value) => {
       value = Number(value).toString();
       if (max_value > 0) {
         value = value > max_value ? max_value : value;
       }
-      let vehicle_classes_and_types = servicesList.map((v_class) => ({
-        ...v_class,
-        vehicle_type: v_class.vehicle_type.map((v_type) => ({
-          ...v_type,
-          services: v_type.services.map((service) => ({
-            ...service,
-            [name]: service.id === service_id ? value : service[name],
-          })),
-        })),
-      }));
 
-      setServicesList(vehicle_classes_and_types);
+      let newArr = [...servicesList]
+      newArr[class_index].vehicle_type[type_index].services[service_index][name] = value
+      setServicesList(newArr);
     },
     [servicesList]
   );
@@ -628,7 +636,7 @@ const LegalEntitySetServices = (props) => {
                                                     clickHandler={() => {
                                                       if (
                                                         confirm(
-                                                          `Действительно удалить тип "${vehicle_type.vehicle_type_name}"?`
+                                                          `Действительно удалить тип "${vehicle_type.vehicle_type_name}" класса "${vehicle_class.vehicle_class_name}"?`
                                                         ) == true
                                                       ) {
                                                         deleteType(
@@ -682,9 +690,10 @@ const LegalEntitySetServices = (props) => {
                                                                 ) => {
                                                                   setValue(
                                                                     "cost",
-                                                                    service.id,
-                                                                    e.target
-                                                                      .value,
+                                                                    class_index,
+                                                                    type_index,
+                                                                    service_index,
+                                                                    e.target.value,
                                                                     0
                                                                   );
                                                                 }}
@@ -713,9 +722,10 @@ const LegalEntitySetServices = (props) => {
                                                                 ) => {
                                                                   setValue(
                                                                     "employer_salary",
-                                                                    service.id,
-                                                                    e.target
-                                                                      .value,
+                                                                    class_index,
+                                                                    type_index,
+                                                                    service_index,
+                                                                    e.target.value,
                                                                     0
                                                                   );
                                                                 }}
@@ -746,9 +756,10 @@ const LegalEntitySetServices = (props) => {
                                                                 ) => {
                                                                   setValue(
                                                                     "percentage_for_washer",
-                                                                    service.id,
-                                                                    e.target
-                                                                      .value,
+                                                                    class_index,
+                                                                    type_index,
+                                                                    service_index,
+                                                                    e.target.value,
                                                                     100
                                                                   );
                                                                 }}
@@ -768,7 +779,7 @@ const LegalEntitySetServices = (props) => {
                                                               clickHandler={() => {
                                                                 if (
                                                                   confirm(
-                                                                    `Действительно удалить услугу "${service.name}"?`
+                                                                    `Действительно удалить услугу "${service.name}" для типа ${vehicle_type.vehicle_type_name}, класса ${vehicle_class.vehicle_class_name}?`
                                                                   ) == true
                                                                 ) {
                                                                   deleteService(
@@ -812,7 +823,7 @@ const LegalEntitySetServices = (props) => {
                 <hr></hr>
 
                 <Button
-                  clickHandler={() => {}}
+                  clickHandler={() => {setLegalEntityServicesList()}}
                   colorClass="btn-success"
                   type="button"
                   disabled={false}

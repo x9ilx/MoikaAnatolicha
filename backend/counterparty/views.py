@@ -4,6 +4,7 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import VehicleOrTrailerType
 
 from .filters import LegalEntitySearchFilter
@@ -28,7 +29,7 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=['GET'],
         url_path='get_vehicle_services',
-        url_name='vehicle-services',
+        url_name='get-vehicle-services',
     )
     def get_vehicle_services(self, request, pk):
         results = []
@@ -67,7 +68,6 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
                     vehicle_type_id
                 ] = vehicle_type_res
 
-            
             for service in vehicle.vehicle_type.service_vehicle_types.all():
                 service_res = {
                     'service_type_id': service.id,
@@ -79,7 +79,7 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
                     'to_be_added': True,
                     'to_be_removed': False,
                 }
-                
+
                 if service.id not in added_services:
                     vehicle_classes[class_id]['vehicle_type'][vehicle_type_id][
                         'services'
@@ -89,5 +89,85 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
         for res in vehicle_classes.values():
             res['vehicle_type'] = res['vehicle_type'].values()
             results.append(res)
+
+        return Response(results, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=['GET'],
+        url_path='get_services',
+        url_name='get-services',
+    )
+    def get_services(self, request, pk):
+        results = []
+        legal_entity = get_object_or_404(LegalEntity, pk=pk)
+
+        return Response(results, status=status.HTTP_200_OK)
+
+    def legal_entity_service_create(
+        self,
+        service_vehicle,
+        service_info,
+        legal_entity
+    ):
+        legal_entity_service = ServiceVehicleTypeLegalEntyty.objects.create(
+            service_vehicle_type=service_vehicle,
+            legal_entity=legal_entity,
+            cost=service_info['cost'],
+            employer_salary=service_info['employer_salary'],
+            percentage_for_washer=service_info['percentage_for_washer'],
+        )
+        legal_entity_service.save()
+
+    @action(
+        detail=True,
+        methods=['POST'],
+        url_path='set_vehicle_services',
+        url_name='set-vehicle-services',
+    )
+    def set_vehicle_services(self, request, pk):
+        results = []
+        legal_entity = get_object_or_404(LegalEntity, pk=pk)
+
+        for vehicle_class in request.data.values():
+            for vehicle_type in vehicle_class['vehicle_type']:
+                for service in vehicle_type['services']:
+                    service_v_type_filter = ServiceVehicleType.objects.filter(
+                        service_id=service['id'],
+                        vehicle_type_id=vehicle_type['vehicle_type_id'],
+                    )
+                    if service_v_type_filter.exists():
+                        service_v_type = service_v_type_filter.first()
+                        if service['to_be_removed']:
+                            ServiceVehicleTypeLegalEntyty.objects.filter(
+                                service_vehicle_type=service_v_type,
+                                legal_entity=legal_entity,
+                            ).delete()
+                            continue
+                        if service['to_be_added']:
+                            legal_entity_service_filter = (
+                                ServiceVehicleTypeLegalEntyty.objects.filter(
+                                    service_vehicle_type=service_v_type,
+                                    legal_entity=legal_entity,
+                                )
+                            )
+                            if legal_entity_service_filter.exists():
+                                legal_entity_service = (
+                                    legal_entity_service_filter.first()
+                                )
+                                legal_entity_service.cost = service['cost']
+                                legal_entity_service.employer_salary = (
+                                    service['employer_salary']
+                                )
+                                legal_entity_service.percentage_for_washer = service[
+                                    'percentage_for_washer'
+                                ]
+                                legal_entity_service.save()
+                            else:
+                                self.legal_entity_service_create(
+                                    service_v_type,
+                                    service,
+                                    legal_entity,
+                                )
 
         return Response(results, status=status.HTTP_200_OK)

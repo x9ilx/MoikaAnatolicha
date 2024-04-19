@@ -515,6 +515,21 @@ class Api {
         ...this._headers,
         authorization: `Token ${token}`,
       },
+      
+    }).then(this.checkResponse);
+  }
+
+  setLegalEntityServicesList(id, data) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/set_vehicle_services/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
     }).then(this.checkResponse);
   }
   
