@@ -166,6 +166,11 @@ class VehicleSerializer(serializers.ModelSerializer):
             validated_data.pop('plate_number')
         )
 
+        new_model, _ = VehicleModel.objects.update_or_create(
+            name=validated_data['vehicle_model']
+        )
+        new_model.save()
+
         vehicle = Vehicle.objects.create(
             **validated_data, plate_number=plate_number
         )
@@ -184,4 +189,10 @@ class VehicleSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         instance.save()
+        
+        new_model, _ = VehicleModel.objects.update_or_create(
+            name=validated_data['vehicle_model']
+        )
+        new_model.save()
+
         return instance
