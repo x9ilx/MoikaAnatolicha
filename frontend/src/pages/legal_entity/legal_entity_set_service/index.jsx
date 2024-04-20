@@ -236,7 +236,9 @@ const LegalEntitySetServices = (props) => {
       newArr[haveClassIndex].vehicle_type[haveTypeIndex].services[
         haveServiceIndex
       ].to_be_removed = true;
-
+      newArr[haveClassIndex].vehicle_type[haveTypeIndex].services[
+        haveServiceIndex
+      ].to_be_added = false;
       setServicesList(checkServiceNumberInVehicleType(newArr));
     },
     [servicesList]
@@ -248,6 +250,7 @@ const LegalEntitySetServices = (props) => {
       newArr[classID].vehicle_type[typeID].show = false;
       newArr[classID].vehicle_type[typeID].services.map((service) => {
         service.to_be_removed = true;
+        service.to_be_added = false;
       }
       );
 
@@ -327,6 +330,9 @@ const LegalEntitySetServices = (props) => {
             newArr[haveClassIndex].vehicle_type[haveTypeIndex].services[
               haveTypeService
             ].to_be_removed = false;
+            newArr[haveClassIndex].vehicle_type[haveTypeIndex].services[
+              haveTypeService
+            ].to_be_added = true;
             newArr[haveClassIndex].vehicle_type[haveTypeIndex].show = true;
             newArr[haveClassIndex].show = true;
             setServicesList(checkServiceNumberInVehicleType(newArr));

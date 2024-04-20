@@ -192,6 +192,7 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
     def set_vehicle_services(self, request, pk):
         results = []
         legal_entity = get_object_or_404(LegalEntity, pk=pk)
+        legal_entity.service_legal_entity.all().delete()
 
         for vehicle_class in request.data.values():
             for vehicle_type in vehicle_class['vehicle_type']:
@@ -202,12 +203,12 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
                     )
                     if service_v_type_filter.exists():
                         service_v_type = service_v_type_filter.first()
-                        if service['to_be_removed']:
-                            ServiceVehicleTypeLegalEntyty.objects.filter(
-                                service_vehicle_type=service_v_type,
-                                legal_entity=legal_entity,
-                            ).delete()
-                            continue
+                        # if service['to_be_removed']:
+                        #     ServiceVehicleTypeLegalEntyty.objects.filter(
+                        #         service_vehicle_type=service_v_type,
+                        #         legal_entity=legal_entity,
+                        #     ).delete()
+                        #     continue
                         if service['to_be_added']:
                             legal_entity_service_filter = (
                                 ServiceVehicleTypeLegalEntyty.objects.filter(
