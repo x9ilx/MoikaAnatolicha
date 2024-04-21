@@ -189,7 +189,7 @@ class VehicleSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
 
         instance.save()
-        
+
         new_model, _ = VehicleModel.objects.update_or_create(
             name=validated_data['vehicle_model']
         )

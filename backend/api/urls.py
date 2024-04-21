@@ -4,6 +4,7 @@ from rest_framework import routers
 from company.views import CompanyRequisitesViewSet
 from counterparty.views import LegalEntityViewSet
 from employer.views import CHGUserViewSet, EmployerViewSet
+from order.views import OrderViewSet
 from service.views import ServiceViewSet
 from vehicle.views import (VehicleModelDelete, VehicleOrTrailerClassViewSet,
                            VehicleOrTrailerTypeViewSet, VehicleViewSet)
@@ -47,6 +48,11 @@ v1_router.register(
     'vehicles',
     VehicleViewSet,
     basename='Vehicle',
+)
+v1_router.register(
+    'orders',
+    OrderViewSet,
+    basename='Order',
 )
 
 urlpatterns = [

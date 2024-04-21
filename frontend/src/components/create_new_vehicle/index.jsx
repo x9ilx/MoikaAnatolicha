@@ -53,7 +53,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       toast.error("Необходимо указать модель");
       return;
     }
-    if (!props.editOwner && (!newVehicleOwner || newVehicleOwner <= 0)) {
+    if (props.editOwner && (!newVehicleOwner || newVehicleOwner <= 0)) {
       toast.error('Необходимо выбрать владельца из списка');
       return;
     }
@@ -66,6 +66,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       return;
     }
     const vehicle = {
+   
       id: -1,
       plate_number: newVehiclePlateNUmber,
       vehicle_model: newVehicleModel,
@@ -78,6 +79,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       to_be_removed: false,
       to_be_added: true,
     };
+
     props.onCreate(vehicle);
   };
 

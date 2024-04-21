@@ -2,10 +2,13 @@ import React from "react";
 import OrderElement from "../order_element";
 import api from "../../../api";
 import Button from "../../../components/button";
+import { useNavigate } from "react-router-dom";
 
 const WorkOrderList = () => {
   const [loading, setLoading] = React.useState(true);
   const [workerCount, setWorkerCount] = React.useState();
+
+  const navigate = useNavigate();
 
   const getFreeWashers = React.useCallback(async () => {
     api.getFreeWashers().then((data) => {
@@ -32,7 +35,7 @@ const WorkOrderList = () => {
   return (
     <>
       <Button
-        clickHandler={() => {}}
+        clickHandler={() => {navigate("./add/")}}
         colorClass="btn-success"
         type="button"
         disabled={false}

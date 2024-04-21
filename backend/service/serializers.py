@@ -44,6 +44,7 @@ class VehicleTypeServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceVehicleType
         fields = [
+            'id',
             'service',
             'cost',
             'employer_salary',

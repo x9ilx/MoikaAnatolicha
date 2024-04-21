@@ -531,6 +531,18 @@ class Api {
     }).then(this.checkResponse);
   }
   
+  getLegalEntityVehicleTypeServicesList(id, vehicle_type_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/get_services_for_vehicle_type/${vehicle_type_id}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      
+    }).then(this.checkResponse);
+  }
+
   setLegalEntityServicesList(id, data) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/legal_entity/${id}/set_vehicle_services/`, {
@@ -619,6 +631,18 @@ class Api {
     }).then(this.checkResponse);
   }
   
+///////////////////////////////////// ORDERS
+
+getPaymentMethods() {
+  const token = cookies.get("auth_token");
+  return fetch(URL + `/api/orders/get_payment_methods/`, {
+    method: "GET",
+    headers: {
+      ...this._headers,
+      authorization: `Token ${token}`,
+    },
+  }).then(this.checkResponse);
+}
 
 
 

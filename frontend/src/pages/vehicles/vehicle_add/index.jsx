@@ -102,14 +102,13 @@ const VehicleAdd = (props) => {
       });
   }, [vehicle_id, plateNumber, vehicleModel, owner, vehicleType, navigate]);
 
-
   React.useEffect(() => {
     if (saveAccept) {
-        if (vehicle_id > 0) {
-          UpdateVehicle();
-        } else {
-          CreateVehicle();
-        }
+      if (vehicle_id > 0) {
+        UpdateVehicle();
+      } else {
+        CreateVehicle();
+      }
     }
   }, [saveAccept, vehicle_id, UpdateVehicle, CreateVehicle]);
 
@@ -161,7 +160,7 @@ const VehicleAdd = (props) => {
               onCancel={() => {}}
               hideButtons={true}
             />
-<hr></hr>
+            <hr></hr>
             <Button
               clickHandler={() => {
                 getRefVehicleInfo();

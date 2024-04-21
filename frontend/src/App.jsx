@@ -15,6 +15,7 @@ import VehiclesController from "./pages/vehicles/vehicles_controller/index.jsx";
 import OrganistaionSettings from "./pages/organisation_Settings/index.jsx";
 import LegalEntityController from "./pages/legal_entity/legal_entity_controller/index.jsx";
 import ServicesController from "./pages/services/services_controller/index.jsx";
+import OrderController from "./pages/orders/order_controller/index.jsx";
 
 function App() {
   const auth = useAuth();
@@ -38,10 +39,10 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route element={<ProtectedRoute />}>
             <Route
-              path="/"
+              path="/*"
               element={
                 <>
-                  <WorkOrderList />
+                  <OrderController />
                 </>
               }
             />

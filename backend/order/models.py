@@ -1,9 +1,18 @@
 from django.db import models
+from django.forms import CharField
+
+
+class OrderPaimentMethod(models.TextChoices):
+    CASH = 'CASH', 'Наличные'
+    TRANSFER = 'TRANSFER', 'Перевод'
+    CARD = 'CARD', 'Карта'
+    CONTRACT = 'CONTRACT', 'Договор'
 
 
 class Order(models.Model):
     """Model definition for Order."""
 
+    order_number = CharField(max_length=255)
     order_datetime = models.DateTimeField(
         'Дата/время заказа',
         auto_now_add=True,
@@ -11,28 +20,42 @@ class Order(models.Model):
     order_close_datetime = models.DateTimeField(
         'Дата/время заказа',
     )
-    vehicle_owner = models.ForeignKey(
-        'counterparty.LegalEntity',
-        verbose_name='Владелец ТС/ППЦ',
-        related_name='orders',
+    administrator = models.ForeignKey(
+        'employer.Employer',
+        verbose_name='Администратор',
         on_delete=models.SET_NULL,
         null=True,
     )
-    vehicle_owner_name = models.CharField(
-        'ФИО/Наименование владельца ТС/ППЦ',
+    washers = models.ManyToManyField(
+        'employer.Employer',
+        verbose_name='Мойщики',
+        related_name='washer_orders',
+    )
+    payment_method = models.CharField(
+        max_length=50,
+        choices=OrderPaimentMethod.choices,
+        default=OrderPaimentMethod.CASH,
+        null=False,
+        blank=False,
+        verbose_name='Метод оплаты',
+    )
+    client_name = models.CharField(
+        'ФИО/Наименование клиента',
         max_length=255,
         blank=True,
-        null=True,
     )
-    vehicle_owner_phone = models.CharField(
-        'Телефон владельца ТС/ППЦ', max_length=255, blank=True, null=True
+    client_phone = models.CharField(
+        'Телефон клиента', max_length=255, blank=True
     )
-    vehicle = models.ForeignKey(
+    vehicle = models.ManyToManyField(
         'vehicle.Vehicle',
-        verbose_name='ТС/ППЦ',
-        related_name='orders',
-        on_delete=models.SET_NULL,
-        null=True,
+        verbose_name='Услуга',
+        through='order.OrderVehicle',
+    )
+    services = models.ManyToManyField(
+        'service.Service',
+        verbose_name='Услуга',
+        through='order.OrderService',
     )
     final_cost = models.DecimalField(
         'Итоговая стоимость', max_digits=5, decimal_places=1
@@ -40,15 +63,23 @@ class Order(models.Model):
     final_cost_for_employer_work = models.DecimalField(
         'Итоговая оплата работы сотрудника', max_digits=5, decimal_places=1
     )
-    is_paid = models.BooleanField('Оплачен?')
-    is_completed = models.BooleanField('Завершен?')
+    is_paid = models.BooleanField('Оплачен?', default=False)
+    is_completed = models.BooleanField('Завершен?', default=False)
     has_been_modifed_after_save = models.BooleanField(
-        'Был изменён после сохарнения?'
+        'Был изменён после сохарнения?', default=False
     )
-    services = models.ManyToManyField(
-        'service.ServiceVehicleType',
-        verbose_name='Услуга',
-        through='order.OrderService',
+    backup_info = models.TextField('Информация о заказе', blank=True)
+    comments = models.TextField('комментарии к заказу', blank=True)
+    is_tractor_trailer = models.BooleanField('Тягач + ППЦ?', default=False)
+    trailer_plate_number = models.CharField(
+        'Гос. номер ППЦ',
+        max_length=20,
+        blank=True,
+    )
+    trailer_model = models.CharField(
+        'Модель ППЦ',
+        max_length=150,
+        blank=True,
     )
 
     class Meta:
@@ -68,28 +99,35 @@ class OrderService(models.Model):
 
     order = models.ForeignKey(
         'order.Order',
-        verbose_name='Заказ',
+        verbose_name='Заказ-ТС',
         on_delete=models.CASCADE,
-        related_name='order_services',
+        related_name='services_in_order',
     )
     service = models.ForeignKey(
-        'service.ServiceVehicleType',
+        'service.Service',
         verbose_name='Услуга для ТС/ППЦ',
         on_delete=models.SET_NULL,
         null=True,
-        related_name='order_services',
+        related_name='+',
     )
-    cost = models.DecimalField('Cтоимость', max_digits=5, decimal_places=1)
-    employer_salary = models.DecimalField(
-        'Оплата сотруднику', max_digits=5, decimal_places=1
+    cost = models.IntegerField('Cтоимость')
+    employer_salary = models.IntegerField('Оплата сотруднику')
+    percentage_for_washer = models.IntegerField('% мойщика')
+
+
+class OrderVehicle(models.Model):
+    """Model definition for OrderService."""
+
+    order = models.ForeignKey(
+        'order.Order',
+        verbose_name='Заказ-ТС',
+        on_delete=models.CASCADE,
+        related_name='vehicles_in_order',
     )
-
-    class Meta:
-        """Meta definition for OrderService."""
-
-        verbose_name = 'Заказ-Услуга'
-        verbose_name_plural = 'Заказы-Услуги'
-
-    def __str__(self):
-        """Unicode representation of OrderService."""
-        return f'{self.order}: {self.service}'
+    vehicle = models.ForeignKey(
+        'vehicle.Vehicle',
+        verbose_name='ТС/ППЦ',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='vehicle_orders',
+    )

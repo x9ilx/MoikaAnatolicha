@@ -120,7 +120,7 @@ const DataListVehicle = (props) => {
             key={"vehiclexcvxczvdfh5675467456List" }
             className="form-control text"
             type="search"
-            placeholder="Привязать (поиск по гос. номеру)"
+            placeholder={props.header || "Привязать (поиск по гос. номеру)"}
             aria-label="Search"
             value={currentPlateNumber}
             onChange={(e) => {
@@ -141,7 +141,7 @@ const DataListVehicle = (props) => {
                     className="list-group vehicle_datalist_listgroup"
                   >
                     {vehicleList?.map((vehicle, index) => (
-                      <>
+                      <div key={"vehicleList" + vehicle?.plate_number + index}>
                         <a
                           id="vehicleelement"
                           key={"vehicleList" + vehicle?.plate_number + index}
@@ -156,7 +156,7 @@ const DataListVehicle = (props) => {
                           {vehicle?.vehicle_type?.name})
                           {vehicle?.owner ? " / " + vehicle?.owner?.name : ""}
                         </a>
-                      </>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -199,20 +199,21 @@ const DataListVehicle = (props) => {
           <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">Список ТС/ПЦ/ППЦ:</p>
           <ul key={"vehicleListF345345ina123sdfl"} className="list-group my-3">
             {vehicleListFinal?.map((vehicle, index) => (
-              <>
+              <div key={"vehicleListFinal" + vehicle.plate_number + index}>
                 <li
                   key={"vehicleListFinal" + vehicle.plate_number + index}
                   className={`list-group-item fs-7
               ${vehicle.to_be_removed ? " bg-danger text-white" : ""} 
-              ${vehicle.to_be_added ? " bg-success text-white" : ""}`}
+              ${vehicle.to_be_added && !props.noColor ? " bg-success text-white" : ""}`}
                 >
                   <div key={"vehicleListFinal123" + vehicle.plate_number + index} className="row">
+                    <div className="d-flex">
                     <div
                       key={"vehicleListFinal3332" + vehicle.plate_number + index}
-                      className="col-10"
+                      className="flex-grow-1 flex-fill"
                     >
                       <b key={"vehicleListFinal554" + vehicle.plate_number + index}>{vehicle?.plate_number}:</b>{" "}
-                      {vehicle?.vehicle_class_name} {vehicle?.vehicle_model} (
+                      {vehicle?.vehicle_class_name} {vehicle?.vehicle_model} {isMobile && <br/>}(
                       {vehicle?.vehicle_type_name})<br></br>
                       {vehicle?.owner_name}
                     </div>
@@ -223,9 +224,7 @@ const DataListVehicle = (props) => {
                             <>
                               <div
                                 key={"vehicleListFina434343434l" + vehicle.plate_number + index}
-                                className={`col-2 ${
-                                  isMobile ? "text-center" : "text-end"
-                                }`}
+                                className={`align-items-end`}
                                 title="Пометить на удаление"
                               >
                                 <ImCross
@@ -253,7 +252,7 @@ const DataListVehicle = (props) => {
                                 <FaTrashRestore
                                   key={"vehicleListFinxcvxzcvzal" + vehicle.plate_number + index}
                                   size={18}
-                                  className="text-white fw-medium"
+                                  className={`${!props.noColor ? "text-white" : "text-text-color"} fw-medium`}
                                   style={{ cursor: "pointer" }}
                                   onClick={() => {
                                     markDelete(index, false);
@@ -275,7 +274,7 @@ const DataListVehicle = (props) => {
                           <ImCross
                             key={"vehicleListFinalcvbn3432" + vehicle.plate_number + index}
                             size={14}
-                            className="text-white"
+                            className={`${!props.noColor ? "text-white" : "text-text-color"}`}
                             style={{ cursor: "pointer" }}
                             onClick={() => {
                               cancelAddNew(index);
@@ -284,9 +283,10 @@ const DataListVehicle = (props) => {
                         </div>
                       )}
                     </>
+                    </div>
                   </div>
                 </li>
-              </>
+              </div>
             ))}
           </ul>
         </>
@@ -298,10 +298,10 @@ const DataListVehicle = (props) => {
             ownerName={props.ownerName}
             ownerID={props.ownerId}
             onCreate={createNewVehicle}
+            editOwner={props.editOwner || false}
             onCancel={() => {
               setShowVehicleList(true);
               setCreateVehicle(false);
-              props.onShowAdd(false)
             }}
           />
         </>
@@ -315,7 +315,10 @@ DataListVehicle.propTypes = {
   setVehicleListFinal: PropTypes.func.isRequired,
   ownerId: PropTypes.number.isRequired,
   ownerName: PropTypes.string.isRequired,
+  editOwner:PropTypes.bool,
   onShowAdd: PropTypes.func,
+  header: PropTypes.string,
+  noColor: PropTypes.bool,
 };
 
 export default DataListVehicle;
