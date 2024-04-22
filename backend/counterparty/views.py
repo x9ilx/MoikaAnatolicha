@@ -262,6 +262,8 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
                     'cost': legal_entity_service.cost,
                     'employer_salary': legal_entity_service.employer_salary,
                     'percentage_for_washer': legal_entity_service.percentage_for_washer,
+                    'vehicle_type_id': vehicle_type_id,
+                    'legal_entity_service': True,
                 }
             )
 

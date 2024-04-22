@@ -103,3 +103,5 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
   -webkit-box-shadow: 0px 2px 29px -6px rgba(0,0,0,0.72);
   -moz-box-shadow: 0px 2px 29px -6px rgba(0,0,0,0.72);
 }
+
+input[type=checkbox]:checked + label{ background-color: #08402b; } 

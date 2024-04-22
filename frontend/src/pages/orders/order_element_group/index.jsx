@@ -10,14 +10,16 @@ const OrderElementGroup = (props) => {
           {props?.elements_with_badge?.map((value, index) => (
             <li className="list-group-item p-2 " key={value.name + index}>
               <div className="row ">
-                <div className="col text-start">{value.name}</div>
-                {value.badge && (
-                  <>
-                    <div className="col text-end px-3">
-                      <span className="fw-medium">{value.badge}</span>
-                    </div>
-                  </>
-                )}
+                <div className="d-flex">
+                  <div className="flex-fill text-start">{value.name}</div>
+                  {value.badge && (
+                    <>
+                      <div className="flex-shrink-1 text-end px-3">
+                        <span className="fw-medium">{value.badge}</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </li>
           ))}

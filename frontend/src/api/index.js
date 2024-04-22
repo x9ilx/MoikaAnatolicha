@@ -198,6 +198,17 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getEmployeesAllWashers() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/?page=${1}&limit=${9999999}&position=WASHER`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
   getEmployeesPositions() {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/employees/get_all_position/`, {

@@ -75,7 +75,7 @@ const DataListVehicle = (props) => {
   };
 
   const vehicleChange = (vehicle) => {
-    setCurrentPlateNumber("");
+
     setShowList(false);
     let newData = {
       id: vehicle.id ? vehicle.id : -1,
@@ -91,6 +91,10 @@ const DataListVehicle = (props) => {
     };
     let newState = [...vehicleListFinal, newData];
     props.setVehicleListFinal(newState);
+    setCurrentPlateNumber("");
+    setShowVehicleList(true);
+    setCreateVehicle(false);
+    props.onShowAdd(false)
   };
 
   const closeOpenMenus = (e) => {
@@ -302,6 +306,7 @@ const DataListVehicle = (props) => {
             onCancel={() => {
               setShowVehicleList(true);
               setCreateVehicle(false);
+              props.onShowAdd(false);
             }}
           />
         </>

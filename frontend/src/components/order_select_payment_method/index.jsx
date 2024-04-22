@@ -12,7 +12,7 @@ const SelectPaymentMethod = (props) => {
       .getPaymentMethods()
       .then((res) => {
         setPaymentsMethod(res)
-        props.onSetPaymentMethod(res[0].name);
+        props.onSetPaymentMethod(props.currentPaymentMethod || res[0].name);
       })
       .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
@@ -27,11 +27,12 @@ const SelectPaymentMethod = (props) => {
   return (
     <>
       <div className="form-floating mb-3">
-        <p className="">Метод оплаты:</p>
+        <p className="">Способ оплаты:</p>
         <select
           className="form-select text p-3"
           id="currentType"
           placeholder="currentType"
+          value={props.currentPaymentMethod}
           onChange={(e) => {
             props.onSetPaymentMethod(e.target.value);
           }}
@@ -49,6 +50,7 @@ const SelectPaymentMethod = (props) => {
 };
 
 SelectPaymentMethod.propTypes = {
+  currentPaymentMethod: PropTypes.string.isRequired,
   onSetPaymentMethod: PropTypes.func.isRequired,
 };
 
