@@ -116,6 +116,27 @@ class VehicleOrTrailerTypeSerializer(serializers.ModelSerializer):
         ]
 
 
+class VehicleMiniSerializer(serializers.ModelSerializer):
+    vehicle_type = serializers.StringRelatedField(
+        source='vehicle_type.name',
+        read_only=True
+    )
+    owner = serializers.StringRelatedField(
+        source='owner.name',
+        read_only=True
+    )
+    class Meta:
+        model = Vehicle
+        fields = [
+            'id',
+            'plate_number',
+            'vehicle_model',
+            'owner',
+            'vehicle_type',
+            'owner_id',
+            'vehicle_type_id',
+        ]
+
 class VehicleSerializer(serializers.ModelSerializer):
     vehicle_type = VehicleOrTrailerTypeSerializer(read_only=True)
     owner = LegalEntitySerializer(read_only=True)

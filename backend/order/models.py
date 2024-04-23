@@ -1,5 +1,4 @@
 from django.db import models
-from django.forms import CharField
 
 
 class OrderPaimentMethod(models.TextChoices):
@@ -12,24 +11,25 @@ class OrderPaimentMethod(models.TextChoices):
 class Order(models.Model):
     """Model definition for Order."""
 
-    order_number = CharField(max_length=255)
+    order_number = models.CharField(max_length=255)
     order_datetime = models.DateTimeField(
         'Дата/время заказа',
         auto_now_add=True,
     )
     order_close_datetime = models.DateTimeField(
-        'Дата/время заказа',
+        'Дата/время заказа', blank=True, null=True
     )
     administrator = models.ForeignKey(
         'employer.Employer',
         verbose_name='Администратор',
         on_delete=models.SET_NULL,
+        related_name="+",
         null=True,
     )
     washers = models.ManyToManyField(
         'employer.Employer',
         verbose_name='Мойщики',
-        related_name='washer_orders',
+        through='order.OrderWashers',
     )
     payment_method = models.CharField(
         max_length=50,
@@ -57,11 +57,13 @@ class Order(models.Model):
         verbose_name='Услуга',
         through='order.OrderService',
     )
-    final_cost = models.DecimalField(
-        'Итоговая стоимость', max_digits=5, decimal_places=1
+    final_cost = models.IntegerField('Итоговая стоимость наличными')
+    final_cost_contract = models.IntegerField('Итоговая стоимость')
+    final_cost_for_employer_work = models.IntegerField(
+        'Итоговая оплата работы сотрудников'
     )
-    final_cost_for_employer_work = models.DecimalField(
-        'Итоговая оплата работы сотрудника', max_digits=5, decimal_places=1
+    each_washer_salary = models.IntegerField(
+        'Итоговая оплата работы сотрудника'
     )
     is_paid = models.BooleanField('Оплачен?', default=False)
     is_completed = models.BooleanField('Завершен?', default=False)
@@ -108,8 +110,28 @@ class OrderService(models.Model):
         verbose_name='Услуга для ТС/ППЦ',
         on_delete=models.SET_NULL,
         null=True,
+        related_name='services_in_order',
+    )
+    vehicle = models.ForeignKey(
+        'vehicle.Vehicle',
+        verbose_name='ТС/ППЦ',
+        on_delete=models.SET_NULL,
+        null=True,
         related_name='+',
     )
+    # vehicle_type = models.ForeignKey(
+    #     'vehicle.VehicleOrTrailerType',
+    #     verbose_name='Тип ТС/ППЦ',
+    #     on_delete=models.CASCADE,
+    #     related_name='+',
+    # )
+    # vehicle_plate_number = models.CharField('Гос. номер', max_length=25)
+    # vehicle_model = models.CharField(
+    #     'Модель',
+    #     max_length=255,
+    #     blank=True,
+    # )
+    legal_entity_service = models.BooleanField('По договору?', default=False)
     cost = models.IntegerField('Cтоимость')
     employer_salary = models.IntegerField('Оплата сотруднику')
     percentage_for_washer = models.IntegerField('% мойщика')
@@ -130,4 +152,21 @@ class OrderVehicle(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='vehicle_orders',
+    )
+
+class OrderWashers(models.Model):
+    """Model definition for OrderService."""
+
+    order = models.ForeignKey(
+        'order.Order',
+        verbose_name='Заказ-ТС',
+        on_delete=models.CASCADE,
+        related_name='washers_order',
+    )
+    washer = models.ForeignKey(
+        'employer.Employer',
+        verbose_name='Мойщик',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='orders_washers',
     )

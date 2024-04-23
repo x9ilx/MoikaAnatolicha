@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const WorkOrderList = () => {
   const [loading, setLoading] = React.useState(true);
+
   const [workerCount, setWorkerCount] = React.useState();
+  const [activeOrders, setActiveOrders] = React.useState([]);
 
   const navigate = useNavigate();
 
@@ -16,9 +18,17 @@ const WorkOrderList = () => {
     });
   }, []);
 
+  const getOrders = React.useCallback(async () => {
+    api.getOrders()
+    .then((data) => {
+      setActiveOrders(data.results);
+    });
+  }, []);
+
   React.useEffect(() => {
     setLoading(true);
     getFreeWashers();
+    getOrders();
     setLoading(false);
   }, []);
 
@@ -45,12 +55,12 @@ const WorkOrderList = () => {
 
       <div className="row">
         <div className="vstack gap-3">
-          <OrderElement />
-          <OrderElement />
-          <OrderElement />
-          <OrderElement />
-          <OrderElement />
-          <OrderElement />
+          {activeOrders.map((order, index) => (
+            <OrderElement 
+            key={"activeOrders"+index}
+            order={order}
+            />
+          ))}
         </div>
       </div>
     </>

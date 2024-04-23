@@ -30,19 +30,17 @@ const SetWashers = (props) => {
     getWashers();
   }, []);
 
-  const selectServices = () => {
-    props.setWashers(selectedServices);
+  const selectWashers = () => {
+    props.setWashers(selectedWashers);
     props.onCancel();
   };
 
-  const changeServiceSelect = (service, value) => {
+  const changeWasherSelect = (washer, value) => {
     if (value) {
-      setSelectedServices((prev) => [...prev, service]);
+      setSelectedWashers((prev) => [...prev, washer]);
     } else {
-      setSelectedServices(
-        selectedServices.filter(
-          (item) => item.service.id !== service.service.id
-        )
+      setSelectedWashers(
+        selectedWashers.filter((item) => item.id !== washer.id)
       );
     }
   };
@@ -58,44 +56,36 @@ const SetWashers = (props) => {
   return (
     <div className="form-floating mb-3">
       <div className="row">
-        {console.log(washersList)}
-        {/* <OrderElementGroup
-              header="Доступные мойщики:"
-              elements_with_badge={[
-                {
-                  name: service.service.name + ": " + service.cost + "₽",
-                  badge: (
-                    <div className="form-check form-switch form-check-reverse pb-2">
-                      <input
-                        className="form-check-input "
-                        type="checkbox"
-                        id={`service_available_${service_index}`}
-                        name={`service_available_${service_index}`}
-                        checked={selectedServices.find(
-                          (element) =>
-                            (element.service.id == service.service.id) &
-                            (element.legal_entity_service ==
-                              service.legal_entity_service) &
-                            (element.vehicle_type_id == service.vehicle_type_id)
-                        )}
-                        onChange={(e) => {
-                          changeServiceSelect(service, e.target.checked);
-                        }}
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`service_available_${service_index}`}
-                      ></label>
-                    </div>
-                  ),
-                },
-              ]}
-            /> */}
+        <OrderElementGroup
+          header="Доступные мойщики:"
+          elements_with_badge={washersList.map((washer, washer_index) => ({
+            name: washer.short_name,
+            badge: (
+              <div className="form-check form-switch form-check-reverse pb-2">
+                <input
+                  className="form-check-input "
+                  type="checkbox"
+                  id={`washersList_available_${washer_index}`}
+                  name={`washersList_available_${washer_index}`}
+                  checked={selectedWashers.find(
+                    (element) => element.id == washer.id
+                  )}
+                  onChange={(e) => {
+                    changeWasherSelect(washer, e.target.checked);
+                  }}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`washersList_available_${washer_index}`}
+                ></label>
+              </div>
+            ),
+          }))}
+        />
       </div>
-
       <Button
         clickHandler={() => {
-          selectServices();
+          selectWashers();
         }}
         colorClass="btn-success"
         type="button"

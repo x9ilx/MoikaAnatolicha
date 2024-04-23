@@ -200,13 +200,16 @@ class Api {
 
   getEmployeesAllWashers() {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/employees/?page=${1}&limit=${9999999}&position=WASHER`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL + `/api/employees/?page=${1}&limit=${9999999}&position=WASHER`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getEmployeesPositions() {
@@ -439,19 +442,15 @@ class Api {
 
   getVehicleTypes() {
     const token = cookies.get("auth_token");
-    return fetch(
-      URL +
-        `/api/vehicle_type/`,
-      {
-        method: "GET",
-        headers: {
-          ...this._headers,
-          authorization: `Token ${token}`,
-        },
-      }
-    ).then(this.checkResponse);
+    return fetch(URL + `/api/vehicle_type/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
   }
-  
+
   ////////////////////////////////////////// LEGAL ENTITIES
   getLegalEntities(page = 1, items_limit = 8, search = "") {
     const token = cookies.get("auth_token");
@@ -526,7 +525,6 @@ class Api {
         ...this._headers,
         authorization: `Token ${token}`,
       },
-      
     }).then(this.checkResponse);
   }
 
@@ -538,20 +536,22 @@ class Api {
         ...this._headers,
         authorization: `Token ${token}`,
       },
-      
     }).then(this.checkResponse);
   }
-  
+
   getLegalEntityVehicleTypeServicesList(id, vehicle_type_id) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/legal_entity/${id}/get_services_for_vehicle_type/${vehicle_type_id}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-      
-    }).then(this.checkResponse);
+    return fetch(
+      URL +
+        `/api/legal_entity/${id}/get_services_for_vehicle_type/${vehicle_type_id}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   setLegalEntityServicesList(id, data) {
@@ -567,7 +567,7 @@ class Api {
       }),
     }).then(this.checkResponse);
   }
-  
+
   ////////////////////////////////////////// SERVICES
 
   getServices(search = "") {
@@ -630,7 +630,7 @@ class Api {
       }),
     }).then(this.checkResponse);
   }
-  
+
   deleteService(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/services/${id}/`, {
@@ -641,24 +641,44 @@ class Api {
       },
     }).then(this.checkResponse);
   }
-  
-///////////////////////////////////// ORDERS
 
-getPaymentMethods() {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/orders/get_payment_methods/`, {
-    method: "GET",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-  }).then(this.checkResponse);
-}
+  ///////////////////////////////////// ORDERS
 
+  getPaymentMethods() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/get_payment_methods/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
 
+  createOrder(data) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    }).then(this.checkResponse);
+  }
 
-
-
+  getOrders() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/?page=${1}&limit=${999999}&is_completed=${false}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
 }
 
 export default new Api(process.env.API_URL || "http://localhost", {

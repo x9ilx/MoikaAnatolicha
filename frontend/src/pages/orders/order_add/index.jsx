@@ -11,18 +11,18 @@ import OderSelectedServices from "../../../components/order_selected_vervices";
 import OrderElementGroup from "../order_element_group";
 import { useAuth } from "../../../contexts/auth-context";
 import SetWashers from "../../../components/orders_set_washers";
+import OrderWasherList from "../../../components/order_washer_list";
+import api from "../../../api";
 
 const OrderAdd = (props) => {
-  // order_number = CharField(max_length=255)
-  //   order_datetime = models.DateTimeField(
   const [loading, setLoading] = React.useState(false);
   const [hideInterface, setHideInterface] = React.useState(false);
   const [DELETE, setDELETE] = React.useState(false);
   const [selectService, setSelectService] = React.useState(false);
   const [selectWashers, setSelectWashers] = React.useState(false);
   const [saveAllowed, setSaveAllowed] = React.useState(false);
-  
-  const [administrator, setAdministrator] = React.useState({});
+
+  const [administrator, setAdministrator] = React.useState(0);
   const [vehicleList, setVehicleList] = React.useState([]);
   const [paymentMethod, setPaymentMethod] = React.useState("");
   const [services, setServices] = React.useState([]);
@@ -41,25 +41,42 @@ const OrderAdd = (props) => {
     setAdministrator(auth.employerInfo.id);
   }, []);
 
-
   const CreateOrder = React.useCallback(() => {
-    // let data = {
-    //   plate_number: plateNumber,
-    //   vehicle_model: vehicleModel,
-    //   owner_id: owner,
-    //   vehicle_type_id: vehicleType,
-    // };
-    // api
-    //   .createVehicle(data)
-    //   .then((res) => {
-    //     toast.success("ТС/ПЦ/ППЦ " + res.plate_number + " успешно добавлено");
-    //     navigate(-1);
-    //   })
-    //   .catch((err) => {
-    //     setSaveAccept(false);
-    //     Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
-    //   });
-  }, []);
+    let data = {
+      administrator: administrator,
+      payment_method: paymentMethod,
+      total_cost: totalCost,
+      total_cost_contract: totalCostContract,
+      final_cost_for_employer: finalCostForEmployer,
+      client_name: clientName,
+      clinet_phone: clinetPhone,
+      vehicles: vehicleList,
+      services: services,
+      washers: washers,
+    };
+
+    api
+      .createOrder(data)
+      .then((res) => {
+        toast.success("Заказ добавлен в работу");
+        navigate("/");
+      })
+      .catch((err) => {
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+      });
+  }, [
+    administrator,
+    paymentMethod,
+    totalCost,
+    totalCostContract,
+    finalCostForEmployer,
+    clientName,
+    clinetPhone,
+    vehicleList,
+    services,
+    washers,
+    navigate,
+  ]);
 
   const UpdateOrder = React.useCallback(() => {}, []);
 
@@ -82,7 +99,9 @@ const OrderAdd = (props) => {
       } else {
         t_cost += item.cost;
       }
-      f_washer_salary += Math.round((item.employer_salary * (item.percentage_for_washer / 100)))
+      f_washer_salary += Math.round(
+        item.employer_salary * (item.percentage_for_washer / 100)
+      );
     });
     setServices(services);
     setSelectService(false);
@@ -91,7 +110,7 @@ const OrderAdd = (props) => {
     setTotalCostContract(t_cost_contract);
     setFinalCostForEmployer(f_washer_salary);
     if (services.length > 0) {
-//
+      //
     } else {
       setSaveAllowed(false);
       setTotalCost(0);
@@ -106,15 +125,15 @@ const OrderAdd = (props) => {
     setServices(newArr);
   };
 
-
   const washersChoises = (washers) => {
     if (washers.length > 0) {
+      setWashers(washers);
       setSaveAllowed(true);
     } else {
+      setWashers([]);
       setSaveAllowed(false);
     }
-
-  }
+  };
   return (
     <>
       {loading && (
@@ -160,8 +179,8 @@ const OrderAdd = (props) => {
               </>
             )}
 
-            {services.length > 0 && !selectService && (
-              <>
+            {services.length > 0 && !selectService && !hideInterface && (
+              <div className="">
                 <hr></hr>
                 <OderSelectedServices
                   serviceList={services}
@@ -171,26 +190,26 @@ const OrderAdd = (props) => {
                     setHideInterface(true);
                   }}
                 />
-                <div className="p-0 m-0">
-                <OrderElementGroup
-                  header={
-                    <span className="fs-5 fw-medium">Итого к оплате:</span>
-                  }
-                  elements_with_badge={[
-                    {
-                      name: "Необходимо оплатить:",
-                      badge: `${totalCost}₽`,
-                    },
-                    paymentMethod === "CONTRACT"
-                      ? {
-                          name: "Оплата по договору:",
-                          badge: `${totalCostContract}₽`,
-                        }
-                      : {},
-                  ]}
-                />
+                <div className="border">
+                  <OrderElementGroup
+                    header={
+                      <span className="fs-5 fw-medium">Итого к оплате:</span>
+                    }
+                    elements_with_badge={[
+                      {
+                        name: "Необходимо оплатить:",
+                        badge: `${totalCost}₽`,
+                      },
+                      paymentMethod === "CONTRACT"
+                        ? {
+                            name: "Оплата по договору:",
+                            badge: `${totalCostContract}₽`,
+                          }
+                        : {},
+                    ]}
+                  />
                 </div>
-              </>
+              </div>
             )}
 
             {vehicleList.length > 0 && selectService && (
@@ -213,36 +232,87 @@ const OrderAdd = (props) => {
               </>
             )}
 
-            {vehicleList.length > 0 && services.length > 0 && !hideInterface && (
-              <Button
-                clickHandler={() => {
-                  setSelectWashers(true);
-                  setHideInterface(true);
-                }}
-                colorClass="btn-info my-3"
-                type="button"
-                disabled={false}
-              >
-                <>Назначить мойщиков</>
-              </Button>
-            )}
+            {vehicleList.length > 0 &&
+              services.length > 0 &&
+              !hideInterface &&
+              washers.length === 0 && (
+                <Button
+                  clickHandler={() => {
+                    setSelectWashers(true);
+                    setHideInterface(true);
+                  }}
+                  colorClass="btn-info my-3"
+                  type="button"
+                  disabled={false}
+                >
+                  <>Назначить мойщиков</>
+                </Button>
+              )}
 
             {selectWashers && (
-              <SetWashers 
-              currentWashers={washers}
-              onCancel={() => {
-                setSelectWashers(false);
-                setHideInterface(false);
-              }}
-              setWashers={setWashers}
+              <SetWashers
+                currentWashers={washers}
+                onCancel={() => {
+                  setSelectWashers(false);
+                  setHideInterface(false);
+                }}
+                setWashers={washersChoises}
               />
+            )}
+
+            {vehicleList.length > 0 &&
+              services.length > 0 &&
+              !hideInterface &&
+              washers.length > 0 && (
+                <OrderWasherList
+                  onStartEditWasher={() => {
+                    setSelectWashers(true);
+                    setHideInterface(true);
+                  }}
+                  washerList={washers}
+                />
+              )}
+
+            {saveAllowed && (
+              <div>
+                <div className="form-floating my-3">
+                  <input
+                    required
+                    className="form-control text"
+                    id="name"
+                    placeholder="name"
+                    onChange={(e) => {
+                      setClientName(e.target.value);
+                    }}
+                    value={clientName}
+                    name="name"
+                  />
+                  <label htmlFor="name">Ф. И. О. клиента</label>
+                </div>
+                <div className="form-floating my-3">
+                  <input
+                    required
+                    className="form-control text"
+                    id="name"
+                    placeholder="name"
+                    onChange={(e) => {
+                      setClinetPhone(e.target.value);
+                    }}
+                    value={clinetPhone}
+                    name="name"
+                  />
+                  <label htmlFor="name">Телефон клиента</label>
+                </div>
+              </div>
             )}
 
             <hr></hr>
             {!hideInterface && (
               <>
                 <Button
-                  clickHandler={() => {}}
+                  clickHandler={() => {
+                    order_id ? UpdateOrder() : CreateOrder();
+                  }}
                   colorClass="btn-success"
                   type="button"
                   disabled={!saveAllowed}
@@ -273,7 +343,7 @@ const OrderAdd = (props) => {
                         }}
                       />
                       <label className="form-check-label" htmlFor="DELETE">
-                        Удалить данные о ТС/ПЦ/ППЦ
+                        Удалить заказ
                       </label>
                     </div>
                     {DELETE && (
@@ -291,7 +361,7 @@ const OrderAdd = (props) => {
                           type="button"
                           disabled={false}
                         >
-                          <>УДАЛИТЬ ЗАПИСЬ О ТС/ПЦ/ППЦ</>
+                          <>УДАЛИТЬ ЗАКАЗ</>
                         </Button>
                       </>
                     )}
