@@ -4,11 +4,13 @@ import PropTypes from "prop-types";
 import OrderElementGroup from "../order_element_group";
 import Stopwatch from "../../../components/stopwatch";
 import { useAuth } from "../../../contexts/auth-context";
+import { useNavigate, useParams } from "react-router-dom";
 
 const OrderElement = (props) => {
   const [services, setServices] = React.useState([]);
 
   const auth = useAuth();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     let newArr = {};
@@ -105,12 +107,14 @@ const OrderElement = (props) => {
           </div>
           <div className="row mx-3 gap-1 my-2">
             <Button
-              clickHandler={() => {}}
+              clickHandler={() => {
+                navigate('/' + props.order.id)
+              }}
               colorClass="btn-primary"
               type="button"
               disabled={false}
             >
-              <>Завершить заказ</>
+              <>Завершить/Изменить заказ</>
             </Button>
           </div>
         </div>

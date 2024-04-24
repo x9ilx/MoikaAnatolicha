@@ -8,6 +8,8 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from vehicle.models import Vehicle
+from vehicle.serializers import VehicleSerializer
 from employer.models import Employer
 from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 
@@ -74,6 +76,23 @@ class OrderViewSet(viewsets.ModelViewSet):
         services = request.data['services']
         washers = request.data['washers']
 
+
+        if not services:
+             return Response(
+                 {'Ошибка': 'Необхоидмо выбрать услуги'},
+                 status=status.HTTP_400_BAD_REQUEST
+                )
+        if not washers:
+             return Response(
+                 {'Ошибка': 'Необхоидмо назначить мойщиков'},
+                 status=status.HTTP_400_BAD_REQUEST
+                )
+        if not vehicles:
+             return Response(
+                 {'Ошибка': 'Необхоидмо указать ТС/ПЦ/ППЦ'},
+                 status=status.HTTP_400_BAD_REQUEST
+                )
+
         order_datetime = datetime.now()
         order_number = order_datetime.strftime("%d%m%Y%H%M%S")
 
@@ -114,13 +133,32 @@ class OrderViewSet(viewsets.ModelViewSet):
         ]
         OrderWashers.objects.bulk_create(washer_objs)
 
-        vehicle_objs = [
-            OrderVehicle(
-                order=order,
-                vehicle_id=vehicle['id'],
-            ) for vehicle in vehicles
-        ]
-        OrderVehicle.objects.bulk_create(vehicle_objs)
+        for vehicle in vehicles:
+            vehicle_exist = Vehicle.objects.filter(pk=vehicle['id'])
+            
+            if vehicle_exist.exists():
+                OrderVehicle.objects.create(
+                    order=order,
+                    vehicle_id=vehicle['id'],
+                )
+            else:
+                data = {
+                    'plate_number': vehicle['plate_number'],
+                    'vehicle_model': vehicle['vehicle_model'],
+                    'owner_id': vehicle['owner'],
+                    'vehicle_type_id': vehicle['vehicle_type'],
+                }
+                vehicle_serializer = VehicleSerializer(
+                    data=data,
+                    context={'request': request}
+                )
+                vehicle_serializer.is_valid(raise_exception=True)
+                new_vehicle = vehicle_serializer.save()
+                OrderVehicle.objects.create(
+                    order=order,
+                    vehicle_id=new_vehicle.pk,
+                )
+        
 
         for service in services:
             b_service = None
@@ -137,16 +175,20 @@ class OrderViewSet(viewsets.ModelViewSet):
                 )
                 total_cost += service['cost']
 
+            if service['vehicle']['id'] == -1:
+                vehicle_obj = Vehicle.objects.get(
+                    plate_number=service['vehicle']['plate_number']
+                )
+                service['vehicle']['id'] = vehicle_obj.pk
+
             order.services_in_order.create(
                 order=order,
                 service_id=service['service']['id'],
                 cost=service['cost'],
                 employer_salary=service['employer_salary'],
                 percentage_for_washer=service['percentage_for_washer'],
-                vehicle_id=service['vehicle']['id']
-                # legal_entity_service=service['legal_entity_service'],
-                # vehicle_plate_number=service['vehicle']['plate_number'],
-                # vehicle_model=service['vehicle']['vehicle_model'],
+                vehicle_id=service['vehicle']['id'],
+                legal_entity_service=service['legal_entity_service']
             )
             if b_service.cost != service['cost']:
                 comments += (f'{administrator_object.short_name} изменил '
@@ -171,4 +213,4 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.final_cost_for_employer_work = final_cost_for_employer
         order.each_washer_salary = each_washer_salary
         order.save()
-        return Response(each_washer_salary, status=status.HTTP_200_OK)
+        return Response(order.pk, status=status.HTTP_201_CREATED)

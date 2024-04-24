@@ -231,6 +231,13 @@ class Command(BaseCommand):
                 './data/service_vehicle_types.csv',
                 self.load_no_foreign_key_table,
             )
+        if self.check_installed_apps('counterparty'):
+            self.load_data(
+                'counterparty',
+                'LegalEntity',
+                './data/legal_entity.csv',
+                self.load_no_foreign_key_table,
+            )
 
         self.call_sqlsequence_all_app()
         self.print_divider()

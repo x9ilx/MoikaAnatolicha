@@ -9,6 +9,7 @@ import ProtectedRoute from "../../../components/protected-route"
 import UserRoleRouter from "../../../components/user_role_router"
 import WorkOrderList from "../work_order_list"
 import DeletePage from "../../DELETE_page"
+import OrderEdit from "../order_edit";
 
 function OrderController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -71,6 +72,16 @@ function OrderController() {
               element={
                 <>
                  <OrderAdd />
+                </>
+              }
+            />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/:order_id/"
+              element={
+                <>
+                 <OrderEdit />
                 </>
               }
             />

@@ -150,19 +150,22 @@ const OrderAdd = (props) => {
           )}
           <hr></hr>
           <form autoComplete="new-password">
+
+          {!selectService && !selectWashers && (
+            <DataListVehicle
+              vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
+              setVehicleListFinal={changeVehicleCount}
+              onShowAdd={setHideInterface}
+              editOwner={true}
+              ownerId={-1}
+              ownerName=""
+              header={"Найти ТС/ППЦ по гос. номеру, владельцу"}
+              noColor={true}
+            />
+          )}
+          
             {!hideInterface && (
               <>
-                <DataListVehicle
-                  vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
-                  setVehicleListFinal={changeVehicleCount}
-                  onShowAdd={setHideInterface}
-                  editOwner={true}
-                  ownerId={-1}
-                  ownerName=""
-                  header={"Найти ТС/ППЦ по гос. номеру, владельцу"}
-                  noColor={true}
-                />
-
                 {vehicleList.length > 0 && services.length <= 0 && (
                   <Button
                     clickHandler={() => {
