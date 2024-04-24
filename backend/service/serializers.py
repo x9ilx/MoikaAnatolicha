@@ -40,8 +40,12 @@ class ServiceVehicleTypeSerializer(serializers.ModelSerializer):
 
 class VehicleTypeServiceSerializer(serializers.ModelSerializer):
     service = ServiceSerializer()
-    vehicle_type_id = serializers.IntegerField(source='vehicle_type.id', read_only=True)
-    legal_entity_service = serializers.BooleanField(default=False, read_only=True)
+    vehicle_type_id = serializers.IntegerField(
+        source='vehicle_type.id', read_only=True
+    )
+    legal_entity_service = serializers.BooleanField(
+        default=False, read_only=True
+    )
 
     class Meta:
         model = ServiceVehicleType

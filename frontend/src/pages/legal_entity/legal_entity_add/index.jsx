@@ -165,6 +165,20 @@ const LegalEntityAdd = (props) => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
+                      required
+                      className="form-control text"
+                      id="short_name"
+                      placeholder="short_name"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={requisites.short_name}
+                      name="short_name"
+                    />
+                    <label htmlFor="short_name">Короткое наименование организации</label>
+                  </div>
+                  <div className="form-floating mb-3">
+                    <input
                       className="form-control text"
                       id="address"
                       placeholder="address"

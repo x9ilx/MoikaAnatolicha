@@ -82,7 +82,7 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
                         className="text-start text-white fw-medium "
                         style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
                       >
-                        {legal_entity.name}
+                        {legal_entity.short_name}
                       </div>
                     </div>
                   </div>

@@ -265,7 +265,7 @@ const ServiceAdd = (props) => {
                             header=""
                             elements_with_badge={[
                               {
-                                name: vehicle_type.name,
+                                name: <div className="fw-medium">{vehicle_type.name}</div>,
                                 badge: (
                                   <div className="form-check form-switch form-check-reverse pb-2">
                                     <input

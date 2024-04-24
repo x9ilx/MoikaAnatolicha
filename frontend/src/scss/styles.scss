@@ -104,4 +104,15 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
   -moz-box-shadow: 0px 2px 29px -6px rgba(0,0,0,0.72);
 }
 
-input[type=checkbox]:checked + label{ background-color: #08402b; } 
+@media print {
+  @page { margin: 0; }
+  .page_break { page-break-after: always; }
+}
+@media screen {
+  .print_content { display: none }
+}
+// @page 
+//     {
+//         size:  auto;   /* auto is the initial value */
+//         margin: 0mm;  /* this affects the margin in the printer settings */
+//     }

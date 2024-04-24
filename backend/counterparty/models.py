@@ -5,6 +5,7 @@ class LegalEntity(models.Model):
     """Model definition for LegalEntity."""
 
     name = models.TextField('Наименование', blank=True)
+    short_name = models.TextField('Короткое наименование', blank=True)
     address = models.TextField('Адрес', blank=True)
     ogrn = models.TextField('ОГРН', blank=True)
     inn = models.TextField('ИНН', blank=True)

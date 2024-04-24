@@ -679,7 +679,20 @@ class Api {
       },
     }).then(this.checkResponse);
   }
+
+  getOrder(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/${id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
 }
+
 
 export default new Api(process.env.API_URL || "http://localhost", {
   "content-type": "application/json",

@@ -1,20 +1,32 @@
 from django.db.models import Q
 from rest_framework import serializers
 
-from vehicle.serializers import VehicleMiniSerializer
 from core.string_utils import normalize_plate_number
 from employer.models import Employer
+from vehicle.serializers import VehicleMiniSerializer
 
 from .models import Order, OrderService
 
 
 class OrderServiceSerializer(serializers.ModelSerializer):
-    vehicle_type = serializers.StringRelatedField(read_only=True, source='vehicle.vehicle_type.id')
-    vehicle_type_name = serializers.StringRelatedField(read_only=True, source='vehicle.vehicle_type.name')
-    vehicle_class_name = serializers.StringRelatedField(read_only=True, source='vehicle.vehicle_type.vehicle_class.name')
-    service_name = serializers.StringRelatedField(read_only=True, source='service.name')
-    vehicle_plate_number = serializers.StringRelatedField(read_only=True, source='vehicle.plate_number')
-    vehicle_model = serializers.StringRelatedField(read_only=True, source='vehicle.vehicle_model')
+    vehicle_type = serializers.StringRelatedField(
+        read_only=True, source='vehicle.vehicle_type.id'
+    )
+    vehicle_type_name = serializers.StringRelatedField(
+        read_only=True, source='vehicle.vehicle_type.name'
+    )
+    vehicle_class_name = serializers.StringRelatedField(
+        read_only=True, source='vehicle.vehicle_type.vehicle_class.name'
+    )
+    service_name = serializers.StringRelatedField(
+        read_only=True, source='service.name'
+    )
+    vehicle_plate_number = serializers.StringRelatedField(
+        read_only=True, source='vehicle.plate_number'
+    )
+    vehicle_model = serializers.StringRelatedField(
+        read_only=True, source='vehicle.vehicle_model'
+    )
 
     class Meta:
         model = OrderService

@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='orderservice',
             name='legal_entity_service',
-            field=models.BooleanField(default=False, verbose_name='По договору?'),
+            field=models.BooleanField(
+                default=False, verbose_name='По договору?'
+            ),
         ),
     ]

@@ -23,7 +23,7 @@ class Order(models.Model):
         'employer.Employer',
         verbose_name='Администратор',
         on_delete=models.SET_NULL,
-        related_name="+",
+        related_name='+',
         null=True,
     )
     washers = models.ManyToManyField(
@@ -119,18 +119,6 @@ class OrderService(models.Model):
         null=True,
         related_name='+',
     )
-    # vehicle_type = models.ForeignKey(
-    #     'vehicle.VehicleOrTrailerType',
-    #     verbose_name='Тип ТС/ППЦ',
-    #     on_delete=models.CASCADE,
-    #     related_name='+',
-    # )
-    # vehicle_plate_number = models.CharField('Гос. номер', max_length=25)
-    # vehicle_model = models.CharField(
-    #     'Модель',
-    #     max_length=255,
-    #     blank=True,
-    # )
     legal_entity_service = models.BooleanField('По договору?', default=False)
     cost = models.IntegerField('Cтоимость')
     employer_salary = models.IntegerField('Оплата сотруднику')
@@ -153,6 +141,7 @@ class OrderVehicle(models.Model):
         null=True,
         related_name='vehicle_orders',
     )
+
 
 class OrderWashers(models.Model):
     """Model definition for OrderService."""

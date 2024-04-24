@@ -118,13 +118,15 @@ class VehicleOrTrailerTypeSerializer(serializers.ModelSerializer):
 
 class VehicleMiniSerializer(serializers.ModelSerializer):
     vehicle_type = serializers.StringRelatedField(
-        source='vehicle_type.name',
-        read_only=True
+        source='vehicle_type.name', read_only=True
     )
     owner = serializers.StringRelatedField(
-        source='owner.name',
-        read_only=True
+        source='owner.short_name', read_only=True
     )
+    vehicle_class = serializers.StringRelatedField(
+        read_only=True, source='vehicle_type.vehicle_class.name'
+    )
+
     class Meta:
         model = Vehicle
         fields = [
@@ -133,9 +135,11 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
             'vehicle_model',
             'owner',
             'vehicle_type',
+            'vehicle_class',
             'owner_id',
             'vehicle_type_id',
         ]
+
 
 class VehicleSerializer(serializers.ModelSerializer):
     vehicle_type = VehicleOrTrailerTypeSerializer(read_only=True)

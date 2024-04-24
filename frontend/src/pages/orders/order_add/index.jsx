@@ -22,9 +22,11 @@ const OrderAdd = (props) => {
   const [selectWashers, setSelectWashers] = React.useState(false);
   const [saveAllowed, setSaveAllowed] = React.useState(false);
 
+
   const [administrator, setAdministrator] = React.useState(0);
   const [vehicleList, setVehicleList] = React.useState([]);
   const [paymentMethod, setPaymentMethod] = React.useState("");
+  const [isPaid, setIsPaid] = React.useState(false);
   const [services, setServices] = React.useState([]);
   const [washers, setWashers] = React.useState([]);
   const [totalCost, setTotalCost] = React.useState(0);
@@ -45,6 +47,7 @@ const OrderAdd = (props) => {
     let data = {
       administrator: administrator,
       payment_method: paymentMethod,
+      is_paid: isPaid,
       total_cost: totalCost,
       total_cost_contract: totalCostContract,
       final_cost_for_employer: finalCostForEmployer,
@@ -75,6 +78,7 @@ const OrderAdd = (props) => {
     vehicleList,
     services,
     washers,
+    isPaid,
     navigate,
   ]);
 
@@ -150,20 +154,19 @@ const OrderAdd = (props) => {
           )}
           <hr></hr>
           <form autoComplete="new-password">
+            {!selectService && !selectWashers && (
+              <DataListVehicle
+                vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
+                setVehicleListFinal={changeVehicleCount}
+                onShowAdd={setHideInterface}
+                editOwner={true}
+                ownerId={-1}
+                ownerName=""
+                header={"Найти ТС/ППЦ по гос. номеру, владельцу"}
+                noColor={true}
+              />
+            )}
 
-          {!selectService && !selectWashers && (
-            <DataListVehicle
-              vehicleListFinal={vehicleList.length > 0 ? vehicleList : []}
-              setVehicleListFinal={changeVehicleCount}
-              onShowAdd={setHideInterface}
-              editOwner={true}
-              ownerId={-1}
-              ownerName=""
-              header={"Найти ТС/ППЦ по гос. номеру, владельцу"}
-              noColor={true}
-            />
-          )}
-          
             {!hideInterface && (
               <>
                 {vehicleList.length > 0 && services.length <= 0 && (
@@ -280,7 +283,6 @@ const OrderAdd = (props) => {
               <div>
                 <div className="form-floating my-3">
                   <input
-                    required
                     className="form-control text"
                     id="name"
                     placeholder="name"
@@ -294,7 +296,6 @@ const OrderAdd = (props) => {
                 </div>
                 <div className="form-floating my-3">
                   <input
-                    required
                     className="form-control text"
                     id="name"
                     placeholder="name"
@@ -305,6 +306,20 @@ const OrderAdd = (props) => {
                     name="name"
                   />
                   <label htmlFor="name">Телефон клиента</label>
+                </div>
+                <div className="form-check form-switch form-check-reverse pb-2">
+                  <input
+                    className="form-check-input "
+                    type="checkbox"
+                    id="isPaid"
+                    name="isPaid"
+                    onChange={(e) => {
+                      setIsPaid(e.target.checked);
+                    }}
+                  />
+                  <label className="form-check-label" htmlFor="isPaid">
+                    Заказ оплачен
+                  </label>
                 </div>
               </div>
             )}
@@ -320,7 +335,7 @@ const OrderAdd = (props) => {
                   type="button"
                   disabled={!saveAllowed}
                 >
-                  <>{order_id ? "Сохранить заказ" : "Создать заказ"}</>
+                  <>Создать заказ</>
                 </Button>
                 <Button
                   clickHandler={() => {
@@ -332,44 +347,6 @@ const OrderAdd = (props) => {
                 >
                   <>Назад</>
                 </Button>
-
-                {order_id && (
-                  <>
-                    <div className="form-check form-switch form-check-reverse pb-2">
-                      <input
-                        className="form-check-input "
-                        type="checkbox"
-                        id="DELETE"
-                        name="DELETE"
-                        onChange={() => {
-                          setDELETE(!DELETE);
-                        }}
-                      />
-                      <label className="form-check-label" htmlFor="DELETE">
-                        Удалить заказ
-                      </label>
-                    </div>
-                    {DELETE && (
-                      <>
-                        <Button
-                          clickHandler={() => {
-                            props
-                              .setInfoStringForDelete
-                              //   "ТС/ПЦ/ППЦ  " + plateNumber
-                              ();
-                            props.setId(order_id);
-                            navigate("./delete/");
-                          }}
-                          colorClass="btn-danger"
-                          type="button"
-                          disabled={false}
-                        >
-                          <>УДАЛИТЬ ЗАКАЗ</>
-                        </Button>
-                      </>
-                    )}
-                  </>
-                )}
               </>
             )}
           </form>
@@ -377,11 +354,6 @@ const OrderAdd = (props) => {
       )}
     </>
   );
-};
-
-OrderAdd.propTypes = {
-  setInfoStringForDelete: PropTypes.func,
-  setId: PropTypes.func,
 };
 
 export default OrderAdd;

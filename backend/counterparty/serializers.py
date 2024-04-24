@@ -14,6 +14,9 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
         queryset=VehicleOrTrailerType.objects.all()
     )
     owner_name = serializers.StringRelatedField(source='owner', read_only=True)
+    owner_short_name = serializers.StringRelatedField(
+        source='owner.short_name', read_only=True
+    )
     vehicle_type_name = serializers.StringRelatedField(
         source='vehicle_type', read_only=True
     )
@@ -32,6 +35,7 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
             'vehicle_model',
             'vehicle_type',
             'owner_name',
+            'owner_short_name',
             'vehicle_type_name',
             'vehicle_class_name',
             'to_be_removed',
@@ -47,6 +51,7 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'short_name',
             'address',
             'ogrn',
             'inn',

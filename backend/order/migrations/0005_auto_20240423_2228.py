@@ -13,12 +13,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='orderservice',
             name='vehicle_model',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Модель'),
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name='Модель'
+            ),
         ),
         migrations.AddField(
             model_name='orderservice',
             name='vehicle_plate_number',
-            field=models.CharField(default='', max_length=25, verbose_name='Гос. номер'),
+            field=models.CharField(
+                default='', max_length=25, verbose_name='Гос. номер'
+            ),
             preserve_default=False,
         ),
     ]
