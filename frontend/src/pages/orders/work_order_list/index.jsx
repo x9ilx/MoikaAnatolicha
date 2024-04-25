@@ -12,13 +12,13 @@ const WorkOrderList = () => {
 
   const navigate = useNavigate();
 
-  const getFreeWashers = React.useCallback(async () => {
+  const getFreeWashers = React.useCallback( () => {
     api.getFreeWashers().then((data) => {
       setWorkerCount(data.free_washers_count);
     });
   }, []);
 
-  const getOrders = React.useCallback(async () => {
+  const getOrders = React.useCallback( () => {
     api.getOrders()
     .then((data) => {
       setActiveOrders(data.results);

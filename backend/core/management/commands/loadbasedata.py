@@ -170,13 +170,14 @@ class Command(BaseCommand):
             newuser.set_password(os.getenv('SUPERUSER_PASSWORD'))
             newuser.save()
 
-            Employer.objects.update_or_create(
+            employer, _ = Employer.objects.update_or_create(
                 pk=1,
                 name='Управляющий',
                 short_name='Управляющий',
                 user=newuser,
                 position=EmployerPositions.MANAGER,
             )
+            employer.save()
             self.stdout.write(self.style.SUCCESS(f'Суперпользователь создан'))
         except Exception as ex:
             self.stdout.write('\n')
@@ -196,6 +197,12 @@ class Command(BaseCommand):
                 'company',
                 'CompanyRequisites',
                 './data/company_requisites.csv',
+                self.load_requisites,
+            )
+            self.load_data(
+                'company',
+                'CompanySettings',
+                './data/company_settings.csv',
                 self.load_requisites,
             )
 

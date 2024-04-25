@@ -1,34 +1,27 @@
 import React from "react";
-import Button from "../../components/button";
+
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
+import Button from "../../components/button";
+
 
 const OrganistaionSettings = () => {
-  const [requisites, setRequisites] = React.useState({
-    name: "",
-    address: "",
-    ogrn: "",
-    inn: "",
-    okved: "",
-    okpo: "",
-    name_of_bank: "",
-    correspondent_account_of_bank: "",
-    bik_of_bank: "",
-    account_number_of_IP: "",
-    email: "",
-    phone: "",
-    director_name: "",
+  const [settings, setSettings] = React.useState({
+    administrator_wage_threshold: "",
+    administrator_earnings_after_threshold: "",
+    administrator_additional_payment_threshold: "",
+    administrator_additional_payments_after_threshold: "",
   });
   const [loading, setLoading] = React.useState(true);
 
   const navigate = useNavigate();
 
-  const getRequisites = React.useCallback(() => {
+  const getSettings = React.useCallback(() => {
     api
-      .getRequisites()
+      .getSettings()
       .then((res) => {
-        setRequisites(res);
+        setSettings(res);
       })
       .catch((err) => {
         const errors = Object.values(err);
@@ -38,9 +31,9 @@ const OrganistaionSettings = () => {
       });
   }, []);
 
-  const changeRequisites = () => {
+  const changeSettings = () => {
     api
-      .setRequisites(requisites)
+      .setSettings(settings)
       .then((data) => {
         toast.success("Данные успешно обновлены");
         navigate("/");
@@ -52,12 +45,12 @@ const OrganistaionSettings = () => {
 
   React.useEffect(() => {
     setLoading(true);
-    getRequisites();
+    getSettings();
     setLoading(false);
-  }, [getRequisites]);
+  }, [getSettings]);
 
   const onChangeInput = (e) => {
-    setRequisites((prevState) => ({
+    setSettings((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
@@ -72,18 +65,14 @@ const OrganistaionSettings = () => {
   } else {
     return (
       <>
-        <p className="fw-medium">Реквизиты организации:</p>
-        <p className="blockquote-footer">
-          Не используемые реквизиты необходимо оставить пустыми
-        </p>
+        <p className="fw-medium">Настройки организации:</p>
+        <hr></hr>
         <form
           autoComplete="new-password"
           className="my-3"
           onSubmit={(e) => {
             e.preventDefault();
-            {
-              changeRequisites();
-            }
+            changeSettings();
           }}
         >
           <div className="accordion accordion-flush" id="accordionFlushExample">
@@ -97,7 +86,7 @@ const OrganistaionSettings = () => {
                   aria-expanded="true"
                   aria-controls="flush-collapseOne"
                 >
-                  Основные
+                  Заработная плата администраторов
                 </button>
               </h2>
               <div
@@ -108,226 +97,66 @@ const OrganistaionSettings = () => {
                 <div className="accordion-body">
                   <div className="form-floating mb-3">
                     <input
+                    type="number"
                       className="form-control text"
-                      id="name"
-                      placeholder="name"
+                      id="administrator_wage_threshold"
+                      placeholder="administrator_wage_threshold"
                       onChange={(e) => {
                         onChangeInput(e);
                       }}
-                      value={requisites.name}
-                      name="name"
+                      value={settings.administrator_wage_threshold}
+                      name="administrator_wage_threshold"
                     />
-                    <label htmlFor="name">Наименование организации</label>
-                  </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="address"
-                      placeholder="address"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.address}
-                      name="address"
-                    />
-                    <label htmlFor="address">Юридический адрес</label>
-                  </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="email"
-                      placeholder="email"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.email}
-                      name="email"
-                    />
-                    <label htmlFor="email">E-mail</label>
+                    <label htmlFor="administrator_wage_threshold">Порог получения ЗП</label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
                     type="number"
                       className="form-control text"
-                      id="phone"
-                      placeholder="phone"
+                      id="administrator_earnings_after_threshold"
+                      placeholder="administrator_earnings_after_threshold"
                       onChange={(e) => {
                         onChangeInput(e);
                       }}
-                      value={requisites.phone}
-                      name="phone"
+                      value={settings.administrator_earnings_after_threshold}
+                      name="administrator_earnings_after_threshold"
                     />
-                    <label htmlFor="phone">Телефон</label>
+                    <label htmlFor="administrator_earnings_after_threshold">ЗП после достижения порога</label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
+                    type="number"
                       className="form-control text"
-                      id="director_name"
-                      placeholder="director_name"
+                      id="administrator_additional_payment_threshold"
+                      placeholder="administrator_additional_payment_threshold"
                       onChange={(e) => {
                         onChangeInput(e);
                       }}
-                      value={requisites.director_name}
-                      name="director_name"
+                      value={settings.administrator_additional_payment_threshold}
+                      name="administrator_additional_payment_threshold"
                     />
-                    <label htmlFor="director_name">
-                      Должность/Руководящее лицо
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h2 className="accordion-header">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#flush-collapseTwo"
-                  aria-expanded="false"
-                  aria-controls="flush-collapseTwo"
-                >
-                  Государственные
-                </button>
-              </h2>
-              <div
-                id="flush-collapseTwo"
-                className="accordion-collapse collapse"
-                data-bs-parent="#accordionFlushExample"
-              >
-                <div className="accordion-body">
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="ogrn"
-                      placeholder="ogrn"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.ogrn}
-                      name="ogrn"
-                    />
-                    <label htmlFor="ogrn">ОГРН</label>
+                    <label htmlFor="administrator_additional_payment_threshold">Порог для дополнительных выплат</label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
+                      type="number"
                       className="form-control text"
-                      id="inn"
-                      placeholder="inn"
+                      id="administrator_additional_payments_after_threshold"
+                      placeholder="administrator_additional_payments_after_threshold"
                       onChange={(e) => {
                         onChangeInput(e);
                       }}
-                      value={requisites.inn}
-                      name="inn"
+                      value={settings.administrator_additional_payments_after_threshold}
+                      name="administrator_additional_payments_after_threshold"
                     />
-                    <label htmlFor="inn">ИНН</label>
+                    <label htmlFor="administrator_additional_payments_after_threshold">Размер дополнительных выплат</label>
                   </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="okved"
-                      placeholder="okved"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.okved}
-                      name="okved"
-                    />
-                    <label htmlFor="okved">ОКВЭД</label>
-                  </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="okpo"
-                      placeholder="okpo"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.okpo}
-                      name="okpo"
-                    />
-                    <label htmlFor="okpo">ОКПО</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item">
-              <h2 className="accordion-header">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#flush-collapseThree"
-                  aria-expanded="false"
-                  aria-controls="flush-collapseThree"
-                >
-                  Банковские
-                </button>
-              </h2>
-              <div
-                id="flush-collapseThree"
-                className="accordion-collapse collapse"
-                data-bs-parent="#accordionFlushExample"
-              >
-                <div className="accordion-body">
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="name_of_bank"
-                      placeholder="name_of_bank"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.name_of_bank}
-                      name="name_of_bank"
-                    />
-                    <label htmlFor="name_of_bank">Наименование банка</label>
-                  </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="correspondent_account_of_bank"
-                      placeholder="correspondent_account_of_bank"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.correspondent_account_of_bank}
-                      name="correspondent_account_of_bank"
-                    />
-                    <label htmlFor="correspondent_account_of_bank">
-                      Кореспондентский счёт
-                    </label>
-                  </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="bik_of_bank"
-                      placeholder="bik_of_bank"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.bik_of_bank}
-                      name="bik_of_bank"
-                    />
-                    <label htmlFor="bik_of_bank">БИК</label>
-                  </div>
-                  <div className="form-floating mb-3">
-                    <input
-                      className="form-control text"
-                      id="account_number_of_IP"
-                      placeholder="account_number_of_IP"
-                      onChange={(e) => {
-                        onChangeInput(e);
-                      }}
-                      value={requisites.account_number_of_IP}
-                      name="account_number_of_IP"
-                    />
-                    <label htmlFor="account_number_of_IP">Расчётный счёт</label>
-                  </div>
+                  
                 </div>
               </div>
             </div>
           </div>
+          <hr></hr>
 
           <Button
             clickHandler={() => {}}

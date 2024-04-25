@@ -200,13 +200,13 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                         />
                         Заработная плата
                       </a>
-                      <a className="dropdown-item" style={{cursor: "pointer"}}>
+                      {/* <a className="dropdown-item" style={{cursor: "pointer"}}>
                         <HiDocumentRemove
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Расходы
-                      </a>
+                      </a> */}
                       <div className="dropdown-divider"></div>
                       <a
                         className="dropdown-item"
@@ -221,6 +221,20 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                         />
                         Реквизиты
                       </a>
+                      <a
+                        className="dropdown-item"
+                        style={{cursor: "pointer"}}
+                        onClick={() => {
+                          navigate("/settings/");
+                        }}
+                      >
+                        <IoIosListBox
+                          size={14}
+                          className="me-2 text-text-color"
+                        />
+                        Настройки
+                      </a>
+                      
                       <a
                         className="dropdown-item"
                         style={{cursor: "pointer"}}

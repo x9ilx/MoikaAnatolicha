@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from company.views import CompanyRequisitesViewSet
+from company.views import CompanyRequisitesViewSet, CompanySettingsViewSet
 from counterparty.views import LegalEntityViewSet
 from employer.views import CHGUserViewSet, EmployerViewSet
 from order.views import OrderViewSet
@@ -15,6 +15,9 @@ v1_router = routers.DefaultRouter()
 v1_router.register('users', CHGUserViewSet, basename='User')
 v1_router.register(
     'company', CompanyRequisitesViewSet, basename='CompanyRequisites'
+)
+v1_router.register(
+    'settings', CompanySettingsViewSet, basename='CompanySettings'
 )
 v1_router.register(
     'vehicle_models/delete', VehicleModelDelete, basename='VehicleModel'

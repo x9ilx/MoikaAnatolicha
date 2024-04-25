@@ -6,6 +6,7 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from core.permissions import OnlyManager
 from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import VehicleOrTrailerType
 
@@ -21,6 +22,7 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
         django_filters.DjangoFilterBackend,
     ]
     filterset_class = LegalEntitySearchFilter
+    permission_classes = [OnlyManager, ]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

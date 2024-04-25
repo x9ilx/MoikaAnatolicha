@@ -13,8 +13,7 @@ from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import Vehicle
 from vehicle.serializers import VehicleSerializer
 
-from .models import (Order, OrderPaimentMethod, OrderService,
-                     OrderWashers)
+from .models import Order, OrderPaimentMethod, OrderService, OrderWashers
 from .serializers import OrderMiniSerializer
 
 user_model = get_user_model()
@@ -211,16 +210,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         ]
         OrderWashers.objects.bulk_create(washer_objs)
 
-        vehicle_create_list = []
+
         for vehicle in vehicles:
             vehicle_exist = Vehicle.objects.filter(pk=vehicle['id'])
             
-            if vehicle_exist.exists():
-                OrderVehicle.objects.create(
-                    order=order,
-                    vehicle_id=vehicle['id'],
-                )
-            else:
+            if not vehicle_exist.exists():
                 data = {
                     'plate_number': vehicle['plate_number'],
                     'vehicle_model': vehicle['vehicle_model'],
@@ -232,14 +226,8 @@ class OrderViewSet(viewsets.ModelViewSet):
                     context={'request': request}
                 )
                 vehicle_serializer.is_valid(raise_exception=True)
-                new_vehicle = vehicle_serializer.save()
-                vehicle_create_list.append(
-                    OrderVehicle(
-                        order=order,
-                        vehicle_id=new_vehicle.pk,
-                    )
-                )
-        OrderVehicle.objects.bulk_create(vehicle_create_list)
+                vehicle_serializer.save()
+
 
         service_create_list = []
         for service in services:

@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from core.string_utils import normalize_phone
-
-from .models import CompanyRequisites
+from .models import CompanyRequisites, CompanySettings
 
 
 class CompanyRequisitesSerializer(serializers.ModelSerializer):
@@ -22,4 +20,15 @@ class CompanyRequisitesSerializer(serializers.ModelSerializer):
             'email',
             'phone',
             'director_name',
+        ]
+
+
+class CompanySettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanySettings
+        fields = [
+            'administrator_wage_threshold',
+            'administrator_earnings_after_threshold',
+            'administrator_additional_payment_threshold',
+            'administrator_additional_payments_after_threshold',
         ]

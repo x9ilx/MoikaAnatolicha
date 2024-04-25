@@ -5,6 +5,7 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from core.permissions import OnlyManager
 from vehicle.models import VehicleOrTrailerType
 
 from .models import Service, ServiceVehicleType

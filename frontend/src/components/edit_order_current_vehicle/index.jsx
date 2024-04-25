@@ -7,7 +7,6 @@ import { isMobile } from "react-device-detect";
 const EditOrderCurrentVehicle = (props) => {
   return (
     <div>
-      {console.log(props.vehicleList)}
       <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3  border bg-primary fw-medium text-white p-2" style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>
         Список ТС/ПЦ/ППЦ:
       </p>

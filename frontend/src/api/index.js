@@ -93,6 +93,7 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  
   setRequisites(requisites) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/company/1/`, {
@@ -106,7 +107,55 @@ class Api {
       }),
     }).then(this.checkResponse);
   }
+
+  getSettings() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/settings/1/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  setSettings(data) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/settings/1/`, {
+      method: "PUT",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    }).then(this.checkResponse);
+  }
+
   //////////////////////////////////////////////////// EMPLOYES
+
+  openShift(employer_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/${employer_id}/open_shift/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  closeShift(employer_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/${employer_id}/close_shift/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
 
   createEmployer({
     name,

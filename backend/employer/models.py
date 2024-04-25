@@ -45,3 +45,33 @@ class Employer(models.Model):
     def __str__(self):
         """Unicode representation of Employer."""
         return f'{self.name}: {EmployerPositions(self.position).label}'
+
+
+class EmployerShift(models.Model):
+    """Model definition for EmployerShift."""
+
+    employer = models.ForeignKey(
+        Employer,
+        verbose_name='Сотрудник',
+        on_delete=models.CASCADE,
+        related_name='shifts',
+    )
+    start_shift_time = models.DateTimeField('Начало смены', auto_now_add=True)
+    end_shift_time = models.DateTimeField(
+        'Конец смены', null=True, default=None
+    )
+    employer_salary = models.IntegerField('ЗП сотрудника, за смену', default=0)
+    is_closed = models.BooleanField('Смена закрыта?', default=False)
+
+    class Meta:
+        """Meta definition for EmployerShift."""
+
+        verbose_name = 'EmployerShift'
+        verbose_name_plural = 'EmployerShifts'
+
+    def __str__(self):
+        """Unicode representation of EmployerShift."""
+        return (
+            f'{self.employer.name}: '
+            f'{self.start_shift_time} - {self.end_shift_time}'
+        )

@@ -29,3 +29,26 @@ class CompanyRequisites(models.Model):
     def __str__(self):
         """Unicode representation of CompanyRequisites."""
         return self.name
+
+
+class CompanySettings(models.Model):
+    """Model definition for CompanyRequisites."""
+
+    administrator_wage_threshold = models.IntegerField(
+        'Порог получения ЗП администратора'
+    )
+    administrator_earnings_after_threshold = models.IntegerField(
+        'ЗП администратора после достижения порога'
+    )
+    administrator_additional_payment_threshold = models.IntegerField(
+        'Порог дополнительных выплат администратора'
+    )
+    administrator_additional_payments_after_threshold = models.IntegerField(
+        'Выплаты администратора после достижения порога'
+    )
+
+    class Meta:
+        """Meta definition for CompanyRequisites."""
+
+        verbose_name = 'Настройки организации'
+        verbose_name_plural = 'Настройки организации'

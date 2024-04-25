@@ -12,10 +12,12 @@ import { EmployerPosition } from "./constants.jsx";
 import AccessDenidedPage from "./pages/access_denided/index.jsx";
 import EmployeesController from "./pages/employees/employes_controller/index.jsx";
 import VehiclesController from "./pages/vehicles/vehicles_controller/index.jsx";
-import OrganistaionSettings from "./pages/organisation_Settings/index.jsx";
+
 import LegalEntityController from "./pages/legal_entity/legal_entity_controller/index.jsx";
 import ServicesController from "./pages/services/services_controller/index.jsx";
 import OrderController from "./pages/orders/order_controller/index.jsx";
+import OrganistaionRequisites from "./pages/organisation_requisitions/index.jsx";
+import OrganistaionSettings from "./pages/organisation_settings/index.jsx";
 
 function App() {
   const auth = useAuth();
@@ -23,7 +25,9 @@ function App() {
   const headerRef = React.useRef(null);
 
   React.useEffect(() => {
-    headerRef.current.setUpdate(!headerRef.current.update)
+    if (headerRef && auth?.loggedIn) {
+      headerRef?.current.setUpdate(!headerRef.current.update)
+    }
   }, [navigate])
 
   const tooltipTriggerList = document.querySelectorAll(
@@ -67,6 +71,18 @@ function App() {
             <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
               <Route
                 path="/company/"
+                element={
+                  <>
+                    <OrganistaionRequisites />
+                  </>
+                }
+              />
+            </Route>
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+              <Route
+                path="/settings/"
                 element={
                   <>
                     <OrganistaionSettings />
