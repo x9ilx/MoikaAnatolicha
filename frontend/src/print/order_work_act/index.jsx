@@ -3,23 +3,36 @@ import ReactToPrint, { PrintContextConsumer } from "react-to-print";
 import Button from "../../components/button";
 import PropTypes from "prop-types";
 import OrderElementGroup from "../../pages/orders/order_element_group";
+import api from "../../api";
+import { prettyPhone } from "../../utils/string_utils";
 
 const OrderWorkAct = (props) => {
   const componentRef = React.useRef();
   const [services, setServices] = React.useState([]);
+  const [requisites, setRequisites] = React.useState({});
 
   React.useEffect(() => {
     let newArr = {};
-    props.serviceList.map((item, index) => {
+    props.order.services.map((item) => {
       newArr[item.vehicle.id] ??= {
         total_cost: 0,
+        vehicle_type_name: item.vehicle.vehicle_type.name,
+        vehicle_plate_number: item.vehicle.plate_number,
+        vehicle_class_name: item.vehicle.vehicle_type.vehicle_class_name,
+        vehicle_model: item.vehicle.vehicle_model,
         services: [],
       };
       newArr[item.vehicle.id].services.push(item);
       newArr[item.vehicle.id].total_cost += item.cost;
     });
     setServices(newArr);
-  }, [props.serviceList]);
+    api
+      .getCompanyRequisites()
+      .then((res) => {
+        setRequisites(res);
+      })
+      .catch((err) => {});
+  }, [props.order]);
 
   return (
     <div>
@@ -36,34 +49,57 @@ const OrderWorkAct = (props) => {
           )}
         </PrintContextConsumer>
       </ReactToPrint>
-      <div ref={componentRef} className="m-3  fw-medium print_content">
+      <div ref={componentRef} className="m-3 fs-7 fw-medium print_content">
         <div className="row">
-            <div className="col text-start">
-                23/04/1989
-            </div>
-            <div className="col text-end">
-                "Чистый грузовик"
-            </div>
+          <div className="col text-start fs-7">
+            {new Date(props.order.order_datetime).toLocaleDateString()}{" "}
+            {new Date(props.order.order_datetime).toLocaleTimeString()}
+          </div>
+          <div className="col text-end fs-7">&ldquo;Чистый грузовик&rdquo;</div>
         </div>
-        <p className="text-center">АКТ ВЫПОЛНЕННЫХ РАБОТ</p>
-        <p className="m-0">Клиент: {props.clientName}</p>
-        <p className="mb-1">Выполненные работы:</p>
-        <div className="border p-2">
+        <p className="text-center fs-7 ь-0">
+          АКТ ВЫПОЛНЕННЫХ РАБОТ К ЗАКАЗУ №{props.order.order_number}
+        </p>
+        <OrderElementGroup
+          header={<p className="m-0 fs-7 fw-medium">Исполнитель:</p>}
+          elements_with_badge={[
+            {
+              name: requisites.name,
+              badge: "",
+            },
+            {
+              name: "ИНН: " + requisites.inn,
+              badge: "",
+            },
+            {
+              name: "ОГРНИП: " + requisites.ogrn,
+              badge: "",
+            },
+            {
+              name: "Телефон: " + prettyPhone(requisites.phone),
+              badge: "",
+            },
+          ]}
+        />
+
+        <p className="mb-1 fs-7 my-1">Выполненные работы:</p>
+        <div className="border p-2 fs-7 mt-2">
           {Object.keys(services).map((key, index) => (
             <div key={"serviceList" + index} className="row">
               <OrderElementGroup
                 header={
                   <>
-                    <b>{services[key].services[0].vehicle.plate_number}</b>{" "}
-                    {services[key].services[0].vehicle.vehicle_class_name} (
-                    {services[key].services[0].vehicle.vehicle_type_name})
+                    <b>{services[key].vehicle_plate_number}</b>{" "}
+                    {services[key].vehicle_model}{" "}
+                    {services[key].vehicle_class_name} (
+                    {services[key].vehicle_type_name})
                   </>
                 }
                 elements_with_badge={services[key].services.map((service) => ({
                   name: (
                     <div className="row">
-                      <span className="fs-6">
-                        {service.service.name}
+                      <span className="fs-7">
+                        {service.service_name}
                         {service.legal_entity_service
                           ? " (договор)"
                           : null}: {service.cost}₽
@@ -73,38 +109,49 @@ const OrderWorkAct = (props) => {
                   badge: "",
                 }))}
               />
-              <p className="fs-6 px-3 m-0">
+              <p className="fs-7 px-3 m-0 mb-3">
                 <b>Итого: {services[key].total_cost}₽</b>
               </p>
             </div>
           ))}
         </div>
         <OrderElementGroup
-          header={<span className="fs-6 fw-medium">Итого к оплате:</span>}
+          header={<span className="fs-7 fw-medium">Итого к оплате:</span>}
           elements_with_badge={[
             {
               name: "Оплачено:",
-              badge: `${props.totalCost}₽`,
+              badge: `${props.order.final_cost}₽`,
             },
-            props.paymentMethod === "CONTRACT"
+            props.order.payment_method === "CONTRACT"
               ? {
                   name: "Оплата по договору:",
-                  badge: `${props.totalCostContract}₽`,
+                  badge: `${props.order.final_cost_contract}₽`,
                 }
               : {},
           ]}
         />
+        <br />
+        <p className="m-0 fs-7">
+          {props.order.client_name
+            ? "Клиент: " + props.order.client_name
+            : null}
+        </p>
+        <div className="row my-3">
+          <div className="col-1 text-start fs-7">
+            {new Date(props.order.order_datetime).toLocaleDateString()}г.
+          </div>
+          <div className="col-11 text-end fs-7">
+            Администратор {props.order.administrator.name}{" "}
+            _____________________________
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 OrderWorkAct.propTypes = {
-  serviceList: PropTypes.array.isRequired,
-  totalCost: PropTypes.number.isRequired,
-  totalCostContract: PropTypes.number.isRequired,
-  paymentMethod: PropTypes.string.isRequired,
-  clientName: PropTypes.string.isRequired,
+  order: PropTypes.object.isRequired,
 };
 
 export default OrderWorkAct;

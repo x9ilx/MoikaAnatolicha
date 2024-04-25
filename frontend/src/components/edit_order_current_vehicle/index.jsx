@@ -4,19 +4,18 @@ import { FaTrashRestore } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { isMobile } from "react-device-detect";
 
-
 const EditOrderCurrentVehicle = (props) => {
   return (
     <div>
-      <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">
+      <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3  border bg-primary fw-medium text-white p-2" style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>
         Список ТС/ПЦ/ППЦ:
       </p>
-      <ul key={"vehicleListF345345ina123sdfl"} className="list-group my-3">
+      <ul key={"vehicleListF345345ina123sdfl"} className="list-group">
         {props.vehicleList?.map((vehicle, index) => (
-          <div key={"vehicleListFinal" + vehicle.plate_number + index}>
+          <div key={"vehicleListFinal" + vehicle.plate_number + index} className="m-0">
             <li
               key={"vehicleListFinal" + vehicle.plate_number + index}
-              className={`list-group-item fs-7
+              className={`list-group-item m-0 fs-7
               ${vehicle.to_be_removed ? " bg-danger text-white" : ""} 
               `}
             >
@@ -39,64 +38,68 @@ const EditOrderCurrentVehicle = (props) => {
                     {vehicle?.vehicle_class} ({vehicle?.vehicle_type})<br></br>
                     {vehicle?.owner}
                   </div>
-                  <>
-                    {!vehicle.to_be_removed && (
+                  {!props.onlyShow && (
+                    <>
                       <>
-                        <div
-                          key={
-                            "vehicleListFina434343434l" +
-                            vehicle.plate_number +
-                            index
-                          }
-                          className={`align-items-end`}
-                          title="Пометить на удаление"
-                        >
-                          <ImCross
-                            key={
-                              "vehicleListFinweweweal" +
-                              vehicle.plate_number +
-                              index
-                            }
-                            size={14}
-                            className="text-danger"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              props.onMarkDelete(index, true);
-                            }}
-                          />
-                        </div>
+                        {!vehicle.to_be_removed && (
+                          <>
+                            <div
+                              key={
+                                "vehicleListFina434343434l" +
+                                vehicle.plate_number +
+                                index
+                              }
+                              className={`align-items-end`}
+                              title="Пометить на удаление"
+                            >
+                              <ImCross
+                                key={
+                                  "vehicleListFinweweweal" +
+                                  vehicle.plate_number +
+                                  index
+                                }
+                                size={14}
+                                className="text-danger"
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  props.onMarkDelete(index, true);
+                                }}
+                              />
+                            </div>
+                          </>
+                        )}
+                        {vehicle.to_be_removed && (
+                          <>
+                            <div
+                              key={
+                                "vehicleListFinjhjjal" +
+                                vehicle.plate_number +
+                                index
+                              }
+                              className={`align-items-end${
+                                isMobile ? "text-center" : "text-end"
+                              }`}
+                              title="Отменить удаление"
+                            >
+                              <FaTrashRestore
+                                key={
+                                  "vehicleListFinxcvxzcvzal" +
+                                  vehicle.plate_number +
+                                  index
+                                }
+                                size={18}
+                                className={`text-white fw-medium`}
+                                style={{ cursor: "pointer" }}
+                                onClick={() => {
+                                  props.onMarkDelete(index, false);
+                                }}
+                              />
+                            </div>
+                          </>
+                        )}
                       </>
-                    )}
-                    {vehicle.to_be_removed && (
-                      <>
-                        <div
-                          key={
-                            "vehicleListFinjhjjal" +
-                            vehicle.plate_number +
-                            index
-                          }
-                          className={`align-items-end${
-                            isMobile ? "text-center" : "text-end"
-                          }`}
-                          title="Отменить удаление"
-                        >
-                          <FaTrashRestore
-                            key={
-                              "vehicleListFinxcvxzcvzal" +
-                              vehicle.plate_number +
-                              index
-                            }
-                            size={18}
-                            className={`text-white fw-medium`}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              props.onMarkDelete(index, false);
-                            }}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </>
+                    </>
+                  )}
                 </div>
               </div>
             </li>
@@ -110,6 +113,7 @@ const EditOrderCurrentVehicle = (props) => {
 EditOrderCurrentVehicle.propTypes = {
   onMarkDelete: PropTypes.func.isRequired,
   vehicleList: PropTypes.array.isRequired,
+  onlyShow: PropTypes.bool,
 };
 
 export default EditOrderCurrentVehicle;

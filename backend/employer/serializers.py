@@ -119,6 +119,7 @@ class UserSerializer(BaseUserSerializer):
         result = {}
         try:
             employer = Employer.objects.get(user=obj)
+            result['id'] = employer.pk
             result['position'] = employer.position
             result['name'] = employer.name
             result['short_name'] = employer.short_name

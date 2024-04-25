@@ -40,7 +40,7 @@ const OrderAdd = (props) => {
   const auth = useAuth();
 
   React.useEffect(() => {
-    setAdministrator(auth.employerInfo.id);
+    setAdministrator(auth.employerInfo.employer_info.id);
   }, []);
 
   const CreateOrder = React.useCallback(() => {
@@ -276,6 +276,7 @@ const OrderAdd = (props) => {
                     setHideInterface(true);
                   }}
                   washerList={washers}
+                  headerColor="info"
                 />
               )}
 

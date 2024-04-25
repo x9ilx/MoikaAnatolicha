@@ -17,12 +17,25 @@ import { GiCarKey } from "react-icons/gi";
 
 import { EmployerPosition } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import ActiveOrderCount from "../order_active_count";
 
-const Header = () => {
+const Header = React.forwardRef(function MyInput(props, ref) {
   const [menuShow, setMenuShow] = React.useState(false);
+  const [update, setUpdate] = React.useState(false);
+
+  const activeOrderRef = React.useRef(null);
+
+  React.useImperativeHandle(ref, () => ({
+    setUpdate,
+    update,
+  }));
 
   const auth = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    activeOrderRef.current.setUpdate(!update)
+  }, [update])
 
   return (
     <>
@@ -60,8 +73,7 @@ const Header = () => {
                     navigate("/");
                   }}
                 >
-                  Заказы в работе{" "}
-                  <span className="badge bg-danger ms-1">7</span>
+                  Заказы в работе <ActiveOrderCount ref={activeOrderRef}/>
                 </a>
               </li>
               <li className="nav-item">
@@ -250,6 +262,6 @@ const Header = () => {
       </nav>
     </>
   );
-};
+});
 
 export default Header;

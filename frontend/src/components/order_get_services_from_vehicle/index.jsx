@@ -29,11 +29,16 @@ const GetServicesFromVehicle = (props) => {
         .then((res) => {
           newArr.common_service.push({
             vehicle_type_name: vehicle.vehicle_type_name,
+            vehicle_id: vehicle.id,
+            vehicle_plate_number: vehicle.plate_number,
+            vehicle_class_name: vehicle.vehicle_class_name,
+            vehicle_model: vehicle.vehicle_model,
             services: res.map((item) => {
               return {
                 ...item,
                 vehicle: vehicle,
                 cost_change: false,
+                start_cost: item.cost,
               };
             }),
           });
@@ -46,11 +51,16 @@ const GetServicesFromVehicle = (props) => {
               if (res.length > 0) {
                 newArr.contract_service.push({
                   vehicle_type_name: vehicle.vehicle_type_name,
+                  vehicle_id: vehicle.id,
+                  vehicle_plate_number: vehicle.plate_number,
+                  vehicle_class_name: vehicle.vehicle_class_name,
+                  vehicle_model: vehicle.vehicle_model,
                   services: res.map((item) => {
                     return {
                       ...item,
                       vehicle: vehicle,
                       cost_change: false,
+                      start_cost: item.cost,
                     };
                   }),
                 });
@@ -78,15 +88,15 @@ const GetServicesFromVehicle = (props) => {
     props.onCancel();
   };
 
-  const changeServiceSelect = (service, value) => {
+  const changeServiceSelect = (service, service_index, value) => {
     if (value) {
       setSelectedServices((prev) => [...prev, service]);
     } else {
-      setSelectedServices(
-        selectedServices.filter(
-          (item) => item.service.id !== service.service.id
-        )
-      );
+      let newArr = selectedServices;
+      newArr[service_index].cost = service.start_cost;
+      newArr.splice(service_index, 1);
+      setSelectedServices(newArr);
+      setUpdate(!update);
     }
   };
 
@@ -136,7 +146,11 @@ const GetServicesFromVehicle = (props) => {
                 {services.contract_service.map((service_list, index) => (
                   <div key={"servicescommon_service" + index}>
                     <div className="fs-6 fw-medium my-2">
-                      {service_list.vehicle_type_name}
+                      <b>{service_list.vehicle_plate_number}</b>{" "}
+                      {service_list.vehicle_model}
+                      <br />
+                      {service_list.vehicle_class_name} (
+                      {service_list.vehicle_type_name})
                     </div>
                     {service_list.services.map((service, service_index) => (
                       <div key={"vehicleListFinal554" + service_index}>
@@ -163,12 +177,21 @@ const GetServicesFromVehicle = (props) => {
                                             service.service.id) &
                                           (element.legal_entity_service ==
                                             service.legal_entity_service) &
-                                          (element.vehicle_type_id ==
-                                            service.vehicle_type_id)
+                                          (element.vehicle.id ==
+                                            service.vehicle.id)
                                       )}
                                       onChange={(e) => {
                                         changeServiceSelect(
                                           service,
+                                          selectedServices.findIndex(
+                                            (element) =>
+                                              (element.service.id ==
+                                                service.service.id) &
+                                              (element.legal_entity_service ==
+                                                service.legal_entity_service) &
+                                              (element.vehicle.id ==
+                                                service.vehicle.id)
+                                          ),
                                           e.target.checked
                                         );
                                       }}
@@ -187,8 +210,7 @@ const GetServicesFromVehicle = (props) => {
                               (element.service.id == service.service.id) &
                               (element.legal_entity_service ==
                                 service.legal_entity_service) &
-                              (element.vehicle_type_id ==
-                                service.vehicle_type_id)
+                              (element.vehicle.id == service.vehicle.id)
                           ) && (
                             <div className="col">
                               <div className="form-floating mb-3">
@@ -208,8 +230,8 @@ const GetServicesFromVehicle = (props) => {
                                             service.service.id) &
                                           (element.legal_entity_service ==
                                             service.legal_entity_service) &
-                                          (element.vehicle_type_id ==
-                                            service.vehicle_type_id)
+                                          (element.vehicle.id ==
+                                            service.vehicle.id)
                                       ),
                                       e.target.value
                                     );
@@ -221,8 +243,8 @@ const GetServicesFromVehicle = (props) => {
                                           service.service.id) &
                                         (element.legal_entity_service ==
                                           service.legal_entity_service) &
-                                        (element.vehicle_type_id ==
-                                          service.vehicle_type_id)
+                                        (element.vehicle.id ==
+                                          service.vehicle.id)
                                     )?.cost
                                   }
                                   name="name"
@@ -262,12 +284,16 @@ const GetServicesFromVehicle = (props) => {
           >
             {services.common_service.map((service_list, index) => (
               <div key={"servicescommon_service" + index}>
-                <div className="fs-6 fw-medium my-2">
-                  {service_list.vehicle_type_name}
+                <div className="fs-6 fw-medium m-2">
+                  <b>{service_list.vehicle_plate_number}</b>{" "}
+                  {service_list.vehicle_model}
+                  <br />
+                  {service_list.vehicle_class_name} (
+                  {service_list.vehicle_type_name})
                 </div>
                 {service_list.services.map((service, service_index) => (
                   <div key={"vehicleListFinal554" + service_index}>
-                    <div className="row">
+                    <div className="row p-2">
                       <OrderElementGroup
                         header=""
                         elements_with_badge={[
@@ -279,27 +305,35 @@ const GetServicesFromVehicle = (props) => {
                                 <input
                                   className="form-check-input "
                                   type="checkbox"
-                                  id={`service_available_${service_index}`}
-                                  name={`service_available_${service_index}`}
+                                  id={`service_available_${service_index}${service.vehicle.id}`}
+                                  name={`service_available_${service_index}${service.vehicle.id}`}
                                   checked={selectedServices.find(
                                     (element) =>
                                       (element.service.id ==
                                         service.service.id) &
                                       (element.legal_entity_service ==
                                         service.legal_entity_service) &
-                                      (element.vehicle_type_id ==
-                                        service.vehicle_type_id)
+                                      (element.vehicle.id == service.vehicle.id)
                                   )}
                                   onChange={(e) => {
                                     changeServiceSelect(
                                       service,
+                                      selectedServices.findIndex(
+                                        (element) =>
+                                          (element.service.id ==
+                                            service.service.id) &
+                                          (element.legal_entity_service ==
+                                            service.legal_entity_service) &
+                                          (element.vehicle.id ==
+                                            service.vehicle.id)
+                                      ),
                                       e.target.checked
                                     );
                                   }}
                                 />
                                 <label
                                   className="form-check-label"
-                                  htmlFor={`service_available_${service_index}`}
+                                  htmlFor={`service_available_${service_index}${service.vehicle.id}`}
                                 ></label>
                               </div>
                             ),
@@ -311,7 +345,7 @@ const GetServicesFromVehicle = (props) => {
                           (element.service.id == service.service.id) &
                           (element.legal_entity_service ==
                             service.legal_entity_service) &
-                          (element.vehicle_type_id == service.vehicle_type_id)
+                          (element.vehicle.id == service.vehicle.id)
                       ) && (
                         <div className="col">
                           <div className="form-floating mb-3">
@@ -330,21 +364,20 @@ const GetServicesFromVehicle = (props) => {
                                         service.service.id) &
                                       (element.legal_entity_service ==
                                         service.legal_entity_service) &
-                                      (element.vehicle_type_id ==
-                                        service.vehicle_type_id)
+                                      (element.vehicle.id == service.vehicle.id)
                                   ),
                                   e.target.value
                                 );
                               }}
-                              value={ selectedServices.find(
-                                (element) =>
-                                  (element.service.id ==
-                                    service.service.id) &
-                                  (element.legal_entity_service ==
-                                    service.legal_entity_service) &
-                                  (element.vehicle_type_id ==
-                                    service.vehicle_type_id)
-                              )?.cost}
+                              value={
+                                selectedServices.find(
+                                  (element) =>
+                                    (element.service.id == service.service.id) &
+                                    (element.legal_entity_service ==
+                                      service.legal_entity_service) &
+                                    (element.vehicle.id == service.vehicle.id)
+                                )?.cost
+                              }
                               name="name"
                             />
                             <label htmlFor="name">

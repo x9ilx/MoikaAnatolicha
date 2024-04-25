@@ -691,6 +691,51 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getActiveOrderCount() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/get_active_order_count/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
+  setOrderClose(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/${id}/set_order_close/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  cancelOrder(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/${id}/cancel_order/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
+////////////////////////////////////////////////// REQUISITES
+getCompanyRequisites() {
+  const token = cookies.get("auth_token");
+  return fetch(URL + `/api/company/1/`, {
+    method: "GET",
+    headers: {
+      ...this._headers,
+      authorization: `Token ${token}`,
+    },
+  }).then(this.checkResponse);
+}
+
 }
 
 

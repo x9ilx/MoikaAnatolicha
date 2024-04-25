@@ -117,7 +117,7 @@ class OrderService(models.Model):
         verbose_name='ТС/ППЦ',
         on_delete=models.SET_NULL,
         null=True,
-        related_name='+',
+        related_name='vehicle_orders_service',
     )
     legal_entity_service = models.BooleanField('По договору?', default=False)
     cost = models.IntegerField('Cтоимость')

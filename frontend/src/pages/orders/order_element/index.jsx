@@ -15,18 +15,18 @@ const OrderElement = (props) => {
   React.useEffect(() => {
     let newArr = {};
     props.order.services.map((item) => {
-      newArr[item.vehicle_type] ??= {
+      newArr[item.vehicle.id] ??= {
         vehicle_type_name: "",
         vehicle_class_name: "",
         vehicle_plate_number: "",
         vehicle_model: "",
         services: [],
       };
-      newArr[item.vehicle_type].services.push(item);
-      newArr[item.vehicle_type].vehicle_type_name = item.vehicle_type_name;
-      newArr[item.vehicle_type].vehicle_class_name = item.vehicle_class_name;
-      newArr[item.vehicle_type].vehicle_plate_number = item.vehicle_plate_number;
-      newArr[item.vehicle_type].vehicle_model = item.vehicle_model;
+      newArr[item.vehicle.id].services.push(item);
+      newArr[item.vehicle.id].vehicle_type_name = item.vehicle.vehicle_type.name;
+      newArr[item.vehicle.id].vehicle_class_name = item.vehicle.vehicle_type.vehicle_class_name;
+      newArr[item.vehicle.id].vehicle_plate_number = item.vehicle.plate_number;
+      newArr[item.vehicle.id].vehicle_model = item.vehicle.vehicle_model;
     });
     setServices(newArr);
   }, [props]);
@@ -64,7 +64,7 @@ const OrderElement = (props) => {
                   <OrderElementGroup
                     header={
                       <div className=" fs-6">
-                        <b className="">{services[key].services[0].vehicle_plate_number} {services[key].services[0].vehicle_model}</b><br/>{services[key].services[0].vehicle_class_name} {services[key].services[0].vehicle_type_name}
+                        <b className="">{services[key].vehicle_plate_number} {services[key].vehicle_model}</b><br/>{services[key].vehicle_class_name} {services[key].vehicle_type_name}
                       </div>
                     }
                     elements_with_badge={services[key].services.map(

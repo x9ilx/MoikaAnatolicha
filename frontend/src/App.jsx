@@ -20,6 +20,12 @@ import OrderController from "./pages/orders/order_controller/index.jsx";
 function App() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const headerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    headerRef.current.setUpdate(!headerRef.current.update)
+  }, [navigate])
+
   const tooltipTriggerList = document.querySelectorAll(
     '[data-bs-toggle="tooltip"]'
   );
@@ -34,7 +40,7 @@ function App() {
   return (
     <>
       <div className="container mb-3">
-        {auth?.loggedIn && <Header />}
+        {auth?.loggedIn && <Header ref={headerRef}/>}
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route element={<ProtectedRoute />}>

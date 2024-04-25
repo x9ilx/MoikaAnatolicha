@@ -3,30 +3,31 @@ from rest_framework import serializers
 
 from core.string_utils import normalize_plate_number
 from employer.models import Employer
-from vehicle.serializers import VehicleMiniSerializer
+from vehicle.serializers import VehicleMiniSerializer, VehicleSerializer
 
 from .models import Order, OrderService
 
 
 class OrderServiceSerializer(serializers.ModelSerializer):
-    vehicle_type = serializers.StringRelatedField(
-        read_only=True, source='vehicle.vehicle_type.id'
-    )
-    vehicle_type_name = serializers.StringRelatedField(
-        read_only=True, source='vehicle.vehicle_type.name'
-    )
-    vehicle_class_name = serializers.StringRelatedField(
-        read_only=True, source='vehicle.vehicle_type.vehicle_class.name'
-    )
+    # vehicle_type = serializers.StringRelatedField(
+    #     read_only=True, source='vehicle.vehicle_type.id'
+    # )
+    # vehicle_type_name = serializers.StringRelatedField(
+    #     read_only=True, source='vehicle.vehicle_type.name'
+    # )
+    # vehicle_class_name = serializers.StringRelatedField(
+    #     read_only=True, source='vehicle.vehicle_type.vehicle_class.name'
+    # )
     service_name = serializers.StringRelatedField(
         read_only=True, source='service.name'
     )
-    vehicle_plate_number = serializers.StringRelatedField(
-        read_only=True, source='vehicle.plate_number'
-    )
-    vehicle_model = serializers.StringRelatedField(
-        read_only=True, source='vehicle.vehicle_model'
-    )
+    # vehicle_plate_number = serializers.StringRelatedField(
+    #     read_only=True, source='vehicle.plate_number'
+    # )
+    # vehicle_model = serializers.StringRelatedField(
+    #     read_only=True, source='vehicle.vehicle_model'
+    # )
+    vehicle = VehicleSerializer(read_only=True)
 
     class Meta:
         model = OrderService
@@ -36,11 +37,12 @@ class OrderServiceSerializer(serializers.ModelSerializer):
             'cost',
             'employer_salary',
             'percentage_for_washer',
-            'vehicle_type',
-            'vehicle_type_name',
-            'vehicle_class_name',
-            'vehicle_plate_number',
-            'vehicle_model',
+            'vehicle',
+            # 'vehicle_type',
+            # 'vehicle_type_name',
+            # 'vehicle_class_name',
+            # 'vehicle_plate_number',
+            # 'vehicle_model',
             'legal_entity_service',
         ]
 

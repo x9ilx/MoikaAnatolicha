@@ -9,6 +9,7 @@ import DataListVehicle from "../../../components/data_list_vehicle";
 const LegalEntityAdd = (props) => {
   const [requisites, setRequisites] = React.useState({
     name: "",
+    short_name: "",
     address: "",
     ogrn: "",
     inn: "",
@@ -50,7 +51,22 @@ const LegalEntityAdd = (props) => {
       });
   }, [legal_entity_id]);
 
+  const validate = () => {
+    if (requisites.name.trim().length === 0) {
+      toast.error("Необходимо указать название контрагента");
+      return false;
+    }
+    if (requisites.short_name.trim().length === 0) {
+      toast.error("Необходимо указать короткое название контрагента");
+      return false;
+    }
+    return true;
+  };
+
   const createLegalEntity = () => {
+    if (!validate()) {
+      return;
+    }
     const new_vehicle_requisites = { ...requisites, vehicles: vehicleList };
     api
       .createLegalEntity(new_vehicle_requisites)
@@ -72,6 +88,9 @@ const LegalEntityAdd = (props) => {
   }, [getLegalEntity, legal_entity_id]);
 
   const updateLegalEntity = () => {
+    if (!validate()) {
+      return;
+    }
     const new_vehicle_requisites = { ...requisites, vehicles: vehicleList };
     api
       .updateLegalEntity(legal_entity_id, new_vehicle_requisites)
@@ -117,7 +136,9 @@ const LegalEntityAdd = (props) => {
         >
           {legal_entity_id && (
             <Button
-              clickHandler={() => {navigate("./services/")}}
+              clickHandler={() => {
+                navigate("./services/");
+              }}
               colorClass="btn-info btn-sm"
               type="button"
               disabled={false}
@@ -151,7 +172,7 @@ const LegalEntityAdd = (props) => {
                 <div className="accordion-body">
                   <div className="form-floating mb-3">
                     <input
-                      required
+                      
                       className="form-control text"
                       id="name"
                       placeholder="name"
@@ -165,7 +186,7 @@ const LegalEntityAdd = (props) => {
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                      required
+                      
                       className="form-control text"
                       id="short_name"
                       placeholder="short_name"
@@ -175,7 +196,9 @@ const LegalEntityAdd = (props) => {
                       value={requisites.short_name}
                       name="short_name"
                     />
-                    <label htmlFor="short_name">Короткое наименование организации</label>
+                    <label htmlFor="short_name">
+                      Короткое наименование организации
+                    </label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
@@ -492,7 +515,7 @@ const LegalEntityAdd = (props) => {
             </div>
           </div>
 
-<hr></hr>
+          <hr></hr>
           {!showAddVehicle && (
             <>
               <Button

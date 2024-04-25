@@ -8,7 +8,7 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from employer.models import Employer
+from employer.models import Employer, EmployerPositions
 from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import Vehicle
 from vehicle.serializers import VehicleSerializer
@@ -66,6 +66,88 @@ class OrderViewSet(viewsets.ModelViewSet):
             for name in OrderPaimentMethod
         ]
         return Response(payment_methods, status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='get_active_order_count',
+        url_name='get-active-order-count',
+    )
+    def get_active_order_count(self, request):
+        order_count = Order.objects.filter(is_completed=False).count()
+        return Response(order_count, status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='get_complete_order_count_for_day',
+        url_name='get-complete-order-count-for-day',
+    )
+    def get_complete_order_count_for_day(self, request):
+        order_count = Order.objects.filter(is_completed=True).count()
+        return Response(order_count, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=['POST'],
+        url_path='set_order_close',
+        url_name='set-order-close',
+    )
+    def set_order_close(self, request, pk=None):
+        if pk:
+            order = get_object_or_404(Order, pk=pk)
+            order.is_completed = True
+            order.is_paid = True
+            order.order_close_datetime = order_datetime = datetime.now()
+            order.save()
+            serializer = OrderMiniSerializer(instance=order)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            {'Ошибка', 'Заказ не найден'}, status=status.HTTP_404_NOT_FOUND
+        )
+
+    @action(
+        detail=True,
+        methods=['DELETE'],
+        url_path='cancel_order',
+        url_name='cancel-order',
+    )
+    def cancel_order(self, request, pk=None):
+        if pk:
+            order = get_object_or_404(Order, pk=pk)
+            order_number = order.order_number
+            employer = Employer.objects.get(user=request.user)
+            
+            if not order.is_completed:
+                order.delete()
+                
+                return Response(
+                    {
+                        'Успешная отмена': 
+                        f'Заказ № {order_number} успешно отменён'
+                    },
+                    status=status.HTTP_204_NO_CONTENT
+                )
+            else:
+                if employer.position != EmployerPositions.MANAGER:
+                    return Response(
+                        {'Ошибка': 'Недостаточно прав'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+                else:
+                    order.delete()
+
+                    return Response(
+                        {
+                            'Успешное удаление': 
+                            f'Заказ № {order_number} успешно удалён'
+                        },
+                        status=status.HTTP_204_NO_CONTENT
+                    )
+
+        return Response(
+            {'Ошибка', 'Заказ не найден'}, status=status.HTTP_404_NOT_FOUND
+        )
 
     def create(self, request, *args, **kwargs):
         administrator = request.data['administrator']
