@@ -47,11 +47,6 @@ class Order(models.Model):
     client_phone = models.CharField(
         'Телефон клиента', max_length=255, blank=True
     )
-    vehicle = models.ManyToManyField(
-        'vehicle.Vehicle',
-        verbose_name='Услуга',
-        through='order.OrderVehicle',
-    )
     services = models.ManyToManyField(
         'service.Service',
         verbose_name='Услуга',
@@ -123,24 +118,6 @@ class OrderService(models.Model):
     cost = models.IntegerField('Cтоимость')
     employer_salary = models.IntegerField('Оплата сотруднику')
     percentage_for_washer = models.IntegerField('% мойщика')
-
-
-class OrderVehicle(models.Model):
-    """Model definition for OrderService."""
-
-    order = models.ForeignKey(
-        'order.Order',
-        verbose_name='Заказ-ТС',
-        on_delete=models.CASCADE,
-        related_name='vehicles_in_order',
-    )
-    vehicle = models.ForeignKey(
-        'vehicle.Vehicle',
-        verbose_name='ТС/ППЦ',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='vehicle_orders',
-    )
 
 
 class OrderWashers(models.Model):

@@ -13,7 +13,7 @@ from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import Vehicle
 from vehicle.serializers import VehicleSerializer
 
-from .models import (Order, OrderPaimentMethod, OrderService, OrderVehicle,
+from .models import (Order, OrderPaimentMethod, OrderService,
                      OrderWashers)
 from .serializers import OrderMiniSerializer
 
@@ -32,7 +32,6 @@ class OrderViewSet(viewsets.ModelViewSet):
     filterset_fields = [
         'administrator',
         'payment_method',
-        'vehicle',
         'is_paid',
         'is_completed',
         'has_been_modifed_after_save',
@@ -169,11 +168,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         if not washers:
              return Response(
                  {'Ошибка': 'Необхоидмо назначить мойщиков'},
-                 status=status.HTTP_400_BAD_REQUEST
-                )
-        if not vehicles:
-             return Response(
-                 {'Ошибка': 'Необхоидмо указать ТС/ПЦ/ППЦ'},
                  status=status.HTTP_400_BAD_REQUEST
                 )
 

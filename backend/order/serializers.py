@@ -9,24 +9,9 @@ from .models import Order, OrderService
 
 
 class OrderServiceSerializer(serializers.ModelSerializer):
-    # vehicle_type = serializers.StringRelatedField(
-    #     read_only=True, source='vehicle.vehicle_type.id'
-    # )
-    # vehicle_type_name = serializers.StringRelatedField(
-    #     read_only=True, source='vehicle.vehicle_type.name'
-    # )
-    # vehicle_class_name = serializers.StringRelatedField(
-    #     read_only=True, source='vehicle.vehicle_type.vehicle_class.name'
-    # )
     service_name = serializers.StringRelatedField(
         read_only=True, source='service.name'
     )
-    # vehicle_plate_number = serializers.StringRelatedField(
-    #     read_only=True, source='vehicle.plate_number'
-    # )
-    # vehicle_model = serializers.StringRelatedField(
-    #     read_only=True, source='vehicle.vehicle_model'
-    # )
     vehicle = VehicleSerializer(read_only=True)
 
     class Meta:
@@ -38,11 +23,6 @@ class OrderServiceSerializer(serializers.ModelSerializer):
             'employer_salary',
             'percentage_for_washer',
             'vehicle',
-            # 'vehicle_type',
-            # 'vehicle_type_name',
-            # 'vehicle_class_name',
-            # 'vehicle_plate_number',
-            # 'vehicle_model',
             'legal_entity_service',
         ]
 
@@ -59,7 +39,6 @@ class EmployerMiniSerializer(serializers.ModelSerializer):
 class OrderMiniSerializer(serializers.ModelSerializer):
     administrator = EmployerMiniSerializer()
     washers = EmployerMiniSerializer(many=True)
-    vehicle = VehicleMiniSerializer(many=True)
     services = OrderServiceSerializer(source='services_in_order', many=True)
 
     class Meta:
@@ -74,7 +53,6 @@ class OrderMiniSerializer(serializers.ModelSerializer):
             'payment_method',
             'client_name',
             'client_phone',
-            'vehicle',
             'services',
             'final_cost',
             'final_cost_contract',

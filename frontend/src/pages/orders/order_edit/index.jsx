@@ -16,16 +16,23 @@ const OrderEdit = () => {
   const [loading, setLoading] = React.useState(false);
 
   const [order, setOrder] = React.useState(0);
+  const [orderVehicles, setOrderVehicles] = React.useState([]);
 
   const navigate = useNavigate();
   const { order_id } = useParams();
   const auth = useAuth();
 
   const getOrder = React.useCallback(() => {
+    let vehicles = [];
     api
       .getOrder(order_id)
       .then((res) => {
         setOrder(res);
+        res.services?.map((item) => {
+          vehicles.push({...item.vehicle, to_be_removed: false});
+        });
+        const newVehicle = Array.from(new Set(vehicles))
+        setOrderVehicles(newVehicle);
       })
       .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
@@ -34,43 +41,46 @@ const OrderEdit = () => {
 
   React.useEffect(() => {
     setLoading(true);
-    getOrder(auth.employerInfo.id);
+    getOrder();
     setLoading(false);
   }, []);
 
   const closeOrder = React.useCallback(() => {
     if (!order.is_paid) {
-        toast.error("Необходимо убедиться, что заказ оплачен и у становить \"Заказ оплачен\"")
-        return;
+      toast.error(
+        'Необходимо убедиться, что заказ оплачен и у становить "Заказ оплачен"'
+      );
+      return;
     }
 
-    api.setOrderClose(order_id)
-    .then((res) => {
+    api
+      .setOrderClose(order_id)
+      .then((res) => {
         toast.success(`Заказ №${res.order_number} завершён`);
         navigate("/");
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
       });
   }, [order.is_paid, order_id, navigate]);
 
-
   const deleteOrder = React.useCallback(() => {
-
-    if (confirm(`Действительно отменить заказ №${order.order_number}?`) == false) {
-       return;
+    if (
+      confirm(`Действительно отменить заказ №${order.order_number}?`) == false
+    ) {
+      return;
     }
 
-    api.cancelOrder(order_id)
-    .then((res) => {
+    api
+      .cancelOrder(order_id)
+      .then((res) => {
         toast.success("Заказ успешно отменён");
         navigate("/");
-    })
-    .catch((err) => {
+      })
+      .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
       });
-  }, [navigate, order_id]);
-
+  }, [navigate, order_id, order.order_number]);
 
   const markVehicleDelete = (index, mark) => {
     let newState = { ...order };
@@ -100,7 +110,7 @@ const OrderEdit = () => {
           <form autoComplete="new-password">
             <EditOrderCurrentVehicle
               onMarkDelete={markVehicleDelete}
-              vehicleList={order.vehicle}
+              vehicleList={orderVehicles || []}
               onlyShow={true}
             />
             <EditOderCurrentServices serviceList={order.services} />
@@ -124,8 +134,7 @@ const OrderEdit = () => {
             </div>
 
             <OrderWasherList
-              onStartEditWasher={() => {
-              }}
+              onStartEditWasher={() => {}}
               washerList={order.washers}
               onlyShow={true}
               headerColor="primary"
@@ -191,7 +200,7 @@ const OrderEdit = () => {
 
               <Button
                 clickHandler={() => {
-                    deleteOrder();
+                  deleteOrder();
                 }}
                 colorClass="btn-danger"
                 type="button"
