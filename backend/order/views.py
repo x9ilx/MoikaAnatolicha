@@ -1,14 +1,15 @@
-from datetime import datetime
+from urllib import request
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from employer.models import Employer, EmployerPositions
+from employer.models import Employer, EmployerPositions, EmployerShift
 from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import Vehicle
 from vehicle.serializers import VehicleSerializer
@@ -50,7 +51,43 @@ class OrderViewSet(viewsets.ModelViewSet):
         return context
 
     def get_queryset(self):
-        return Order.objects.all()
+        order_datetime__gte = self.request.GET.get('order_datetime__gte', None)
+        order_datetime__lte = self.request.GET.get('order_datetime__lte', None)
+        order_datetime__gt = self.request.GET.get('order_datetime__gt', None)
+        order_datetime__lt = self.request.GET.get('order_datetime__lt', None)
+
+        filter = Q()
+        if order_datetime__gte:
+            filter &= Q(order_datetime__gte=order_datetime__gte)
+        if order_datetime__lte:
+            filter &= Q(order_datetime__lte=order_datetime__lte)
+        if order_datetime__gt:
+            filter &= Q(order_datetime__gt=order_datetime__gt)
+        if order_datetime__lt:
+            filter &= Q(order_datetime__lt=order_datetime__lt)
+
+        return Order.objects.filter(filter).order_by('-order_datetime')
+
+    def __get_completed_order_for_day(self, request):
+        start_date_time = timezone.now().replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        end_date_time = timezone.now().replace(hour=23, minute=59, second=59)
+        employer = get_object_or_404(Employer, user=request.user)
+
+        filter = Q(is_completed=True)
+        filter &= Q(order_datetime__gte=start_date_time)
+        filter &= Q(order_datetime__lte=end_date_time)
+        
+        if employer.position == EmployerPositions.ADMINISTRATOR:
+            shift_pk = get_object_or_404(
+                EmployerShift, employer=employer, is_closed=False
+            )
+            start_date_time = shift_pk.start_shift_time
+            end_date_time = timezone.now()
+            filter &= Q(administrator=employer)
+
+        return Order.objects.filter(filter).order_by('-order_datetime')
 
     @action(
         detail=False,
@@ -78,11 +115,24 @@ class OrderViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         methods=['GET'],
+        url_path='get_complete_order_for_day',
+        url_name='get-complete-order-count-for-day',
+    )
+    def get_complete_order_for_day(self, request):
+        orders = self.paginate_queryset(
+            self.__get_completed_order_for_day(request)
+        )
+        serializer = OrderMiniSerializer(orders, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=['GET'],
         url_path='get_complete_order_count_for_day',
         url_name='get-complete-order-count-for-day',
     )
     def get_complete_order_count_for_day(self, request):
-        order_count = Order.objects.filter(is_completed=True).count()
+        order_count = self.__get_completed_order_for_day(request).count()
         return Response(order_count, status=status.HTTP_200_OK)
 
     @action(
@@ -96,7 +146,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             order = get_object_or_404(Order, pk=pk)
             order.is_completed = True
             order.is_paid = True
-            order.order_close_datetime = order_datetime = datetime.now()
+            order.order_close_datetime = order_datetime = timezone.now()
             order.save()
             serializer = OrderMiniSerializer(instance=order)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -170,11 +220,11 @@ class OrderViewSet(viewsets.ModelViewSet):
                  status=status.HTTP_400_BAD_REQUEST
                 )
 
-        order_datetime = datetime.now()
+        order_datetime = timezone.now()
         order_number = order_datetime.strftime("%d%m%Y%H%M%S")
 
-        backup_info = (f"Заказ №{order_number}, от {order_datetime.strftime(
-            "%d.%m.%Y %H:%M:%S")}\nМетод оплаты: {payment_method}\n"
+        backup_info = (f'Заказ №{order_number}, от {order_datetime.strftime("%d.%m.%Y %H:%M:%S")}\n'
+            f'Метод оплаты: {payment_method}\n'
             f'Имя клиента: {client_name}\nТелефон клиента:{clinet_phone}\n'
             f'Администратор: {administrator_object.name}\n'
             f'Автомобили {vehicles}\nУслуги: {services}\nМойщики: {washers}\n')
@@ -263,10 +313,10 @@ class OrderViewSet(viewsets.ModelViewSet):
                 )
             )
             if b_service.cost != service['cost']:
-                comments += (f'{administrator_object.short_name} изменил '
-                                f'стоимость услуги{contract} '
-                                f'"{service['service']['name']}" c '
-                                f'{b_service.cost}₽ на {service['cost']}₽\n')
+                comments += f'{administrator_object.short_name} изменил \
+                                стоимость услуги{contract} \
+                                "{service['service']['name']}" c \
+                                {b_service.cost}₽ на {service['cost']}₽\n'
 
             calculated_salary = round((service['employer_salary']
                                 * (service['percentage_for_washer'] / 100)))
@@ -276,10 +326,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         OrderService.objects.bulk_create(service_create_list)
 
         each_washer_salary = round(final_cost_for_employer / len(washers))
-        backup_info += (f'Итоговая стоимость наличные: {total_cost}\n'
-                        f'Итоговая оплата по договору: {total_cost_contract}\n'
-                        f'Итоговая ЗП мойщиков: {final_cost_for_employer}\n'
-                        f'Кажды мойщик получит: {each_washer_salary}')
+        backup_info += f'Итоговая стоимость наличные: {total_cost}\n\
+                        Итоговая оплата по договору: {total_cost_contract}\n\
+                        Итоговая ЗП мойщиков: {final_cost_for_employer}\n\
+                        Кажды мойщик получит: {each_washer_salary}'
         order.comments = comments
         order.backup_info = backup_info
         order.final_cost = total_cost

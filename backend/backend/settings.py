@@ -1,22 +1,20 @@
 import os
 from pathlib import Path
 
-from dotenv import read_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-read_dotenv('.env')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-unsave-secret-key')
+SECRET_KEY = '8)2@x&!-#-n6y2q4anl_--q#laeke+&0p&9z%kr_85idv0$uaa'
 
-DEBUG = os.getenv('DEBUG_MODE', '').lower() in ('true', '1', 'yes', 'y', '+')
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(';')
+ALLOWED_HOSTS = ['localhost', 'bvvtestserver.ru']
 
 
 # Application definition
@@ -148,7 +146,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -160,15 +157,14 @@ REST_FRAMEWORK = {
 DJOSER = {
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        # 'user_create': 'user.serializers.UserCreateSerializer',
         'current_user': 'employer.serializers.UserSerializer',
         'user': 'employer.serializers.UserSerializer',
     },
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'https://' + cors
-    for cors in os.getenv('ALLOWED_HOSTS', 'localhost/*').split(';')
+    'https://bvvtestserver.ru',
+    'https://localhost',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

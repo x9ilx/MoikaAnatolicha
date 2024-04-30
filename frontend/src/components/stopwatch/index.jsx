@@ -4,16 +4,18 @@ import Watch from "./watch";
 
 function Stopwatch(props) {
   const [duration, setDuration] = useState(props.startValue);
+
   useEffect(() => {
-    let timePeriod = null;
 
-    timePeriod = setInterval(() => {
-      setDuration((duration) => duration + 1000);
-    }, 1000);
+      let timePeriod = null;
 
-    return () => {
-      clearInterval(timePeriod);
-    };
+      timePeriod = setInterval(() => {
+        setDuration((duration) => duration + 1000);
+      }, 1000);
+
+      return () => {
+        clearInterval(timePeriod);
+      };
   }, []);
 
   return (
@@ -24,7 +26,7 @@ function Stopwatch(props) {
 }
 
 Stopwatch.propTypes = {
-    startValue: PropTypes.number.isRequired,
-  };
+  startValue: PropTypes.number.isRequired,
+};
 
 export default Stopwatch;

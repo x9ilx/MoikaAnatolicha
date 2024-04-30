@@ -22,7 +22,9 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
         django_filters.DjangoFilterBackend,
     ]
     filterset_class = LegalEntitySearchFilter
-    permission_classes = [OnlyManager, ]
+    permission_classes = [
+        OnlyManager,
+    ]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

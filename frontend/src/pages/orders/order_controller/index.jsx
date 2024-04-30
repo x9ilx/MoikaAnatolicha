@@ -10,6 +10,7 @@ import UserRoleRouter from "../../../components/user_role_router"
 import WorkOrderList from "../work_order_list"
 import DeletePage from "../../DELETE_page"
 import OrderEdit from "../order_edit";
+import CompletedOrderList from "../completed_order_list";
 
 function OrderController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -92,6 +93,16 @@ function OrderController() {
               element={
                 <>
                  <WorkOrderList />
+                </>
+              }
+            />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/completed/"
+              element={
+                <>
+                 <CompletedOrderList />
                 </>
               }
             />

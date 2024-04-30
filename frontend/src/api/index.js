@@ -1,7 +1,5 @@
-import React from "react";
 const URL = "http://localhost:8000/";
 // const URL = "";
-import { Navigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import { COOKIES_LIFE_TIME } from "../constants";
 
@@ -24,6 +22,7 @@ class Api {
           path: "/",
           maxAge: COOKIES_LIFE_TIME,
         });
+        
         window.location.replace("/");
       }
       const func = res.status < 400 ? resolve : reject;
@@ -718,9 +717,20 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  getOrders() {
+  getOrders(page = 1, items_limit = 9999999, isCompleted = false, other_filters="") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/orders/?page=${1}&limit=${999999}&is_completed=${false}`, {
+    return fetch(URL + `/api/orders/?page=${page}&limit=${items_limit}&is_completed=${isCompleted}${other_filters}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getCompletedOrdersForDay(page = 1, items_limit = 9999999) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/get_complete_order_for_day/?page=${page}&limit=${items_limit}`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -743,6 +753,17 @@ class Api {
   getActiveOrderCount() {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/orders/get_active_order_count/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
+  getClosedOrderCount() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/get_complete_order_count_for_day/`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -788,6 +809,7 @@ getCompanyRequisites() {
 }
 
 
+// eslint-disable-next-line no-undef
 export default new Api(process.env.API_URL || "http://localhost", {
   "content-type": "application/json",
 });

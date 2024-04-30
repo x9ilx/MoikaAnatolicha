@@ -6,7 +6,6 @@ import { useAuth } from "./contexts/auth-context";
 import SignIn from "./pages/signin/index.jsx";
 import Header from "./components/header/index.jsx";
 import * as bootstrap from "bootstrap";
-import WorkOrderList from "./pages/orders/work_order_list/index.jsx";
 import UserRoleRouter from "./components/user_role_router/index.jsx";
 import { EmployerPosition } from "./constants.jsx";
 import AccessDenidedPage from "./pages/access_denided/index.jsx";
@@ -28,11 +27,13 @@ function App() {
     if (headerRef && auth?.loggedIn) {
       headerRef?.current.setUpdate(!headerRef.current.update)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate])
 
   const tooltipTriggerList = document.querySelectorAll(
     '[data-bs-toggle="tooltip"]'
   );
+  // eslint-disable-next-line no-unused-vars
   const tooltipList = [...tooltipTriggerList].map(
     (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
   );

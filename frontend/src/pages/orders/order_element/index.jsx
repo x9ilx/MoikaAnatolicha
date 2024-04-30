@@ -5,6 +5,7 @@ import OrderElementGroup from "../order_element_group";
 import Stopwatch from "../../../components/stopwatch";
 import { useAuth } from "../../../contexts/auth-context";
 import { useNavigate, useParams } from "react-router-dom";
+import OrderPastTime from "../../../components/order_past_time";
 
 const OrderElement = (props) => {
   const [services, setServices] = React.useState([]);
@@ -23,8 +24,10 @@ const OrderElement = (props) => {
         services: [],
       };
       newArr[item.vehicle.id].services.push(item);
-      newArr[item.vehicle.id].vehicle_type_name = item.vehicle.vehicle_type.name;
-      newArr[item.vehicle.id].vehicle_class_name = item.vehicle.vehicle_type.vehicle_class_name;
+      newArr[item.vehicle.id].vehicle_type_name =
+        item.vehicle.vehicle_type.name;
+      newArr[item.vehicle.id].vehicle_class_name =
+        item.vehicle.vehicle_type.vehicle_class_name;
       newArr[item.vehicle.id].vehicle_plate_number = item.vehicle.plate_number;
       newArr[item.vehicle.id].vehicle_model = item.vehicle.vehicle_model;
     });
@@ -47,11 +50,19 @@ const OrderElement = (props) => {
               className="col-4 text-end text-white fw-medium"
               style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
             >
-              <Stopwatch
-                startValue={Math.round(
-                  new Date() - new Date(props.order.order_datetime)
-                )}
-              />
+              {!props.isCompletedOrder && (
+                <Stopwatch
+                  startValue={Math.round(
+                    new Date() - new Date(props.order.order_datetime)
+                  )}
+                />
+              )}
+              {props.isCompletedOrder && (
+                <OrderPastTime
+                  startDate={new Date(props.order.order_datetime)}
+                  endDate={new Date(props.order.order_close_datetime)}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -64,7 +75,13 @@ const OrderElement = (props) => {
                   <OrderElementGroup
                     header={
                       <div className=" fs-6">
-                        <b className="">{services[key].vehicle_plate_number} {services[key].vehicle_model}</b><br/>{services[key].vehicle_class_name} {services[key].vehicle_type_name}
+                        <b className="">
+                          {services[key].vehicle_plate_number}{" "}
+                          {services[key].vehicle_model}
+                        </b>
+                        <br />
+                        {services[key].vehicle_class_name}{" "}
+                        {services[key].vehicle_type_name}
                       </div>
                     }
                     elements_with_badge={services[key].services.map(
@@ -83,40 +100,52 @@ const OrderElement = (props) => {
                       })
                     )}
                   />
-                  
                 </div>
               ))}
             </div>
             <div className="col  pt-1" id="washers">
               <OrderElementGroup
-                header={<div className="fs-6">Назначенные<br/>мойщики</div>}
-                elements_with_badge={props.order.washers.map(
-                  (washer) => ({
-                    name: (
-                      <div className="row">
-                        <span className="fs-6">
-                          {washer.short_name}
-                        </span>
-                      </div>
-                    ),
-                    badge: <div className="fs-6">{auth.employerInfo.employer_info.position === "MANAGER" ? <>Получит: {props.order.each_washer_salary}₽</> : ""}</div>,
-                  })
-                )}
+                header={
+                  <div className="fs-6">
+                    Назначенные
+                    <br />
+                    мойщики
+                  </div>
+                }
+                elements_with_badge={props.order.washers.map((washer) => ({
+                  name: (
+                    <div className="row">
+                      <span className="fs-6">{washer.short_name}</span>
+                    </div>
+                  ),
+                  badge: (
+                    <div className="fs-6">
+                      {auth.employerInfo.employer_info.position ===
+                      "MANAGER" ? (
+                        <>Получит: {props.order.each_washer_salary}₽</>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  ),
+                }))}
               />
             </div>
           </div>
-          <div className="row mx-3 gap-1 my-2">
-            <Button
-              clickHandler={() => {
-                navigate('/' + props.order.id)
-              }}
-              colorClass="btn-primary"
-              type="button"
-              disabled={false}
-            >
-              <>Завершить/Изменить заказ</>
-            </Button>
-          </div>
+          {!props.isCompletedOrder && (
+            <div className="row mx-3 gap-1 my-2">
+              <Button
+                clickHandler={() => {
+                  navigate("/" + props.order.id);
+                }}
+                colorClass="btn-primary"
+                type="button"
+                disabled={false}
+              >
+                <>Завершить/Изменить заказ</>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -125,6 +154,7 @@ const OrderElement = (props) => {
 
 OrderElement.propTypes = {
   order: PropTypes.object.isRequired,
+  isCompletedOrder: PropTypes.bool,
 };
 
 export default OrderElement;

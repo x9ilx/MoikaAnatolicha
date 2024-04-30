@@ -18,5 +18,7 @@ class OnlyManager(permissions.BasePermission):
             return True
 
         employer = Employer.objects.get(user=request.user)
-        return employer and (employer.position == EmployerPositions.MANAGER 
-                             or request.user.is_superuser)
+        return employer and (
+            employer.position == EmployerPositions.MANAGER
+            or request.user.is_superuser
+        )

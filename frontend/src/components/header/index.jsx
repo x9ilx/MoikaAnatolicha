@@ -6,7 +6,6 @@ import { IoMan } from "react-icons/io5";
 import { HiBuildingOffice2 } from "react-icons/hi2";
 import { MdCleaningServices } from "react-icons/md";
 import { FaTruckFront } from "react-icons/fa6";
-import { HiDocumentRemove } from "react-icons/hi";
 import { HiDocumentReport } from "react-icons/hi";
 import { HiDocumentText } from "react-icons/hi";
 import { FaMoneyCheckAlt } from "react-icons/fa";
@@ -18,12 +17,14 @@ import { GiCarKey } from "react-icons/gi";
 import { EmployerPosition } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import ActiveOrderCount from "../order_active_count";
+import ClosedOrderCount from "../closed_order_count";
 
 const Header = React.forwardRef(function MyInput(props, ref) {
   const [menuShow, setMenuShow] = React.useState(false);
   const [update, setUpdate] = React.useState(false);
 
   const activeOrderRef = React.useRef(null);
+  const closedOrderRef = React.useRef(null);
 
   React.useImperativeHandle(ref, () => ({
     setUpdate,
@@ -35,6 +36,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
 
   React.useEffect(() => {
     activeOrderRef.current.setUpdate(!update)
+    closedOrderRef.current.setUpdate(!update)
   }, [update])
 
   return (
@@ -77,9 +79,8 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-primary" style={{cursor: "pointer"}}>
-                  Выполненные заказы
-                  <span className="badge bg-success ms-1">880</span>
+                <a className="nav-link text-primary" style={{cursor: "pointer"}} onClick={() => {navigate("/completed/")}}>
+                  Выполненные заказы <ClosedOrderCount ref={closedOrderRef}/>
                 </a>
               </li>
             </ul>

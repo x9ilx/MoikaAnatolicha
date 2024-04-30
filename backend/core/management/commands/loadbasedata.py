@@ -162,12 +162,12 @@ class Command(BaseCommand):
         try:
             newuser, _ = User.objects.update_or_create(
                 pk=1,
-                username=os.getenv('SUPERUSER_NAME'),
+                username='admin_backup_user',
                 is_superuser=True,
                 is_staff=True,
                 is_active=True,
             )
-            newuser.set_password(os.getenv('SUPERUSER_PASSWORD'))
+            newuser.set_password('chg_admin')
             newuser.save()
 
             employer, _ = Employer.objects.update_or_create(

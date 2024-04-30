@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from django.utils import timezone
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -99,7 +99,8 @@ class EmployerViewSet(viewsets.ModelViewSet):
 
         if employer.position == EmployerPositions.ADMINISTRATOR:
             shift_exist = EmployerShift.objects.filter(
-                employer=employer, is_closed=False,
+                employer=employer,
+                is_closed=False,
             )
             shift_id = -1
             if shift_exist.exists():
@@ -147,7 +148,9 @@ class EmployerViewSet(viewsets.ModelViewSet):
                 shift.employer_salary += (
                     settings.administrator_earnings_after_threshold
                 )
-                current_cost = final_cost - settings.administrator_wage_threshold
+                current_cost = (
+                    final_cost - settings.administrator_wage_threshold
+                )
                 if (
                     current_cost
                     >= settings.administrator_additional_payment_threshold
@@ -166,5 +169,5 @@ class EmployerViewSet(viewsets.ModelViewSet):
             return Response('Смена закрыта', status=status.HTTP_200_OK)
         return Response(
             'Закртие смены доступно только администратору',
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )

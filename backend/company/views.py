@@ -11,6 +11,7 @@ class CompanyRequisitesViewSet(
     pagination_class = None
     queryset = CompanyRequisites.objects.all()
 
+
 class CompanySettingsViewSet(
     viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.UpdateModelMixin
 ):

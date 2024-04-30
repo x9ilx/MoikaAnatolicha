@@ -31,6 +31,7 @@ const OrderWorkAct = (props) => {
       .then((res) => {
         setRequisites(res);
       })
+      // eslint-disable-next-line no-unused-vars
       .catch((err) => {});
   }, [props.order]);
 
@@ -60,55 +61,54 @@ const OrderWorkAct = (props) => {
         <p className="text-center fs-7 ь-0">
           АКТ ВЫПОЛНЕННЫХ РАБОТ К ЗАКАЗУ №{props.order.order_number}
         </p>
-        <OrderElementGroup
-          header={<p className="m-0 fs-7 fw-medium">Исполнитель:</p>}
-          elements_with_badge={[
-            {
-              name: requisites.name,
-              badge: "",
-            },
-            {
-              name: "ИНН: " + requisites.inn,
-              badge: "",
-            },
-            {
-              name: "ОГРНИП: " + requisites.ogrn,
-              badge: "",
-            },
-            {
-              name: "Телефон: " + prettyPhone(requisites.phone),
-              badge: "",
-            },
-          ]}
-        />
-
+        <p>Исполнитель: </p>
+        <table className="table table-sm table-bordered">
+          <tbody>
+            <tr>
+              <td>{requisites.name}</td>
+            </tr>
+            <tr>
+              <td>{"ИНН: " + requisites.inn}</td>
+            </tr>
+            <tr>
+              <td>{"ОГРНИП: " + requisites.ogrn}</td>
+            </tr>
+            <tr>
+              <td>{"Телефон: " + prettyPhone(requisites.phone)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="m-0 fs-7">
+          {props.order.client_name
+            ? "Клиент: " + props.order.client_name
+            : null}
+        </p>
         <p className="mb-1 fs-7 my-1">Выполненные работы:</p>
         <div className="border p-2 fs-7 mt-2">
           {Object.keys(services).map((key, index) => (
-            <div key={"serviceList" + index} className="row">
-              <OrderElementGroup
-                header={
-                  <>
-                    <b>{services[key].vehicle_plate_number}</b>{" "}
-                    {services[key].vehicle_model}{" "}
-                    {services[key].vehicle_class_name} (
-                    {services[key].vehicle_type_name})
-                  </>
-                }
-                elements_with_badge={services[key].services.map((service) => ({
-                  name: (
-                    <div className="row">
-                      <span className="fs-7">
-                        {service.service_name}
-                        {service.legal_entity_service
-                          ? " (договор)"
-                          : null}: {service.cost}₽
-                      </span>
-                    </div>
-                  ),
-                  badge: "",
-                }))}
-              />
+            <div key={"serviceList" + index} className="">
+              <p>
+                <b>{services[key].vehicle_plate_number}</b>{" "}
+                {services[key].vehicle_model} {services[key].vehicle_class_name}{" "}
+                ({services[key].vehicle_type_name})
+              </p>
+              <table className="table table-sm table-bordered">
+                <tbody>
+                  {services[key].services.map((service, s_index) => (
+                    <tr key={"services[key]." + s_index}>
+                      <td>
+                        <span className="fs-7">
+                          {service.service_name}
+                          {service.legal_entity_service
+                            ? " (договор)"
+                            : null}: {service.cost}₽
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
               <p className="fs-7 px-3 m-0 mb-3">
                 <b>Итого: {services[key].total_cost}₽</b>
               </p>
@@ -131,11 +131,7 @@ const OrderWorkAct = (props) => {
           ]}
         />
         <br />
-        <p className="m-0 fs-7">
-          {props.order.client_name
-            ? "Клиент: " + props.order.client_name
-            : null}
-        </p>
+
         <div className="row my-3">
           <div className="col-1 text-start fs-7">
             {new Date(props.order.order_datetime).toLocaleDateString()}г.
