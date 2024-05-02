@@ -235,9 +235,9 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  getEmployeesList(page = 1, items_limit = 8) {
+  getEmployeesList(page = 1, items_limit = 8, search="") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/employees/?page=${page}&limit=${items_limit}`, {
+    return fetch(URL + `/api/employees/?page=${page}&limit=${items_limit}&search=${search}`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -250,6 +250,20 @@ class Api {
     const token = cookies.get("auth_token");
     return fetch(
       URL + `/api/employees/?page=${1}&limit=${9999999}&position=WASHER`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
+
+  getEmployeesAllWashersOnShift() {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL + `/api/employees/?page=${1}&limit=${9999999}&position=WASHER&on_shift=True`,
       {
         method: "GET",
         headers: {
@@ -282,6 +296,17 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  setWasherOnShift(washer_id, value) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/${washer_id}/set_washer_on_shift/${value}/`, {
+      method: "PUT",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
   /////////////////////////////// VEHICLES
 
   getVehicleClasses(page = 1, items_limit = 8, search = "") {
@@ -401,6 +426,17 @@ class Api {
   getVehicle(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/vehicles/${id}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getVehicleFromPlateNumber(plate_number) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/vehicles/find_vehicle_for_plate_number/${plate_number}/`, {
       method: "GET",
       headers: {
         ...this._headers,

@@ -32,6 +32,7 @@ class Employer(models.Model):
         null=True,
     )
     is_busy_working = models.BooleanField('Занят работой?', default=False)
+    on_shift = models.BooleanField('На смене?', default=False)
 
     class Meta:
         """Meta definition for Employer."""

@@ -79,6 +79,18 @@ function EmployeesController() {
         <Route element={<ProtectedRoute />}>
           <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
             <Route
+              path="/:employer_id/salary/"
+              element={
+                <>
+                  
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
               path="/add/"
               element={
                 <>

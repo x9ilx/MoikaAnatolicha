@@ -11,6 +11,7 @@ import WorkOrderList from "../work_order_list"
 import DeletePage from "../../DELETE_page"
 import OrderEdit from "../order_edit";
 import CompletedOrderList from "../completed_order_list";
+import OrderAdd1C from "../order_add/new_1c_index";
 
 function OrderController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -69,10 +70,11 @@ function OrderController() {
         </Route>
         <Route element={<ProtectedRoute />}>
             <Route
-              path="/add/"
+              path="/add/:is_tractor/:have_trailer/"
               element={
                 <>
-                 <OrderAdd />
+                 <OrderAdd1C 
+                 />
                 </>
               }
             />

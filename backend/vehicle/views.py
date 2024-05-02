@@ -90,6 +90,8 @@ class VehicleOrTrailerTypeViewSet(viewsets.ModelViewSet):
         url_name='services',
     )
     def get_service_for_vehicle_type(self, request, pk):
+        if pk == 'undefined':
+            return Response({}, status=status.HTTP_200_OK)
         vehicle = VehicleOrTrailerType.objects.get(pk=pk)
 
         if not vehicle:
@@ -110,7 +112,9 @@ class VehicleViewSet(viewsets.ModelViewSet):
         queryset = Vehicle.objects.all()
         excludes = self.request.GET.getlist('exclude', [])
         search = self.request.GET.get('search', '')
+        plate_number = self.request.GET.get('plate_number', '')
         filters = Q()
+
         if excludes:
             filters &= ~Q(plate_number__in=excludes)
 
@@ -118,6 +122,9 @@ class VehicleViewSet(viewsets.ModelViewSet):
             filters &= Q(plate_number__istartswith=search)
             filters |= Q(owner__name__icontains=search)
             filters |= Q(owner__inn__istartswith=search)
+
+        if plate_number:
+            filters = Q(plate_number=plate_number)
 
         return (
             queryset.filter(filters)
@@ -146,3 +153,18 @@ class VehicleViewSet(viewsets.ModelViewSet):
         serializer = VehicleModelSerializer(models, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='find_vehicle_for_plate_number/(?P<plate_number>[\w-]+)',
+        url_name='find_vehicle_for_plate_number',
+    )
+    def find_vehicle_for_plate_number(self, request, plate_number):
+        vehicle = Vehicle.objects.filter(plate_number=plate_number)
+        
+        if vehicle.exists():
+            serializer = VehicleSerializer(instance=vehicle.first())
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({}, status=status.HTTP_200_OK)

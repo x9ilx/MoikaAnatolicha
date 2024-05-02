@@ -155,7 +155,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                           size={14}
                           className="me-2 text-text-color"
                         />
-                        Классы ТС/ПЦ/ППЦ
+                        Классы ТС/ПП/ППЦ
                       </a>
                       <a
                         className="dropdown-item"
@@ -165,7 +165,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                         }}
                       >
                         <GiCarDoor size={14} className="me-2 text-text-color" />
-                        Модели ТС/ПЦ/ППЦ
+                        Модели ТС/ПП/ППЦ
                       </a>
 
                       <a
@@ -176,7 +176,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                         }}
                       >
                         <GiCarKey size={14} className="me-2 text-text-color" />
-                        ТС/ПЦ/ППЦ
+                        ТС/ПП/ППЦ
                       </a>
 
                       <div className="dropdown-divider"></div>

@@ -7,22 +7,26 @@ $theme-colors: (
   "secondary": #a6861c,
   "danger": #a61c3c,
   "success": #1ca641,
-  "contrast": #EBDB4C,
+  "contrast": #ebdb4c,
   "info": #3c4eb9,
   "text-color": #272727,
 );
 
 $font-sizes: (
-    1: $h1-font-size,
-    2: $h2-font-size,
-    3: $h3-font-size,
-    4: $h4-font-size,
-    5: $h5-font-size,
-    6: $h6-font-size,
-    7: 0.9rem, // adds fs-7
-    8: 0.8rem, // adds fs-n1
-    9: 0.7rem, // adds fs-7
-    10: 0.6rem, // adds fs-n1
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size,
+  7: 0.9rem,
+  // adds fs-7
+  8: 0.8rem,
+  // adds fs-n1
+  9: 0.7rem,
+  // adds fs-7
+  10: 0.6rem,
+  // adds fs-n1
 );
 
 $pagination-color: #272727;
@@ -32,11 +36,15 @@ $pagination-active-bg: #1c81a6;
 $pagination-active-border-color: #1c81a6;
 $pagination-disabled-color: #08202b;
 $pagination-disabled-bg: rgb(#08202b, 0.15);
-$pagination-disabled-border-color:  rgb(#08202b, 0.15);
+$pagination-disabled-border-color: rgb(#08202b, 0.15);
+
+$form-switch-checked-color: #e7e7e7;
+$bs-btn-active-color: #e7e7e7;
 
 @import "bootstrap/scss/bootstrap";
 
-.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
   background-color: rgb(#1c81a6, 0.5);
 }
 
@@ -44,15 +52,13 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
   background-color: rgb(#1c81a6, 0.65);
 }
 
-
-
 .text {
-    color: #272727 !important;
+  color: #272727 !important;
 }
 
 .text_light {
   color: #e7e7e7;
-  text-shadow: 1px -1px 7px rgba(0,0,0,0.45);
+  text-shadow: 1px -1px 7px rgba(0, 0, 0, 0.45);
 }
 
 .btn:focus {
@@ -99,20 +105,34 @@ $pagination-disabled-border-color:  rgb(#08202b, 0.15);
 }
 
 .order_service_element:hover {
-  box-shadow: 0px 2px 29px -6px rgba(0,0,0,0.72);
-  -webkit-box-shadow: 0px 2px 29px -6px rgba(0,0,0,0.72);
-  -moz-box-shadow: 0px 2px 29px -6px rgba(0,0,0,0.72);
+  box-shadow: 0px 2px 29px -6px rgba(0, 0, 0, 0.72);
+  -webkit-box-shadow: 0px 2px 29px -6px rgba(0, 0, 0, 0.72);
+  -moz-box-shadow: 0px 2px 29px -6px rgba(0, 0, 0, 0.72);
 }
 
 @media print {
-  @page { margin: 0; }
-  .page_break { page-break-after: always; }
+  @page {
+    margin: 0;
+  }
+  .page_break {
+    page-break-after: always;
+  }
 }
 @media screen {
-  .print_content { display: none }
+  .print_content {
+    display: none;
+  }
 }
-// @page 
+// @page
 //     {
 //         size:  auto;   /* auto is the initial value */
 //         margin: 0mm;  /* this affects the margin in the printer settings */
 //     }
+
+.btn-check:checked + .btn,
+:not(.btn-check) + .btn:active,
+.btn:first-child:active,
+.btn.active,
+.btn.show {
+  color: #f5f5f5 !important;
+}

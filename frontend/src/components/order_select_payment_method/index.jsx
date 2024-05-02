@@ -29,6 +29,7 @@ const SelectPaymentMethod = (props) => {
       <div className="form-floating mb-3">
         <p className="">Способ оплаты:</p>
         <select
+        disabled={!props.enable}
           className="form-select text p-3"
           id="currentType"
           placeholder="currentType"
@@ -52,6 +53,7 @@ const SelectPaymentMethod = (props) => {
 SelectPaymentMethod.propTypes = {
   currentPaymentMethod: PropTypes.string.isRequired,
   onSetPaymentMethod: PropTypes.func.isRequired,
+  enable: PropTypes.bool,
 };
 
 export default SelectPaymentMethod;

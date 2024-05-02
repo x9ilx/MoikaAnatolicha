@@ -23,7 +23,6 @@ class CHGUserViewSet(UserViewSet):
 
 
 class EmployerViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete']
     serializer_class = EmployerSerializer
     permission_classes = [
         OnlyManager,
@@ -36,6 +35,7 @@ class EmployerViewSet(viewsets.ModelViewSet):
     ]
     filterset_fields = [
         'position',
+        'on_shift',
     ]
     ordering = [
         'name',
@@ -43,6 +43,10 @@ class EmployerViewSet(viewsets.ModelViewSet):
     ordering_fields = [
         'name',
         'position',
+    ]
+    search_fields = [
+        'name',
+        'short_name'
     ]
 
     def get_serializer_context(self):
@@ -73,6 +77,20 @@ class EmployerViewSet(viewsets.ModelViewSet):
             for name in EmployerPositions
         ]
         return Response(positions, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=['PUT'],
+        url_path='set_washer_on_shift/(?P<value>[\d])',
+        url_name='set_washer_on_shift',
+    )
+    def set_washer_on_shift(self, request, pk, value):
+        employer = get_object_or_404(Employer, pk=pk)
+        employer.on_shift = True if value == "1" else False
+        employer.save()
+        return Response(
+            {'on_shift': employer.on_shift}, status=status.HTTP_200_OK
+        )
 
     @action(
         detail=False,

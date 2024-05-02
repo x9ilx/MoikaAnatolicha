@@ -38,6 +38,8 @@ class EmployerSerializer(serializers.ModelSerializer):
             'phone',
             'user_name',
             'position_verbose',
+            'is_busy_working',
+            'on_shift',
             'add_user',
             'username',
             'password',
