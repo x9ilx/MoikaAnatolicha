@@ -129,6 +129,7 @@ const GetServicesFromVehicleV2 = (props) => {
         (element.legal_entity_service === service.legal_entity_service) &
         (element.vehicle.id == service.vehicle.id)
     );
+
     if (serv) {
       return true;
     }

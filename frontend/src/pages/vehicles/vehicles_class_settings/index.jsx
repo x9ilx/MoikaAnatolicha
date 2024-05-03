@@ -30,9 +30,11 @@ const VehicleClassSettings = () => {
             >
               <>Добавить класс ТС/ПЦ/ППЦ</>
             </Button>
+            <hr></hr>
             <form className="d-flex mb-3" role="search">
               <input className="form-control me-2" type="search" placeholder="Поиск по названию класса/типа" aria-label="Search" onChange={(e) => {updateRef(e)}}/>
             </form>
+            
               <VehicleClassList ref={refList}/>
             </div>
           </>

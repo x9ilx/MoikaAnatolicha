@@ -5,6 +5,7 @@ import api from "../../api";
 
 const SetWashersV2 = (props) => {
   const [loading, setLoading] = React.useState(false);
+  const [update, setUpdate] = React.useState(false);
 
   const [washersList, setWashersList] = React.useState([]);
   const [selectedWashers, setSelectedWashers] = React.useState(
@@ -26,6 +27,7 @@ const SetWashersV2 = (props) => {
 
   React.useEffect(() => {
     getWashers();
+    setSelectedWashers(props.currentWashers);
   }, []);
 
   const selectWashers = React.useCallback(() => {
@@ -73,12 +75,12 @@ const SetWashersV2 = (props) => {
                     id={washer.name + washer_index}
                     autoComplete="off"
                     value={washer.id}
-                    checked={selectedWashers.find(
+                    checked={selectedWashers.findIndex(
                       (element) => element.id == washer.id
-                    )}
+                    ) > -1}
                     onChange={(e) => {
                       changeWasherSelect(washer, e.target.checked);
-                    }}
+                    }} 
                     disabled={!props.enable}
                   />
                   <label

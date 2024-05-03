@@ -34,83 +34,95 @@ class EmployerViewSet(viewsets.ModelViewSet):
         filters.OrderingFilter,
     ]
     filterset_fields = [
-        'position',
-        'on_shift',
+        "position",
+        "on_shift",
     ]
     ordering = [
-        'name',
+        "name",
     ]
     ordering_fields = [
-        'name',
-        'position',
+        "name",
+        "position",
     ]
-    search_fields = [
-        'name',
-        'short_name'
-    ]
+    search_fields = ["name", "short_name"]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({'request': self.request})
+        context.update({"request": self.request})
         return context
 
     def get_queryset(self):
         return Employer.objects.filter(~Q(pk=1))
 
     def destroy(self, request, *args, **kwargs):
-        employer = get_object_or_404(Employer, pk=kwargs['pk'])
+        employer = get_object_or_404(Employer, pk=kwargs["pk"])
         employer.user.delete()
         employer.delete()
         return Response(
-            {'details': 'delete - ok'}, status=status.HTTP_204_NO_CONTENT
+            {"details": "delete - ok"}, status=status.HTTP_204_NO_CONTENT
         )
 
     @action(
         detail=False,
-        methods=['GET'],
-        url_path='get_all_position',
-        url_name='get-all-position',
+        methods=["GET"],
+        url_path="get_all_position",
+        url_name="get-all-position",
     )
     def get_all_position(self, request):
         positions = [
-            {'name': name, 'verbose_name': name.label}
+            {"name": name, "verbose_name": name.label}
             for name in EmployerPositions
         ]
         return Response(positions, status=status.HTTP_200_OK)
 
     @action(
         detail=True,
-        methods=['PUT'],
-        url_path='set_washer_on_shift/(?P<value>[\d])',
-        url_name='set_washer_on_shift',
+        methods=["PUT"],
+        url_path="set_washer_on_shift/(?P<value>[\d])",
+        url_name="set_washer_on_shift",
     )
     def set_washer_on_shift(self, request, pk, value):
         employer = get_object_or_404(Employer, pk=pk)
+
+        if value == "0":
+            in_work = Order.objects.filter(
+                is_completed=False, washers_order__washer=employer
+            ).exists()
+
+            if in_work:
+                return Response(
+                    {
+                        f'Мойщик {employer.short_name} на заказе. ':
+                        'Невозможно снять со смены.'
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
         employer.on_shift = True if value == "1" else False
         employer.save()
         return Response(
-            {'on_shift': employer.on_shift}, status=status.HTTP_200_OK
+            {"on_shift": employer.on_shift}, status=status.HTTP_200_OK
         )
 
     @action(
         detail=False,
-        methods=['GET'],
-        url_path='get_free_washers_count',
-        url_name='get-free-washers-count',
+        methods=["GET"],
+        url_path="get_free_washers_count",
+        url_name="get-free-washers-count",
     )
     def get_free_washers_count(self, request):
         washers = Employer.objects.filter(
             position=EmployerPositions.WASHER, is_busy_working=False
         ).count()
         return Response(
-            {'free_washers_count': washers}, status=status.HTTP_200_OK
+            {"free_washers_count": washers}, status=status.HTTP_200_OK
         )
 
     @action(
         detail=True,
-        methods=['POST'],
-        url_path='open_shift',
-        url_name='open-shift',
+        methods=["POST"],
+        url_path="open_shift",
+        url_name="open-shift",
     )
     def open_shift(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
@@ -130,14 +142,14 @@ class EmployerViewSet(viewsets.ModelViewSet):
                 )
                 shift_id = shift.pk
 
-            return Response({'shift_id': shift_id}, status=status.HTTP_200_OK)
-        return Response({'shift_id': -1}, status=status.HTTP_200_OK)
+            return Response({"shift_id": shift_id}, status=status.HTTP_200_OK)
+        return Response({"shift_id": -1}, status=status.HTTP_200_OK)
 
     @action(
         detail=True,
-        methods=['POST'],
-        url_path='close_shift',
-        url_name='close_shift',
+        methods=["POST"],
+        url_path="close_shift",
+        url_name="close_shift",
     )
     def close_shift(self, request, pk):
 
@@ -184,8 +196,8 @@ class EmployerViewSet(viewsets.ModelViewSet):
 
             shift.save()
 
-            return Response('Смена закрыта', status=status.HTTP_200_OK)
+            return Response("Смена закрыта", status=status.HTTP_200_OK)
         return Response(
-            'Закртие смены доступно только администратору',
+            "Закртие смены доступно только администратору",
             status=status.HTTP_200_OK,
         )

@@ -26,10 +26,12 @@ const SelectVehicleClassAndType = (props) => {
 
   const setVehicleClassIndexAndVehicleTypeIndex = React.useCallback(() => {
     if (props.currentVehicleClass && vehicleClasses.length > 0) {
-      const index = vehicleClasses.findIndex(v_class => v_class.id === props.currentVehicleClass);
-      setCurrentClass(vehicleClasses[index].id)
+      const index = vehicleClasses.findIndex(
+        (v_class) => v_class.id === props.currentVehicleClass
+      );
+      setCurrentClass(vehicleClasses[index].id);
       props.onSelectClass(vehicleClasses[index].id, vehicleClasses[index].name);
-      setCurrentClassIndex(index)
+      setCurrentClassIndex(index);
     }
     setFisrtLoad(false);
   }, [props.currentVehicleClass, vehicleClasses]);
@@ -45,12 +47,18 @@ const SelectVehicleClassAndType = (props) => {
       .then((res) => {
         setVehicleClasses(res.results);
         setVehicleTypes(res.results[0]?.vehicle_types);
-        setCurrentClassIndex(0);
-        setCurrentTypeIndex(0);
-        setCurrentClass(res.results[0]?.id);
-        setCurrentClassName(res.results[0]?.name);
-        setCurrentType(res.results[0]?.vehicle_types[0]?.id);
-        setCurrentTypeName(res.results[0]?.vehicle_types[0]?.name);
+
+        if (!props.currentVehicleClass) {
+          setCurrentClassIndex(0);
+          setCurrentClass(res.results[0]?.id);
+          setCurrentClassName(res.results[0]?.name);
+        }
+
+        if (!props.currentVehicleType) {
+          setCurrentTypeIndex(0);
+          setCurrentType(res.results[0]?.vehicle_types[0]?.id);
+          setCurrentTypeName(res.results[0]?.vehicle_types[0]?.name);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -69,10 +77,15 @@ const SelectVehicleClassAndType = (props) => {
     if (currentClassIndex >= 0 && vehicleClasses) {
       let classes = vehicleClasses[currentClassIndex].vehicle_types;
       setVehicleTypes(classes);
-      setCurrentType(classes[0]?.id);
-      setCurrentTypeName(classes[0]?.name);
-      setCurrentTypeIndex(0);
-      props.onSelectType(classes[0]?.id, classes[0]?.name);
+      if (!props.currentVehicleType) {
+        setCurrentType(classes[0]?.id);
+        setCurrentTypeName(classes[0]?.name);
+        setCurrentTypeIndex(0);
+        props.onSelectType(classes[0]?.id, classes[0]?.name);
+      } else {
+        setCurrentType(props.currentVehicleType);
+        setCurrentTypeName(props.currentVehicleTypeName);
+      }
     }
   }, [currentClassIndex, vehicleClasses]);
 

@@ -753,6 +753,20 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  updateOrder(id, data) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/orders/${id}/`, {
+      method: "PUT",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    }).then(this.checkResponse);
+  }
+
   getOrders(page = 1, items_limit = 9999999, isCompleted = false, other_filters="") {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/orders/?page=${page}&limit=${items_limit}&is_completed=${isCompleted}${other_filters}`, {

@@ -9,6 +9,9 @@ from .models import Order, OrderService
 
 
 class OrderServiceSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(
+        read_only=True, source='service.id'
+    )
     service_name = serializers.StringRelatedField(
         read_only=True, source='service.name'
     )
@@ -17,6 +20,7 @@ class OrderServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderService
         fields = [
+            'id',
             'service',
             'service_name',
             'cost',

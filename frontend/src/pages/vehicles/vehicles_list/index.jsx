@@ -130,7 +130,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
                               {
                                 name: (
                                   <>
-                                    {vehicle.owner.name}
+                                    {vehicle.owner.short_name}
                                   </>
                                 ),
                                 badge: "",

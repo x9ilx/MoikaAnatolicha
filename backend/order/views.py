@@ -146,7 +146,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             order = get_object_or_404(Order, pk=pk)
             order.is_completed = True
             order.is_paid = True
-            order.order_close_datetime = order_datetime = timezone.now()
+            order.order_close_datetime = timezone.now()
             order.save()
             serializer = OrderMiniSerializer(instance=order)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -197,6 +197,92 @@ class OrderViewSet(viewsets.ModelViewSet):
             {'Ошибка', 'Заказ не найден'}, status=status.HTTP_404_NOT_FOUND
         )
 
+    def update(self, request, *args, **kwargs):
+        user = Employer.objects.get(user=request.user)
+        services = request.data['services']
+        washers = request.data['washers']
+        payment_method = request.data['payment_method']
+        order = get_object_or_404(Order, pk=kwargs['pk'])
+
+        order.washers_order.all().delete()
+        order.services_in_order.all().delete()
+
+        washer_objs = [
+            OrderWashers(
+                order=order,
+                washer_id=washer['id'],
+            ) for washer in washers
+        ]
+        OrderWashers.objects.bulk_create(washer_objs)
+        
+        total_cost = 0
+        total_cost_contract = 0
+        final_cost_for_employer = 0
+        each_washer_salary = 0
+        comments = order.comments
+        backup_info = f'{order.backup_info}\n{user.name} / Редактирование заказа:\n'
+
+        service_create_list = []
+        for service in services:
+            b_service = None
+            contract = ''
+            if service['legal_entity_service'] == True:
+                b_service = ServiceVehicleTypeLegalEntyty.objects.get(
+                    pk=service['id']
+                )
+                total_cost_contract += service['cost']
+                contract = '(по договору)'
+            else:
+                b_service = ServiceVehicleType.objects.get(
+                    pk=service['id']
+                )
+                total_cost += service['cost']
+
+            if service['vehicle']['id'] == -1:
+                vehicle_obj = Vehicle.objects.get(
+                    plate_number=service['vehicle']['plate_number']
+                )
+                service['vehicle']['id'] = vehicle_obj.pk
+
+            service_create_list.append(
+                OrderService(
+                    order=order,
+                    service_id=service['service']['id'],
+                    cost=service['cost'],
+                    employer_salary=service['employer_salary'],
+                    percentage_for_washer=service['percentage_for_washer'],
+                    vehicle_id=service['vehicle']['id'],
+                    legal_entity_service=service['legal_entity_service']
+                )
+            )
+            if b_service.cost != service['cost']:
+                comments += f'{user.name} изменил \
+                                стоимость услуги{contract} \
+                                "{service['service']['service_name']}" c \
+                                {b_service.cost}₽ на {service['cost']}₽\n'
+
+            calculated_salary = round((service['employer_salary']
+                                * (service['percentage_for_washer'] / 100)))
+            final_cost_for_employer += calculated_salary
+
+
+        OrderService.objects.bulk_create(service_create_list)
+
+        each_washer_salary = round(final_cost_for_employer / len(washers))
+        backup_info += f'Итоговая стоимость наличные: {total_cost}\n\
+                        Итоговая оплата по договору: {total_cost_contract}\n\
+                        Итоговая ЗП мойщиков: {final_cost_for_employer}\n\
+                        Каждый мойщик получит: {each_washer_salary}'
+        order.comments = comments
+        order.backup_info = backup_info
+        order.final_cost = total_cost
+        order.final_cost_contract = total_cost_contract
+        order.final_cost_for_employer_work = final_cost_for_employer
+        order.each_washer_salary = each_washer_salary
+        order.save()
+        return Response({'result': 'updated'}, status=status.HTTP_200_OK)
+        
+
     def create(self, request, *args, **kwargs):
         administrator = request.data['administrator']
         administrator_object = Employer.objects.get(pk=administrator)
@@ -223,11 +309,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         order_datetime = timezone.now()
         order_number = order_datetime.strftime("%d%m%Y%H%M%S")
 
-        backup_info = (f'Заказ №{order_number}, от {order_datetime.strftime("%d.%m.%Y %H:%M:%S")}\n'
-            f'Метод оплаты: {payment_method}\n'
-            f'Имя клиента: {client_name}\nТелефон клиента:{clinet_phone}\n'
-            f'Администратор: {administrator_object.name}\n'
-            f'Автомобили {vehicles}\nУслуги: {services}\nМойщики: {washers}\n')
+        backup_info = f'Заказ №{order_number}, от {order_datetime.strftime("%d.%m.%Y %H:%M:%S")}\n\
+            Метод оплаты: {payment_method}\n\
+            Имя клиента: {client_name}\nТелефон клиента:{clinet_phone}\n\
+            Администратор: {administrator_object.name}\n\
+            Автомобили {vehicles}\nУслуги: {services}\nМойщики: {washers}\n'
         comments = ""
 
         total_cost = 0
@@ -259,25 +345,6 @@ class OrderViewSet(viewsets.ModelViewSet):
             ) for washer in washers
         ]
         OrderWashers.objects.bulk_create(washer_objs)
-
-
-        for vehicle in vehicles:
-            vehicle_exist = Vehicle.objects.filter(pk=vehicle['id'])
-            
-            if not vehicle_exist.exists():
-                data = {
-                    'plate_number': vehicle['plate_number'],
-                    'vehicle_model': vehicle['vehicle_model'],
-                    'owner_id': vehicle['owner'],
-                    'vehicle_type_id': vehicle['vehicle_type'],
-                }
-                vehicle_serializer = VehicleSerializer(
-                    data=data,
-                    context={'request': request}
-                )
-                vehicle_serializer.is_valid(raise_exception=True)
-                vehicle_serializer.save()
-
 
         service_create_list = []
         for service in services:
@@ -329,7 +396,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         backup_info += f'Итоговая стоимость наличные: {total_cost}\n\
                         Итоговая оплата по договору: {total_cost_contract}\n\
                         Итоговая ЗП мойщиков: {final_cost_for_employer}\n\
-                        Кажды мойщик получит: {each_washer_salary}'
+                        Каждый мойщик получит: {each_washer_salary}'
         order.comments = comments
         order.backup_info = backup_info
         order.final_cost = total_cost

@@ -30,11 +30,11 @@ const WasherOnShiftButton = () => {
   }, []);
 
   const changeWasherOnShift = (washer_index, value, washer_id) => {
-    let newArr = washersList;
-    newArr[washer_index].on_shift = value;
     api
       .setWasherOnShift(washer_id, value ? 1 : 0)
       .then(() => {
+        let newArr = washersList;
+        newArr[washer_index].on_shift = value;
         setWashersList(newArr);
         setUpdate(!update);
       })
@@ -53,7 +53,7 @@ const WasherOnShiftButton = () => {
     );
   }
   return (
-    <div className="dropdown">
+    <div className="dropdown mb-3">
       <button
         className="btn btn-primary text-white w-100 dropdown-toggle "
         type="button"
@@ -63,7 +63,7 @@ const WasherOnShiftButton = () => {
       >
         Мойщики на смене
       </button>
-      <ul className="dropdown-menu w-100 shadow p-3">
+      <ul className="dropdown-menu w-100 shadow-lg p-3">
         <div className="vstack gap-2">
           {washersList.map((washer, washer_index) => (
             <div key={washer.name + washer_index}>
@@ -77,7 +77,11 @@ const WasherOnShiftButton = () => {
                   value={washer.id}
                   checked={washer.on_shift}
                   onChange={(e) => {
-                    changeWasherOnShift(washer_index, e.target.checked, washer.id);
+                    changeWasherOnShift(
+                      washer_index,
+                      e.target.checked,
+                      washer.id
+                    );
                   }}
                 />
                 <label

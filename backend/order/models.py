@@ -86,10 +86,6 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
         ordering = ['-order_datetime']
 
-    def __str__(self):
-        """Unicode representation of Order."""
-        return f'{self.vehicle}: {self.final_cost}р.'
-
 
 class OrderService(models.Model):
     """Model definition for OrderService."""

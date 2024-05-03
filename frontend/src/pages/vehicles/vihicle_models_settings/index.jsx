@@ -20,6 +20,7 @@ const VehicleModelsSettings = () => {
           <>
             <div className="mt-4">
             <p className="text-text-color fs-5">Управление моделями ТС/ПЦ/ППЦ:</p>
+            <hr></hr>
             <form className="d-flex mb-3" role="search">
               <input className="form-control me-2" type="search" placeholder="Поиск по названию" aria-label="Search" onChange={(e) => {updateRef(e)}}/>
             </form>
