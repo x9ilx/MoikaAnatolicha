@@ -32,6 +32,7 @@ class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
         django_filters.DjangoFilterBackend,
     ]
     filterset_class = VehicleOrTrailerClassSearchFilter
+    ordering =['name']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -82,6 +83,7 @@ class VehicleOrTrailerTypeViewSet(viewsets.ModelViewSet):
         'vehicle_class',
     ]
     search_fields = ['name']
+    ordering =['name']
 
     @action(
         detail=True,

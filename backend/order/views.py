@@ -226,17 +226,20 @@ class OrderViewSet(viewsets.ModelViewSet):
         for service in services:
             b_service = None
             contract = ''
+            new_employer_salary = service['employer_salary']
             if service['legal_entity_service'] == True:
                 b_service = ServiceVehicleTypeLegalEntyty.objects.get(
-                    pk=service['id']
+                    pk=service['base_service_id']
                 )
                 total_cost_contract += service['cost']
                 contract = '(по договору)'
             else:
                 b_service = ServiceVehicleType.objects.get(
-                    pk=service['id']
+                    pk=service['base_service_id']
                 )
                 total_cost += service['cost']
+
+            new_employer_salary = b_service.employer_salary
 
             if service['vehicle']['id'] == -1:
                 vehicle_obj = Vehicle.objects.get(
@@ -244,22 +247,28 @@ class OrderViewSet(viewsets.ModelViewSet):
                 )
                 service['vehicle']['id'] = vehicle_obj.pk
 
+            if b_service.cost != service['cost']:
+                comments += f'{user.name} изменил \
+                                стоимость услуги{contract} \
+                                "{service['service_name']}" c \
+                                {b_service.cost}₽ на {service['cost']}₽\n'
+                new_employer_salary = round(
+                    (service['cost'] / b_service.cost) * new_employer_salary
+                )
+                service['employer_salary'] = new_employer_salary
+
             service_create_list.append(
                 OrderService(
                     order=order,
+                    base_service_id=service['base_service_id'],
                     service_id=service['service']['id'],
                     cost=service['cost'],
-                    employer_salary=service['employer_salary'],
+                    employer_salary=new_employer_salary,
                     percentage_for_washer=service['percentage_for_washer'],
                     vehicle_id=service['vehicle']['id'],
                     legal_entity_service=service['legal_entity_service']
                 )
             )
-            if b_service.cost != service['cost']:
-                comments += f'{user.name} изменил \
-                                стоимость услуги{contract} \
-                                "{service['service']['service_name']}" c \
-                                {b_service.cost}₽ на {service['cost']}₽\n'
 
             calculated_salary = round((service['employer_salary']
                                 * (service['percentage_for_washer'] / 100)))
@@ -350,6 +359,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         for service in services:
             b_service = None
             contract = ''
+            new_employer_salary = service['employer_salary']
             if service['legal_entity_service'] == True:
                 b_service = ServiceVehicleTypeLegalEntyty.objects.get(
                     pk=service['id']
@@ -367,23 +377,31 @@ class OrderViewSet(viewsets.ModelViewSet):
                     plate_number=service['vehicle']['plate_number']
                 )
                 service['vehicle']['id'] = vehicle_obj.pk
-
-            service_create_list.append(
-                OrderService(
-                    order=order,
-                    service_id=service['service']['id'],
-                    cost=service['cost'],
-                    employer_salary=service['employer_salary'],
-                    percentage_for_washer=service['percentage_for_washer'],
-                    vehicle_id=service['vehicle']['id'],
-                    legal_entity_service=service['legal_entity_service']
-                )
-            )
+                
             if b_service.cost != service['cost']:
                 comments += f'{administrator_object.short_name} изменил \
                                 стоимость услуги{contract} \
                                 "{service['service']['name']}" c \
                                 {b_service.cost}₽ на {service['cost']}₽\n'
+                new_employer_salary = round(
+                    (service['cost'] / b_service.cost) * service['employer_salary']
+                )
+               
+                service['employer_salary'] = new_employer_salary
+
+            service_create_list.append(
+                OrderService(
+                    order=order,
+                    base_service_id=service['id'],
+                    service_id=service['service']['id'],
+                    cost=service['cost'],
+                    employer_salary=new_employer_salary,
+                    percentage_for_washer=service['percentage_for_washer'],
+                    vehicle_id=service['vehicle']['id'],
+                    legal_entity_service=service['legal_entity_service']
+                )
+            )
+            
 
             calculated_salary = round((service['employer_salary']
                                 * (service['percentage_for_washer'] / 100)))

@@ -10,9 +10,11 @@ import SelectPaymentMethodRadioGroup from "../../../components/order_select_paym
 import VehicleInfo from "../../../components/order_vehicle_info";
 import GetServicesFromVehicleV2 from "../../../components/order_get_service_from_vehicle_v2";
 import SetWashersV2 from "../../../components/orders_set_washers/index_v2";
+import ChangeServicesCost from "../../../components/order_change_service_cost";
 
 const OrderEditV2 = (props) => {
   const [loading, setLoading] = React.useState(false);
+  const [update, setUpdate] = React.useState(false);
 
   const [order, setOrder] = React.useState(0);
   const [administrator, setAdministrator] = React.useState(0);
@@ -133,7 +135,7 @@ const OrderEditV2 = (props) => {
     washers,
   ]);
 
-  const ServiceChoise = (services) => {
+  const CalculateCost = React.useCallback(() => {
     let t_cost = 0;
     let t_cost_contract = 0;
     let f_washer_salary = 0;
@@ -147,12 +149,18 @@ const OrderEditV2 = (props) => {
         item.employer_salary * (item.percentage_for_washer / 100)
       );
     });
-    setServices(services);
     setTotalCost(t_cost);
     setTotalCostContract(t_cost_contract);
     setFinalCostForEmployer(f_washer_salary);
+  }, [services, update])
+
+  React.useEffect(() => {
+    CalculateCost();
+  }, [services, CalculateCost]);
+
+  const ServiceChoise = (services) => {
     if (services.length > 0) {
-      //
+      setServices(services);
     } else {
       setTotalCost(0);
       setTotalCostContract(0);
@@ -160,10 +168,16 @@ const OrderEditV2 = (props) => {
     }
   };
 
-  const setNewServiceCost = (service_index, new_cost) => {
-    let newArr = services;
-    newArr[service_index].cost = new_cost;
-    setServices(newArr);
+  const setNewServiceCost = (service_id, vehicle_id, new_cost) => {
+    let arr = services;
+    arr.map((item) => {
+      if (item.id === service_id && item.vehicle.id === vehicle_id) {
+        item.cost = parseInt(new_cost);
+      }
+    });
+    console.log(arr)
+    setServices(arr);
+    setUpdate(!update);
   };
 
   return (
@@ -217,6 +231,14 @@ const OrderEditV2 = (props) => {
               setCheckedServicesList={ServiceChoise}
               vehicleList={vehicleList}
               enable={true}
+            />
+          </div>
+
+          <div>
+            <ChangeServicesCost
+              currentServices={services}
+              onChangeCost={setNewServiceCost}
+              enable={services.length > 0}
             />
           </div>
 

@@ -92,7 +92,7 @@ class EmployerViewSet(viewsets.ModelViewSet):
             if in_work:
                 return Response(
                     {
-                        f'Мойщик {employer.short_name} на заказе. ':
+                        f'Мойщик "{employer.short_name}" на заказе. ':
                         'Невозможно снять со смены.'
                     },
                     status=status.HTTP_403_FORBIDDEN

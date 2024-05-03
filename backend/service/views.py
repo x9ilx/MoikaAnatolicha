@@ -24,6 +24,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
         'additional_service',
     ]
     search_fields = ['name']
+    ordering = ['name']
 
     def create(self, request, *args, **kwargs):
         name = request.data['service_name']

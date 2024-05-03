@@ -26,11 +26,12 @@ const GetServicesFromVehicleV2 = (props) => {
       common_service: [],
       contract_service: [],
     };
-    props.vehicleList.map((vehicle) => {
+      props.vehicleList.map((vehicle) => {
       if (vehicle.hasOwnProperty("plate_number")) {
         api
           .getServicesForVehicleType(vehicle.vehicle_type.id)
           .then((res) => {
+            // res = res.sort((a, b) => a.vehicle.id - b.vehicle.id)
             newArr.common_service.push({
               vehicle_type_name: vehicle.vehicle_type.name,
               vehicle_id: vehicle.id,
@@ -43,6 +44,7 @@ const GetServicesFromVehicleV2 = (props) => {
                   vehicle: vehicle,
                   cost_change: false,
                   start_cost: item.cost,
+                  service_name: item.service.name,
                 };
               }),
             });
@@ -53,6 +55,7 @@ const GetServicesFromVehicleV2 = (props) => {
               )
               .then((res) => {
                 if (res.length > 0) {
+                  // res = res.sort((a, b) => a.vehicle.id - b.vehicle.id)
                   newArr.contract_service.push({
                     vehicle_type_name: vehicle.vehicle_type.name,
                     vehicle_id: vehicle.id,
@@ -65,12 +68,13 @@ const GetServicesFromVehicleV2 = (props) => {
                         vehicle: vehicle,
                         cost_change: false,
                         start_cost: item.cost,
+                        service_name: item.service.name,
                       };
                     }),
                   });
-                  setOwnerShortName(vehicle.owner.short_name)
+                  setOwnerShortName(vehicle.owner.short_name);
                 }
-                
+
                 setServices(newArr);
               })
               .catch((err) => {
@@ -89,7 +93,9 @@ const GetServicesFromVehicleV2 = (props) => {
   }, [props.vehicleList]);
 
   React.useEffect(() => {
-    if (props.vehicleList.length) getServices();
+    if (props.vehicleList.length > 0) {
+      getServices();
+    }
   }, [props.vehicleList, getServices]);
 
   React.useEffect(() => {
@@ -109,7 +115,7 @@ const GetServicesFromVehicleV2 = (props) => {
     selectServices();
   }, [selectedServices, selectServices, update]);
 
-  const changeServiceSelect = (service, service_index, value) => {
+  const changeServiceSelect = React.useCallback((service, service_index, value) => {
     if (value === true) {
       setSelectedServices((prev) => [...prev, service]);
     } else {
@@ -120,9 +126,9 @@ const GetServicesFromVehicleV2 = (props) => {
     }
     // selectServices();
     setUpdate(!update);
-  };
+  }, [selectedServices, update]);
 
-  const checkChecked = (service) => {
+  const checkChecked = React.useCallback((service) => {
     const serv = selectedServices.find(
       (element) =>
         (element.service.id == service.service.id) &
@@ -134,7 +140,7 @@ const GetServicesFromVehicleV2 = (props) => {
       return true;
     }
     return false;
-  };
+  }, [selectedServices]);
 
   const setNewCost = (service_index, value) => {
     let newArr = selectedServices;
@@ -142,86 +148,6 @@ const GetServicesFromVehicleV2 = (props) => {
     newArr[service_index].cost_change = true;
     setSelectedServices(newArr);
     setUpdate(!update);
-  };
-
-  const generateList = (table) => {
-    return (
-      <div className=" row overflow-auto vh-25" style={{ maxHeight: "450px" }}>
-        {services[table].map((service_list, index) => (
-          <div
-            key={table + index + service_list.vehicle_plate_number}
-            className=""
-          >
-            <ul className="list-group">
-              <li className="list-group-item fw-medium fs-8">
-                <b>{service_list.vehicle_plate_number}</b>{" "}
-                {service_list.vehicle_model} {isMobile && <br></br>}
-                {service_list.vehicle_class_name} (
-                {service_list.vehicle_type_name})
-              </li>
-              <li className="list-group-item p-1">
-                <div className="input-group">
-                  <div className="d-flex flex-wrap gap-2">
-                    {service_list.services.map((service, service_index) => (
-                      <div key={table + service_index + service.vehicle.id}>
-                        <input
-                          type="checkbox"
-                          className="btn-check rounded"
-                          name={
-                            "btnradiocommon_service" +
-                            service_index +
-                            service.vehicle.id +
-                            table
-                          }
-                          id={
-                            "btnradiocommon_service" +
-                            service_index +
-                            service.vehicle.id +
-                            table
-                          }
-                          autoComplete="off"
-                          checked={checkChecked(service)}
-                          value={service.id}
-                          onChange={(e) => {
-                            changeServiceSelect(
-                              service,
-                              selectedServices.findIndex(
-                                (element) =>
-                                  (element.service.id == service.service.id) &
-                                  (element.legal_entity_service ==
-                                    service.legal_entity_service) &
-                                  (element.vehicle.id == service.vehicle.id)
-                              ),
-                              e.target.checked
-                            );
-                          }}
-                          disabled={!props.enable}
-                        />
-                        <label
-                          className="btn btn-outline-primary btn-sm w-100 fw-medium align-content-start rounded"
-                          style={{
-                            textShadow: "1px -1px 10px rgba(0,0,0,0.45)",
-                          }}
-                          htmlFor={
-                            "btnradiocommon_service" +
-                            service_index +
-                            service.vehicle.id +
-                            table
-                          }
-                        >
-                          {service.service.name} ({service.cost}₽) /{" "}
-                          {table === "contract_service" ? "ДОГОВОР" : "ПРАЙС"}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        ))}
-      </div>
-    );
   };
 
   if (loading) {
@@ -234,11 +160,15 @@ const GetServicesFromVehicleV2 = (props) => {
 
   return (
     <div className="form-floating mb-3">
-      <div className="row">
-      <span className="m-0">Услуги:</span>
-      {ownerShortName && <span className="m-0 border rounded border-2 border-info p-2 shadow">Доступны услуги по договору: <b>{ownerShortName}</b></span>}
+      <div className="row m-3">
+        <span className="m-0">Услуги:</span>
+        {ownerShortName && (
+          <span className="border rounded border-2 border-info p-2 shadow">
+            Доступны услуги по договору: <b>{ownerShortName}</b>
+          </span>
+        )}
       </div>
-      
+
       <ul className="nav nav-tabs mt-3">
         {props.includeContractServices && (
           <li className="nav-item">
@@ -273,12 +203,164 @@ const GetServicesFromVehicleV2 = (props) => {
       </ul>
       {currentTab === "contract" && (
         <div className="" id="page">
-          {generateList("contract_service")}
+          <div
+          className="row"
+          style={{ maxHeight: "450px" }}
+        >
+          {services.contract_service.map((service_list, index) => (
+            <div
+              key={"contract_service" + index + service_list.vehicle_plate_number}
+            >
+              <ul className="list-group">
+                <li className="list-group-item fw-medium fs-8">
+                  <b>{service_list.vehicle_plate_number}</b>{" "}
+                  {service_list.vehicle_model} {isMobile && <br></br>}
+                  {service_list.vehicle_class_name} (
+                  {service_list.vehicle_type_name})
+                </li>
+                <li className="list-group-item p-1">
+                  <div className="input-group">
+                    <div className="d-flex flex-wrap gap-2">
+                      {service_list.services.map((service, service_index) => (
+                        <div key={"contract_service" + service_index + service.vehicle.id}>
+                          <input
+                            type="checkbox"
+                            className="btn-check rounded"
+                            name={
+                              "btnradiocontract_service" +
+                              service_index +
+                              service.vehicle.id +
+                              "contract_service"
+                            }
+                            id={
+                              "btnradiocontract_service" +
+                              service_index +
+                              service.vehicle.id +
+                              "contract_service"
+                            }
+                            autoComplete="off"
+                            checked={checkChecked(service)}
+                            value={service.id}
+                            onChange={(e) => {
+                              changeServiceSelect(
+                                service,
+                                selectedServices.findIndex(
+                                  (element) =>
+                                    (element.service.id == service.service.id) &
+                                    (element.legal_entity_service ==
+                                      service.legal_entity_service) &
+                                    (element.vehicle.id == service.vehicle.id)
+                                ),
+                                e.target.checked
+                              );
+                            }}
+                            disabled={!props.enable}
+                          />
+                          <label
+                            className="btn btn-outline-primary btn-sm w-100 fw-medium align-content-start rounded"
+                            style={{
+                              textShadow: "1px -1px 10px rgba(0,0,0,0.45)",
+                            }}
+                            htmlFor={
+                              "btnradiocontract_service" +
+                              service_index +
+                              service.vehicle.id +
+                              "contract_service"
+                            }
+                          >
+                            {service.service.name} ({service.cost}₽) /{" "}
+                            {"ДОГОВОР"}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          ))}
+        </div>
         </div>
       )}
       {currentTab === "common" && (
         <div className="" id="page2">
-          {generateList("common_service")}
+          <div
+          className="row"
+          style={{ maxHeight: "450px" }}
+        >
+          {services.common_service.map((service_list, index) => (
+            <div
+              key={"common_service" + index + service_list.vehicle_plate_number}
+            >
+              <ul className="list-group">
+                <li className="list-group-item fw-medium fs-8">
+                  <b>{service_list.vehicle_plate_number}</b>{" "}
+                  {service_list.vehicle_model} {isMobile && <br></br>}
+                  {service_list.vehicle_class_name} (
+                  {service_list.vehicle_type_name})
+                </li>
+                <li className="list-group-item p-1">
+                  <div className="input-group">
+                    <div className="d-flex flex-wrap gap-2">
+                      {service_list.services.map((service, service_index) => (
+                        <div key={"common_service" + service_index + service.vehicle.id}>
+                          <input
+                            type="checkbox"
+                            className="btn-check rounded"
+                            name={
+                              "btnradiocommon_service" +
+                              service_index +
+                              service.vehicle.id +
+                              "common_service"
+                            }
+                            id={
+                              "btnradiocommon_service" +
+                              service_index +
+                              service.vehicle.id +
+                              "common_service"
+                            }
+                            autoComplete="off"
+                            checked={checkChecked(service)}
+                            value={service.id}
+                            onChange={(e) => {
+                              changeServiceSelect(
+                                service,
+                                selectedServices.findIndex(
+                                  (element) =>
+                                    (element.service.id == service.service.id) &
+                                    (element.legal_entity_service ==
+                                      service.legal_entity_service) &
+                                    (element.vehicle.id == service.vehicle.id)
+                                ),
+                                e.target.checked
+                              );
+                            }}
+                            disabled={!props.enable}
+                          />
+                          <label
+                            className="btn btn-outline-primary btn-sm w-100 fw-medium align-content-start rounded"
+                            style={{
+                              textShadow: "1px -1px 10px rgba(0,0,0,0.45)",
+                            }}
+                            htmlFor={
+                              "btnradiocommon_service" +
+                              service_index +
+                              service.vehicle.id +
+                              "common_service"
+                            }
+                          >
+                            {service.service.name} ({service.cost}₽) /{" "}
+                            {"ПРАЙС"}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          ))}
+        </div>
         </div>
       )}
     </div>
