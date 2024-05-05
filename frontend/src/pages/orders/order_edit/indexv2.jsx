@@ -45,7 +45,7 @@ const OrderEditV2 = (props) => {
             vehicles.push({ ...item.vehicle });
           }
 
-          serv.push({ ...item, service: { ...item } });
+          serv.push({ ...item, service: { ...item }, start_cost: item.cost, });
         });
         const newVehicle = Array.from(new Set(vehicles));
         setVehicleList(newVehicle);
@@ -152,7 +152,7 @@ const OrderEditV2 = (props) => {
     setTotalCost(t_cost);
     setTotalCostContract(t_cost_contract);
     setFinalCostForEmployer(f_washer_salary);
-  }, [services, update])
+  }, [services, update]);
 
   React.useEffect(() => {
     CalculateCost();
@@ -168,17 +168,14 @@ const OrderEditV2 = (props) => {
     }
   };
 
-  const setNewServiceCost = (service_id, vehicle_id, new_cost) => {
-    let arr = services;
-    arr.map((item) => {
+  const setNewServiceCost = React.useCallback((service_id, vehicle_id, new_cost) => {
+      services.map((item) => {
       if (item.id === service_id && item.vehicle.id === vehicle_id) {
         item.cost = parseInt(new_cost);
       }
     });
-    console.log(arr)
-    setServices(arr);
     setUpdate(!update);
-  };
+  }, [services, update]);
 
   return (
     <>
@@ -224,23 +221,26 @@ const OrderEditV2 = (props) => {
               onSetPaymentMethod={setPaymentMethod}
               enable={true}
             />
-            <GetServicesFromVehicleV2
-              currentServices={services}
-              includeContractServices={paymentMethod === "CONTRACT"}
-              onCancel={() => {}}
-              setCheckedServicesList={ServiceChoise}
-              vehicleList={vehicleList}
-              enable={true}
-            />
+
+            {vehicleList.length > 0 && (
+              <GetServicesFromVehicleV2
+                currentServices={services}
+                includeContractServices={paymentMethod === "CONTRACT"}
+                onCancel={() => {}}
+                setCheckedServicesList={ServiceChoise}
+                vehicleList={vehicleList}
+                enable={true}
+              />
+            )}
           </div>
 
-          <div>
+          {services.length > 0 && (<div>
             <ChangeServicesCost
               currentServices={services}
               onChangeCost={setNewServiceCost}
               enable={services.length > 0}
             />
-          </div>
+          </div>)}
 
           <div>
             <SetWashersV2

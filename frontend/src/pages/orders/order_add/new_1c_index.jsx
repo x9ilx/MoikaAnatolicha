@@ -248,8 +248,10 @@ const OrderAdd1C = (props) => {
               currentPaymentMethod={paymentMethod}
               onSetPaymentMethod={setPaymentMethod}
               enable={
-                tractor.hasOwnProperty("plate_number") ||
-                trailer.hasOwnProperty("plate_number")
+                (haveTrailer == "1" && (tractor.hasOwnProperty("plate_number") &&
+                trailer.hasOwnProperty("plate_number"))) ||
+                (haveTrailer == "0" && (tractor.hasOwnProperty("plate_number") ||
+                trailer.hasOwnProperty("plate_number")))
               }
             />
             <GetServicesFromVehicleV2
@@ -259,8 +261,10 @@ const OrderAdd1C = (props) => {
               setCheckedServicesList={ServiceChoise}
               vehicleList={vehicleList}
               enable={
-                tractor.hasOwnProperty("plate_number") ||
-                trailer.hasOwnProperty("plate_number")
+                (haveTrailer == "1" && (tractor.hasOwnProperty("plate_number") &&
+                trailer.hasOwnProperty("plate_number"))) ||
+                (haveTrailer == "0" && (tractor.hasOwnProperty("plate_number") ||
+                trailer.hasOwnProperty("plate_number")))
               }
             />
           </div>

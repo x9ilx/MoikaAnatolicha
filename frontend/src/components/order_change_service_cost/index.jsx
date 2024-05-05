@@ -10,7 +10,6 @@ const ChangeServicesCost = (props) => {
 
   const setNewServices = React.useCallback(() => {
     let newArr = {};
-    console.log(servicesList)
     servicesList?.map((item, index) => {
       newArr[item.vehicle.id] ??= {
         vehicle_type_name: item.vehicle.vehicle_type.name,
@@ -30,7 +29,7 @@ const ChangeServicesCost = (props) => {
 
   React.useEffect(() => {
     setServicesList(props.currentServices);
-  }, [props]);
+  }, [props.currentServices]);
 
   return (
     <div>

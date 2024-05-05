@@ -164,7 +164,7 @@ function VehiclesController() {
           </Route>
         </Route>
         <Route element={<ProtectedRoute />}>
-          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+          {/* <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}> */}
             <Route
               path="/add/"
               element={
@@ -174,7 +174,7 @@ function VehiclesController() {
               }
             />
           </Route>
-        </Route>
+        {/* </Route> */}
       </Routes>
     </>
   );

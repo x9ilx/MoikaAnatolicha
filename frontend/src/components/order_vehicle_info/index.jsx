@@ -1,7 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import Button from "../button";
+import { useNavigate } from "react-router-dom";
 
 const VehicleInfo = (props) => {
+
+  const navigate = useNavigate();
+
   return (
     <div>
       {props.vehicle.hasOwnProperty("plate_number") && (
@@ -21,12 +26,20 @@ const VehicleInfo = (props) => {
         </div>
       )}
       {!props.vehicle.hasOwnProperty("plate_number") &&
-        props.vehiclePlateNumber.length > 0 && (
+        props.vehiclePlateNumber.length > 7 && (
           <div className="col border rounded p-2">
             <div>
-              <p className="m-0 text-danger">
+              <p className="text-danger">
                 <b>{props.notFoundText}</b>
               </p>
+              <Button
+              clickHandler={() => {navigate("/vehicles/add/")}}
+              colorClass="btn-info btn-sm"
+              disabled={false}
+              type="button"
+              >
+                <>Добавить новые: ТС/ПП/ППЦ</>
+              </Button>
             </div>
           </div>
         )}

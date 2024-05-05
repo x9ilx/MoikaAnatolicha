@@ -35,7 +35,7 @@ const LegalEntitySetServices = (props) => {
     api
       .setLegalEntityServicesList(legal_entity_id, servicesList)
       .then((res) => {
-        window.location.reload();
+        navigate(0)
         toast.success("Данные успешно обновлены");
       })
       .catch((err) => {

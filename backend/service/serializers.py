@@ -46,12 +46,14 @@ class VehicleTypeServiceSerializer(serializers.ModelSerializer):
     legal_entity_service = serializers.BooleanField(
         default=False, read_only=True
     )
+    base_service_id = serializers.IntegerField(read_only=True, source='id')
 
     class Meta:
         model = ServiceVehicleType
         fields = [
             'id',
             'service',
+            'base_service_id',
             'cost',
             'employer_salary',
             'percentage_for_washer',

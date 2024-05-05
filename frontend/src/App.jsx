@@ -106,7 +106,7 @@ function App() {
             </Route>
           </Route>
           <Route element={<ProtectedRoute />}>
-            <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            {/* <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}> */}
               <Route
                 path="/vehicles/*"
                 element={
@@ -115,7 +115,7 @@ function App() {
                   </>
                 }
               />
-            </Route>
+            {/* </Route> */}
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>

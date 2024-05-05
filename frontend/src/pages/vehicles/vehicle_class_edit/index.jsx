@@ -25,7 +25,7 @@ const VehicleClassEdit = (props) => {
       .updateVehicleClass(data)
       .then((data) => {
         toast.success("Класс ТС/ПЦ/ППЦ " + data.name + " успешно обновлён");
-        window.location.reload(); 
+        navigate(0)
       })
       .catch((err) => {
         Object.keys(err).map((key) => toast.error(key + ": " + err[key]));

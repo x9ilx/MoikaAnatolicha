@@ -224,6 +224,11 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         service_create_list = []
         for service in services:
+            
+            if (payment_method != 'CONTRACT'
+                and service['legal_entity_service'] == True):
+                continue
+            
             b_service = None
             contract = ''
             new_employer_salary = service['employer_salary']
@@ -357,6 +362,11 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         service_create_list = []
         for service in services:
+            
+            if (payment_method != 'CONTRACT'
+                and service['legal_entity_service'] == True):
+                continue
+            
             b_service = None
             contract = ''
             new_employer_salary = service['employer_salary']
@@ -372,6 +382,8 @@ class OrderViewSet(viewsets.ModelViewSet):
                 )
                 total_cost += service['cost']
 
+            new_employer_salary = b_service.employer_salary
+
             if service['vehicle']['id'] == -1:
                 vehicle_obj = Vehicle.objects.get(
                     plate_number=service['vehicle']['plate_number']
@@ -384,7 +396,7 @@ class OrderViewSet(viewsets.ModelViewSet):
                                 "{service['service']['name']}" c \
                                 {b_service.cost}₽ на {service['cost']}₽\n'
                 new_employer_salary = round(
-                    (service['cost'] / b_service.cost) * service['employer_salary']
+                    (service['cost'] / b_service.cost) * new_employer_salary
                 )
                
                 service['employer_salary'] = new_employer_salary

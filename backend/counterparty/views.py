@@ -258,6 +258,7 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
             results.append(
                 {
                     'id': legal_entity_service.id,
+                    'base_service_id': legal_entity_service.id,
                     'service': {
                         'id': legal_entity_service.service_vehicle_type.service.id,
                         'name': legal_entity_service.service_vehicle_type.service.name,
