@@ -9,6 +9,7 @@ import EmployeesSettings from "../employees_settings";
 import EmployerAdd from "../employer_add";
 import api from "../../../api";
 import { toast } from "react-toastify";
+import AdminShiftSystem from "../employer_salary_admin";
 
 function EmployeesController() {
   const [info_string_for_delete, set_info_string_for_delete] = React.useState("");
@@ -80,11 +81,7 @@ function EmployeesController() {
           <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
             <Route
               path="/:employer_id/salary/"
-              element={
-                <>
-                  
-                </>
-              }
+              element={<AdminShiftSystem />}
             />
           </Route>
         </Route>

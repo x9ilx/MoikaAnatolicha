@@ -28,7 +28,7 @@ const EmployerOffcanvasDocs = (props) => {
         <hr></hr>
         <div className="offcanvas-body">
           <div className="row">
-            <button className="btn btn-light">
+            <button className="btn btn-light" onClick={() => {navigate(`${props.employer.id}/salary/`)}}>
               <span>
                 <FaMoneyBill size={22} />  Выдать заработную плату за период
               </span>

@@ -7,6 +7,7 @@ import { prettyPhone } from "../../../utils/string_utils";
 import Paginator from "../../../components/paginator";
 import Button from "../../../components/button";
 import EmployerOffcanvasDocs from "../../../components/employer_offcanvas_docs";
+import EmployeeShiftsAndOrders from "../employer_shift_list";
 
 const EmployeesList= React.forwardRef(function MyInput(props, ref) {
   const [loading, setLoading] = React.useState(true);

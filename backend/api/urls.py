@@ -3,7 +3,7 @@ from rest_framework import routers
 
 from company.views import CompanyRequisitesViewSet, CompanySettingsViewSet
 from counterparty.views import LegalEntityViewSet
-from employer.views import CHGUserViewSet, EmployerViewSet
+from employer.views import CHGUserViewSet, EmployerShiftViewSet, EmployerViewSet
 from order.views import OrderViewSet
 from service.views import ServiceViewSet
 from vehicle.views import (VehicleModelDelete, VehicleOrTrailerClassViewSet,
@@ -41,6 +41,11 @@ v1_router.register(
     'employees',
     EmployerViewSet,
     basename='Employer',
+)
+v1_router.register(
+    'employees_shifts',
+    EmployerShiftViewSet,
+    basename='EmployerShift',
 )
 v1_router.register(
     'legal_entity',

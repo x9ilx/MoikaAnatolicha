@@ -4,7 +4,9 @@ from pkg_resources import require
 from rest_framework import serializers
 
 from core.string_utils import normalize_phone
-from employer.models import Employer, EmployerPositions
+from employer.models import Employer, EmployerPositions, EmployerShift
+from order.models import Order
+from order.serializers import OrderMiniSerializer
 
 user_model = get_user_model()
 
@@ -137,3 +139,32 @@ class UserSerializer(BaseUserSerializer):
             'username',
             'employer_info',
         ]
+
+
+class EmployerShiftSerializer(serializers.ModelSerializer):
+    employer = EmployerSerializer()
+    orders = serializers.SerializerMethodField()
+
+    def get_orders(self, obj):
+        result = {}
+        orders = Order.objects.filter(
+            administrator=obj.employer,
+            order_datetime__gte=obj.start_shift_time,
+            order_close_datetime__lte=obj.end_shift_time,
+            is_completed=True
+        )
+        serializer = OrderMiniSerializer(orders, many=True)
+        
+        return serializer.data
+
+    class Meta:
+        model = EmployerShift
+        fields = [
+            'employer',
+            'start_shift_time',
+            'end_shift_time',
+            'employer_salary',
+            'total_order_cost',
+            'is_closed',
+            'orders',
+        ]  

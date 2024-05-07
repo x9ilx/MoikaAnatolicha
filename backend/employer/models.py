@@ -62,6 +62,7 @@ class EmployerShift(models.Model):
         'Конец смены', null=True, default=None
     )
     employer_salary = models.IntegerField('ЗП сотрудника, за смену', default=0)
+    total_order_cost = models.IntegerField('Сумма заказов', default=0)
     is_closed = models.BooleanField('Смена закрыта?', default=False)
 
     class Meta:

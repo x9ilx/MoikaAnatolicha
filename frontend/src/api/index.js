@@ -22,7 +22,7 @@ class Api {
           path: "/",
           maxAge: COOKIES_LIFE_TIME,
         });
-        
+
         window.location.replace("/");
       }
       const func = res.status < 400 ? resolve : reject;
@@ -92,7 +92,6 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  
   setRequisites(requisites) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/company/1/`, {
@@ -132,7 +131,7 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  //////////////////////////////////////////////////// EMPLOYES
+  //////////////////////////////////////////////////// EMPLOYEES
 
   openShift(employer_id) {
     const token = cookies.get("auth_token");
@@ -235,15 +234,19 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  getEmployeesList(page = 1, items_limit = 8, search="") {
+  getEmployeesList(page = 1, items_limit = 8, search = "") {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/employees/?page=${page}&limit=${items_limit}&search=${search}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL +
+        `/api/employees/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getEmployeesAllWashers() {
@@ -263,7 +266,8 @@ class Api {
   getEmployeesAllWashersOnShift() {
     const token = cookies.get("auth_token");
     return fetch(
-      URL + `/api/employees/?page=${1}&limit=${9999999}&position=WASHER&on_shift=True`,
+      URL +
+        `/api/employees/?page=${1}&limit=${9999999}&position=WASHER&on_shift=True`,
       {
         method: "GET",
         headers: {
@@ -298,15 +302,33 @@ class Api {
 
   setWasherOnShift(washer_id, value) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/employees/${washer_id}/set_washer_on_shift/${value}/`, {
-      method: "PUT",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL + `/api/employees/${washer_id}/set_washer_on_shift/${value}/`,
+      {
+        method: "PUT",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
-  
+
+  getAdministratorShiftsForPeriod(admin_id, start_date, end_date) {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL +
+        `/api/employees_shifts?employer=${admin_id}&start_shift_time=${start_date}&end_shift_time=${end_date}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
+
   /////////////////////////////// VEHICLES
 
   getVehicleClasses(page = 1, items_limit = 8, search = "") {
@@ -436,13 +458,16 @@ class Api {
 
   getVehicleFromPlateNumber(plate_number) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/vehicles/find_vehicle_for_plate_number/${plate_number}/`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL + `/api/vehicles/find_vehicle_for_plate_number/${plate_number}/`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getVehiclesList(page = 1, items_limit = 8, search = "") {
@@ -767,26 +792,39 @@ class Api {
     }).then(this.checkResponse);
   }
 
-  getOrders(page = 1, items_limit = 9999999, isCompleted = false, other_filters="") {
+  getOrders(
+    page = 1,
+    items_limit = 9999999,
+    isCompleted = false,
+    other_filters = ""
+  ) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/orders/?page=${page}&limit=${items_limit}&is_completed=${isCompleted}${other_filters}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL +
+        `/api/orders/?page=${page}&limit=${items_limit}&is_completed=${isCompleted}${other_filters}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getCompletedOrdersForDay(page = 1, items_limit = 9999999) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/orders/get_complete_order_for_day/?page=${page}&limit=${items_limit}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL +
+        `/api/orders/get_complete_order_for_day/?page=${page}&limit=${items_limit}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
 
   getOrder(id) {
@@ -810,7 +848,7 @@ class Api {
       },
     }).then(this.checkResponse);
   }
-  
+
   getClosedOrderCount() {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/orders/get_complete_order_count_for_day/`, {
@@ -821,7 +859,7 @@ class Api {
       },
     }).then(this.checkResponse);
   }
-  
+
   setOrderClose(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/orders/${id}/set_order_close/`, {
@@ -843,21 +881,19 @@ class Api {
       },
     }).then(this.checkResponse);
   }
-  
-////////////////////////////////////////////////// REQUISITES
-getCompanyRequisites() {
-  const token = cookies.get("auth_token");
-  return fetch(URL + `/api/company/1/`, {
-    method: "GET",
-    headers: {
-      ...this._headers,
-      authorization: `Token ${token}`,
-    },
-  }).then(this.checkResponse);
-}
 
+  ////////////////////////////////////////////////// REQUISITES
+  getCompanyRequisites() {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/company/1/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
 }
-
 
 // eslint-disable-next-line no-undef
 export default new Api(process.env.API_URL || "http://localhost", {

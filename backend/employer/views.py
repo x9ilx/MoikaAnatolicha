@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -8,10 +9,11 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from employer.filters import ShiftFilter
 from company.models import CompanySettings
 from core.permissions import OnlyManager
 from employer.models import Employer, EmployerPositions, EmployerShift
-from employer.serializers import EmployerSerializer
+from employer.serializers import EmployerSerializer, EmployerShiftSerializer
 from order.models import Order
 
 user_model = get_user_model()
@@ -20,6 +22,45 @@ user_model = get_user_model()
 class CHGUserViewSet(UserViewSet):
     def get_queryset(self):
         return user_model.objects.filter(~Q(pk=1))
+
+class EmployerShiftViewSet(viewsets.ModelViewSet):
+    serializer_class = EmployerShiftSerializer
+    pagination_class = None
+    permission_classes = [
+        OnlyManager,
+    ]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
+    
+    def get_queryset(self):
+        queryset = EmployerShift.objects.all()
+        
+        employee_id = self.request.query_params.get('employee_id')
+        start_date = datetime.fromisoformat(
+            self.request.query_params.get('start_shift_time')
+        )
+        end_date = datetime.fromisoformat(
+            self.request.query_params.get('end_shift_time')
+        )
+        
+        filters = Q()
+        if employee_id:
+            filters &= Q(employer__pk=employee_id)
+        
+        if start_date:
+            filters &= Q(start_shift_time__gte=start_date)
+        
+        if end_date:
+            filters &= Q(end_shift_time__lte=end_date)
+        
+        print(start_date)
+        print(end_date)
+        return queryset.filter(
+            filters
+        ).select_related('employer').order_by('start_shift_time')
 
 
 class EmployerViewSet(viewsets.ModelViewSet):
@@ -193,7 +234,7 @@ class EmployerViewSet(viewsets.ModelViewSet):
                         settings.administrator_additional_payments_after_threshold
                         * salary_multipler
                     )
-
+            shift.total_order_cost = final_cost
             shift.save()
 
             return Response("Смена закрыта", status=status.HTTP_200_OK)
