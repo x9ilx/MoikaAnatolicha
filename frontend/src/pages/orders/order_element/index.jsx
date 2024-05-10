@@ -146,6 +146,20 @@ const OrderElement = (props) => {
               </Button>
             </div>
           )}
+          {props.isSalaryInfo && (
+            <div className="row mx-3 gap-1 my-2">
+              <Button
+                clickHandler={() => {
+                  navigate("/" + props.order.id);
+                }}
+                colorClass="btn-primary"
+                type="button"
+                disabled={false}
+              >
+                <>Изменить заказ</>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -155,6 +169,7 @@ const OrderElement = (props) => {
 OrderElement.propTypes = {
   order: PropTypes.object.isRequired,
   isCompletedOrder: PropTypes.bool,
+  isSalaryInfo: PropTypes.bool,
 };
 
 export default OrderElement;

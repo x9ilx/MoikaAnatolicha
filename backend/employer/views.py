@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, time, date
+
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -12,8 +13,8 @@ from rest_framework.response import Response
 from employer.filters import ShiftFilter
 from company.models import CompanySettings
 from core.permissions import OnlyManager
-from employer.models import Employer, EmployerPositions, EmployerShift
-from employer.serializers import EmployerSerializer, EmployerShiftSerializer
+from employer.models import Employer, EmployerPositions, EmployerSalary, EmployerShift
+from employer.serializers import EmployerSalarySerializer, EmployerSerializer, EmployerShiftSerializer
 from order.models import Order
 
 user_model = get_user_model()
@@ -22,6 +23,58 @@ user_model = get_user_model()
 class CHGUserViewSet(UserViewSet):
     def get_queryset(self):
         return user_model.objects.filter(~Q(pk=1))
+
+
+class EmployerSalaryViewSet(viewsets.ModelViewSet):
+    serializer_class = EmployerSalarySerializer
+    permission_classes = [
+        OnlyManager,
+    ]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
+    
+    def get_queryset(self):
+        queryset = EmployerSalary.objects.all()
+        
+        start_date_issue = end_date_issue = None
+        employee_id = self.request.GET.get('employee_id', 0)
+        employee_name = self.request.GET.get('employee_name', 0)
+        str_start_date_issue =  self.request.GET.get(
+            'str_start_date_issue', ''
+        )
+        str_end_date_issue = self.request.GET.get(
+            'end_shift_time_issue', ''
+        )
+        
+        if str_start_date_issue:
+            start_date_issue = date.fromisoformat(str_start_date_issue)
+        if str_end_date_issue:
+            end_date_issue = date.fromisoformat(str_end_date_issue)
+
+        filters = Q()
+        if employee_id:
+            filters &= Q(employer__pk=employee_id)
+        
+        if start_date_issue == end_date_issue:
+            
+             filters &= Q(date_of_issue=start_date_issue)
+        else:
+            if start_date_issue:
+                filters &= Q(date_of_issue__gte=start_date_issue)
+            
+            if end_date_issue:
+                filters &= Q(date_of_issue__lte=end_date_issue)
+        
+        if employee_name:
+            filters &= Q(employer__name__icontains=employee_name)
+
+        return queryset.filter(
+            filters
+        ).select_related('employer').order_by('-date_of_issue')
+
 
 class EmployerShiftViewSet(viewsets.ModelViewSet):
     serializer_class = EmployerShiftSerializer
@@ -38,26 +91,33 @@ class EmployerShiftViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = EmployerShift.objects.all()
         
-        employee_id = self.request.query_params.get('employee_id')
-        start_date = datetime.fromisoformat(
-            self.request.query_params.get('start_shift_time')
-        )
-        end_date = datetime.fromisoformat(
-            self.request.query_params.get('end_shift_time')
-        )
+        start_date = end_date = None
+        employee_id = self.request.GET.get('employee_id', 0)
+        str_start_date =  self.request.GET.get('start_shift_time', '')
+        str_end_date = self.request.GET.get('end_shift_time', '')
         
+        if str_start_date:
+            start_date = date.fromisoformat(str_start_date)
+            start_date = datetime.combine(start_date, time.min)
+        if str_end_date:
+            end_date = date.fromisoformat(str_end_date)
+            end_date = datetime.combine(end_date, time.max)
+
         filters = Q()
         if employee_id:
             filters &= Q(employer__pk=employee_id)
         
-        if start_date:
-            filters &= Q(start_shift_time__gte=start_date)
+        if start_date == end_date:
+            
+             filters &= Q(start_shift_time=start_date)
+        else:
+            if start_date:
+                filters &= Q(start_shift_time__gte=start_date)
+            
+            if end_date:
+                filters &= Q(start_shift_time__lte=end_date)
         
-        if end_date:
-            filters &= Q(end_shift_time__lte=end_date)
-        
-        print(start_date)
-        print(end_date)
+
         return queryset.filter(
             filters
         ).select_related('employer').order_by('start_shift_time')

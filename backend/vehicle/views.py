@@ -32,7 +32,7 @@ class VehicleOrTrailerClassViewSet(viewsets.ModelViewSet):
         django_filters.DjangoFilterBackend,
     ]
     filterset_class = VehicleOrTrailerClassSearchFilter
-    ordering =['name']
+    ordering = ['name']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -83,7 +83,7 @@ class VehicleOrTrailerTypeViewSet(viewsets.ModelViewSet):
         'vehicle_class',
     ]
     search_fields = ['name']
-    ordering =['name']
+    ordering = ['name']
 
     @action(
         detail=True,
@@ -164,7 +164,7 @@ class VehicleViewSet(viewsets.ModelViewSet):
     )
     def find_vehicle_for_plate_number(self, request, plate_number):
         vehicle = Vehicle.objects.filter(plate_number=plate_number)
-        
+
         if vehicle.exists():
             serializer = VehicleSerializer(instance=vehicle.first())
             return Response(serializer.data, status=status.HTTP_200_OK)

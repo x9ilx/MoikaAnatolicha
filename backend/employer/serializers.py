@@ -4,7 +4,8 @@ from pkg_resources import require
 from rest_framework import serializers
 
 from core.string_utils import normalize_phone
-from employer.models import Employer, EmployerPositions, EmployerShift
+from employer.models import (Employer, EmployerPositions, EmployerSalary,
+                             EmployerShift)
 from order.models import Order
 from order.serializers import OrderMiniSerializer
 
@@ -142,24 +143,25 @@ class UserSerializer(BaseUserSerializer):
 
 
 class EmployerShiftSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True, source='pk')
     employer = EmployerSerializer()
     orders = serializers.SerializerMethodField()
 
     def get_orders(self, obj):
-        result = {}
         orders = Order.objects.filter(
             administrator=obj.employer,
             order_datetime__gte=obj.start_shift_time,
-            order_close_datetime__lte=obj.end_shift_time,
-            is_completed=True
+            order_datetime__lte=obj.end_shift_time,
+            is_completed=True,
         )
         serializer = OrderMiniSerializer(orders, many=True)
-        
+
         return serializer.data
 
     class Meta:
         model = EmployerShift
         fields = [
+            'id',
             'employer',
             'start_shift_time',
             'end_shift_time',
@@ -167,4 +169,25 @@ class EmployerShiftSerializer(serializers.ModelSerializer):
             'total_order_cost',
             'is_closed',
             'orders',
-        ]  
+        ]
+
+
+class EmployerSalarySerializer(serializers.ModelSerializer):
+    employer = EmployerSerializer(read_only=True)
+    employer_id = serializers.PrimaryKeyRelatedField(
+        queryset=Employer.objects.all(), source='employer', write_only=True,
+    )
+    class Meta:
+        model = EmployerSalary
+        fields = [
+            'id',
+            'employer',
+            'employer_id',
+            'date_of_issue',
+            'start_date',
+            'end_date',
+            'employer_salary',
+            'total_order_income',
+            'shifts_description',
+            'orders_description',
+        ]

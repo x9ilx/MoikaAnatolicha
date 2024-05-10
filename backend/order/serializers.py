@@ -14,7 +14,9 @@ class OrderServiceSerializer(serializers.ModelSerializer):
         read_only=True, source='service.name'
     )
     vehicle = VehicleSerializer(read_only=True)
-    start_cost = serializers.IntegerField(read_only=True, source='service.cost')
+    start_cost = serializers.IntegerField(
+        read_only=True, source='service.cost'
+    )
 
     class Meta:
         model = OrderService

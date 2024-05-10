@@ -318,7 +318,7 @@ class Api {
     const token = cookies.get("auth_token");
     return fetch(
       URL +
-        `/api/employees_shifts?employer=${admin_id}&start_shift_time=${start_date}&end_shift_time=${end_date}`,
+        `/api/employees_shifts/?employer=${admin_id}&start_shift_time=${start_date}&end_shift_time=${end_date}`,
       {
         method: "GET",
         headers: {
@@ -891,6 +891,35 @@ class Api {
         ...this._headers,
         authorization: `Token ${token}`,
       },
+    }).then(this.checkResponse);
+  }
+
+  //////////////////////////////////// SALARY
+  createSalary(
+    employer_id,
+    start_date,
+    end_date,
+    employer_salary,
+    total_order_income,
+    shifts_description,
+    orders_description,
+  ) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + "/api/employees_salaries/", {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        employer_id,
+        start_date,
+        end_date,
+        employer_salary,
+        total_order_income,
+        shifts_description,
+        orders_description,
+      }),
     }).then(this.checkResponse);
   }
 }

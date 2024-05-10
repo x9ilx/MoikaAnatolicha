@@ -9,7 +9,7 @@ import EmployeesSettings from "../employees_settings";
 import EmployerAdd from "../employer_add";
 import api from "../../../api";
 import { toast } from "react-toastify";
-import AdminShiftSystem from "../employer_salary_admin";
+import AdminShiftSystem from "../employer_salary_admin_add";
 
 function EmployeesController() {
   const [info_string_for_delete, set_info_string_for_delete] = React.useState("");

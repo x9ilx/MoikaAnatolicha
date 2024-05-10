@@ -17,6 +17,7 @@ const OrderEditV2 = (props) => {
   const [update, setUpdate] = React.useState(false);
 
   const [order, setOrder] = React.useState(0);
+  const [isCompleted, setIsCompleted] = React.useState(false);
   const [administrator, setAdministrator] = React.useState(0);
   const [vehicleList, setVehicleList] = React.useState([]);
   const [paymentMethod, setPaymentMethod] = React.useState("CASH");
@@ -39,13 +40,14 @@ const OrderEditV2 = (props) => {
       .getOrder(order_id)
       .then((res) => {
         setOrder(res);
+        setIsCompleted(res.is_completed);
         setPaymentMethod(res.payment_method);
         res.services?.map((item) => {
           if (!vehicles.find((element) => element.id == item.vehicle.id)) {
             vehicles.push({ ...item.vehicle });
           }
 
-          serv.push({ ...item, service: { ...item }, start_cost: item.cost, });
+          serv.push({ ...item, service: { ...item }, start_cost: item.cost });
         });
         const newVehicle = Array.from(new Set(vehicles));
         setVehicleList(newVehicle);
@@ -168,14 +170,17 @@ const OrderEditV2 = (props) => {
     }
   };
 
-  const setNewServiceCost = React.useCallback((service_id, vehicle_id, new_cost) => {
+  const setNewServiceCost = React.useCallback(
+    (service_id, vehicle_id, new_cost) => {
       services.map((item) => {
-      if (item.id === service_id && item.vehicle.id === vehicle_id) {
-        item.cost = parseInt(new_cost);
-      }
-    });
-    setUpdate(!update);
-  }, [services, update]);
+        if (item.id === service_id && item.vehicle.id === vehicle_id) {
+          item.cost = parseInt(new_cost);
+        }
+      });
+      setUpdate(!update);
+    },
+    [services, update]
+  );
 
   return (
     <>
@@ -234,13 +239,15 @@ const OrderEditV2 = (props) => {
             )}
           </div>
 
-          {services.length > 0 && (<div>
-            <ChangeServicesCost
-              currentServices={services}
-              onChangeCost={setNewServiceCost}
-              enable={services.length > 0}
-            />
-          </div>)}
+          {services.length > 0 && (
+            <div>
+              <ChangeServicesCost
+                currentServices={services}
+                onChangeCost={setNewServiceCost}
+                enable={services.length > 0}
+              />
+            </div>
+          )}
 
           <div>
             <SetWashersV2
@@ -283,18 +290,20 @@ const OrderEditV2 = (props) => {
                 </>
               </Button>
             </div>
-            <div className="col">
-              <Button
-                clickHandler={() => {
-                  closeOrder();
-                }}
-                colorClass="btn-success"
-                type="button"
-                disabled={false}
-              >
-                <>Завершить заказ</>
-              </Button>
-            </div>
+            {!isCompleted && (
+              <div className="col">
+                <Button
+                  clickHandler={() => {
+                    closeOrder();
+                  }}
+                  colorClass="btn-success"
+                  type="button"
+                  disabled={false}
+                >
+                  <>Завершить заказ</>
+                </Button>
+              </div>
+            )}
           </div>
           <div className="row">
             <div className="col">

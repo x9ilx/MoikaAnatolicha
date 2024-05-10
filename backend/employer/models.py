@@ -77,3 +77,31 @@ class EmployerShift(models.Model):
             f'{self.employer.name}: '
             f'{self.start_shift_time} - {self.end_shift_time}'
         )
+
+
+class EmployerSalary(models.Model):
+    employer = models.ForeignKey(
+        Employer,
+        verbose_name='Сотрудник',
+        on_delete=models.CASCADE,
+        related_name='salaries',
+    )
+    date_of_issue = models.DateField('Дата выдачи ЗП', auto_now_add=True, null=True)
+    start_date = models.DateField(
+        'Начало расчёта ЗП', null=True, default=None
+    )
+    end_date = models.DateField(
+        'Конец расчёта ЗП', null=True, default=None
+    )
+    employer_salary = models.IntegerField('ЗП сотрудника', default=0)
+    total_order_income = models.IntegerField('Доход с заказов', default=0)
+    shifts_description = models.TextField('Перечень смен')
+    orders_description = models.TextField('Перечень заказов')
+
+    class Meta:
+        verbose_name = 'EmployerSalary'
+        verbose_name_plural = 'EmployerSalary'
+
+    def __str__(self):
+        """Unicode representation of EmployerShift."""
+        return f'{self.employer.name}: ' f'{self.start_date} - {self.end_date}'
