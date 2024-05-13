@@ -16,6 +16,7 @@ from core.permissions import OnlyManager
 from employer.models import Employer, EmployerPositions, EmployerSalary, EmployerShift
 from employer.serializers import EmployerSalarySerializer, EmployerSerializer, EmployerShiftSerializer
 from order.models import Order
+from order.serializers import OrderMiniSerializer
 
 user_model = get_user_model()
 
@@ -41,7 +42,7 @@ class EmployerSalaryViewSet(viewsets.ModelViewSet):
         
         start_date_issue = end_date_issue = None
         employee_id = self.request.GET.get('employee_id', 0)
-        employee_name = self.request.GET.get('employee_name', 0)
+        employee_name = self.request.GET.get('employee_name', '')
         str_start_date_issue =  self.request.GET.get(
             'str_start_date_issue', ''
         )
@@ -58,7 +59,7 @@ class EmployerSalaryViewSet(viewsets.ModelViewSet):
         if employee_id:
             filters &= Q(employer__pk=employee_id)
         
-        if start_date_issue == end_date_issue:
+        if start_date_issue == end_date_issue and start_date_issue and end_date_issue:
             
              filters &= Q(date_of_issue=start_date_issue)
         else:
@@ -107,7 +108,7 @@ class EmployerShiftViewSet(viewsets.ModelViewSet):
         if employee_id:
             filters &= Q(employer__pk=employee_id)
         
-        if start_date == end_date:
+        if start_date == end_date and start_date and end_date:
             
              filters &= Q(start_shift_time=start_date)
         else:
@@ -175,6 +176,66 @@ class EmployerViewSet(viewsets.ModelViewSet):
             for name in EmployerPositions
         ]
         return Response(positions, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        url_path="get_employer_name",
+        url_name="get_employer_name",
+    )
+    def get_employer_name(self, request, pk):
+        employer = get_object_or_404(Employer, pk=pk)
+        return Response(employer.name, status=status.HTTP_200_OK)
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        url_path="get_employer_position",
+        url_name="get_employer_position",
+    )
+    def get_employer_position(self, request, pk):
+        employer = get_object_or_404(Employer, pk=pk)
+        return Response(
+            {
+                "name": employer.position,
+                'verbose_name': EmployerPositions(employer.position).label,
+            },
+            status=status.HTTP_200_OK
+        )
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        url_path="get_washer_orders",
+        url_name="get_washer_orders",
+    )
+    def get_washer_orders(self, request, pk):
+        employer = get_object_or_404(Employer, pk=pk)
+        str_start_date =  self.request.GET.get('start_date', '')
+        str_end_date = self.request.GET.get('end_date', '')
+        filter = Q()
+        
+        if str_start_date:
+            start_date = date.fromisoformat(str_start_date)
+            start_date = datetime.combine(start_date, time.min)
+            filter &= Q(order__order_datetime__gte=start_date)
+
+        if str_end_date:
+            end_date = date.fromisoformat(str_end_date)
+            end_date = datetime.combine(end_date, time.max)
+            filter &= Q(order__order_datetime__lte=end_date)
+            
+        if employer.position == EmployerPositions.WASHER:
+            order_list = []
+            orders = employer.orders_washers.all().filter(filter).only()
+            
+            for order in orders:
+                order_list.append(order.order)
+            
+            serializer = OrderMiniSerializer(order_list, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({}, status=status.HTTP_200_OK)
 
     @action(
         detail=True,

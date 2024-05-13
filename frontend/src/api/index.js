@@ -289,6 +289,28 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getEmployerName(employer_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/${employer_id}/get_employer_name/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
+  getEmployerPosition(employer_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/${employer_id}/get_employer_position/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
   getFreeWashers() {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/employees/get_free_washers_count/`, {
@@ -313,6 +335,18 @@ class Api {
       }
     ).then(this.checkResponse);
   }
+
+  getWasherOrders(id_employer, start_date, end_date) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/employees/${id_employer}/get_washer_orders/?start_date=${start_date}&end_date=${end_date}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
 
   getAdministratorShiftsForPeriod(admin_id, start_date, end_date) {
     const token = cookies.get("auth_token");
@@ -922,7 +956,32 @@ class Api {
       }),
     }).then(this.checkResponse);
   }
+
+  getAdministratorSalary(salary_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `api/employees_salaries/${salary_id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  deleteSalary(id) {
+    const token = cookies.get("auth_token");
+    return fetch(`${URL}/api/employees_salaries/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
 }
+
+
 
 // eslint-disable-next-line no-undef
 export default new Api(process.env.API_URL || "http://localhost", {
