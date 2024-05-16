@@ -5,6 +5,7 @@ import Button from "../../../components/button";
 import { useNavigate } from "react-router-dom";
 import SelectVehicleTypeButton from "../order_select_vehicle_type_button";
 import WasherOnShiftButton from "../../../components/order_washer_on_shift_button";
+import OrderElementV2 from "../order_element/indexV2ForMainScreen";
 
 const WorkOrderList = () => {
   const [loading, setLoading] = React.useState(true);
@@ -14,15 +15,8 @@ const WorkOrderList = () => {
 
   const navigate = useNavigate();
 
-  // const getFreeWashers = React.useCallback( () => {
-  //   api.getFreeWashers().then((data) => {
-  //     setWorkerCount(data.free_washers_count);
-  //   });
-  // }, []);
-
-  const getOrders = React.useCallback( () => {
-    api.getOrders()
-    .then((data) => {
+  const getOrders = React.useCallback(() => {
+    api.getOrders().then((data) => {
       setActiveOrders(data.results);
     });
   }, []);
@@ -47,19 +41,20 @@ const WorkOrderList = () => {
     <>
       <div className="row">
         <div className="vstack">
-        <SelectVehicleTypeButton />
-        <WasherOnShiftButton />
+          <SelectVehicleTypeButton />
+          <WasherOnShiftButton />
         </div>
       </div>
-      
+
       <div className="row">
         <div className="vstack gap-3">
-          {activeOrders.map((order, index) => (
-            <OrderElement 
-            key={"activeOrders"+index}
-            order={order}
-            />
-          ))}
+          <div className="row">
+            {activeOrders.map((order, index) => (
+                <div key={`order${index}`} className="col-sm-4 col-12">
+                  <OrderElementV2 key={"activeOrders" + index} order={order} />
+                </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

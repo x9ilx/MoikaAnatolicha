@@ -102,6 +102,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         ]
         return Response(payment_methods, status=status.HTTP_200_OK)
 
+    def __get_active_order_count(self):
+        return Order.objects.filter(is_completed=False).count()
+
     @action(
         detail=False,
         methods=['GET'],
@@ -109,8 +112,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         url_name='get-active-order-count',
     )
     def get_active_order_count(self, request):
-        order_count = Order.objects.filter(is_completed=False).count()
-        return Response(order_count, status=status.HTTP_200_OK)
+        return Response(
+            self.__get_active_order_count(),
+            status=status.HTTP_200_OK
+        )
 
     @action(
         detail=False,
@@ -308,6 +313,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         washers = request.data['washers']
         is_paid = request.data['is_paid']
 
+        if self.__get_active_order_count() >= 6:
+            return Response(
+                {'Ошибка': 'Создано максимальное количество заказов'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         if not services:
              return Response(

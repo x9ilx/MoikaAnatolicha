@@ -5,7 +5,7 @@ from core.string_utils import normalize_plate_number
 from employer.models import Employer
 from vehicle.serializers import VehicleMiniSerializer, VehicleSerializer
 
-from .models import Order, OrderService
+from .models import Order, OrderPaimentMethod, OrderService
 
 
 class OrderServiceSerializer(serializers.ModelSerializer):
@@ -47,6 +47,10 @@ class OrderMiniSerializer(serializers.ModelSerializer):
     administrator = EmployerMiniSerializer()
     washers = EmployerMiniSerializer(many=True)
     services = OrderServiceSerializer(source='services_in_order', many=True)
+    payment_method_verbose = serializers.SerializerMethodField()
+
+    def get_payment_method_verbose(self, obj):
+        return OrderPaimentMethod(obj.payment_method).label
 
     class Meta:
         model = Order
@@ -58,6 +62,7 @@ class OrderMiniSerializer(serializers.ModelSerializer):
             'administrator',
             'washers',
             'payment_method',
+            'payment_method_verbose',
             'client_name',
             'client_phone',
             'services',

@@ -232,7 +232,9 @@ const OrderAdd1C = (props) => {
                   vehiclePlateNumber={tractorPlateNumber}
                   showOwner={paymentMethod === "CONTRACT"}
                   isNoPlateNumber={tractorNoPlateNumber}
-                  setNoPlateNumberChange={() => {setTractor({})}}
+                  setNoPlateNumberChange={() => {
+                    setTractor({});
+                  }}
                 />
               )}
             </div>
@@ -260,7 +262,9 @@ const OrderAdd1C = (props) => {
                     vehiclePlateNumber={trailerPlateNumber}
                     showOwner={paymentMethod === "CONTRACT"}
                     isNoPlateNumber={trailerNoPlateNumber}
-                    setNoPlateNumberChange={() => {setTrailer({})}}
+                    setNoPlateNumberChange={() => {
+                      setTrailer({});
+                    }}
                   />
                 )}
               </div>
@@ -304,6 +308,21 @@ const OrderAdd1C = (props) => {
               setWashers={setWashers}
               enable={services.length > 0}
             />
+          </div>
+
+          <div className="form-check form-switch form-check-reverse pb-2">
+            <input
+              className="form-check-input "
+              type="checkbox"
+              id="isPaid"
+              name="isPaid"
+              onChange={() => {
+                setIsPaid(!isPaid);
+              }}
+            />
+            <label className="form-check-label" htmlFor="isPaid">
+              Заказ оплачен
+            </label>
           </div>
           {!hideInterface && (
             <>

@@ -1,8 +1,22 @@
 import React from "react";
 import Button from "../../../components/button";
 import { useNavigate } from "react-router-dom";
+import api from "../../../api";
 
 const SelectVehicleTypeButton = () => {
+  const [activeOrders, setActiveOrders] = React.useState(0)
+
+  const getActiveOrders = React.useCallback(() => {
+    api.getActiveOrderCount()
+    .then((res) => {
+      setActiveOrders(res)
+    })
+  }, [])
+
+  React.useEffect(() => {
+    getActiveOrders();
+  }, [])
+
   const navigate = useNavigate();
 
   return (
@@ -12,8 +26,9 @@ const SelectVehicleTypeButton = () => {
         type="button"
         data-bs-toggle="dropdown"
         aria-expanded="false"
+        disabled={activeOrders >= 6}
       >
-        Создать заказ
+        {activeOrders < 6 ? "Cоздать заказ" : "Создано максимум заказов"}
       </button>
       <ul className="dropdown-menu w-100 shadow p-3">
         <li className="p-0 m-0">

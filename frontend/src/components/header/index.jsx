@@ -41,7 +41,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top pb-0 ">
+      <nav className="navbar navbar-expand-lg navbar-light bg-white  pb-0 ">
         <div className="container-fluid">
           <a className="navbar-brand" style={{cursor: "pointer"}}>
             <img src={logo} width={80}></img>

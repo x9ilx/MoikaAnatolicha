@@ -7,8 +7,9 @@ import { useAuth } from "../../../contexts/auth-context";
 import { useNavigate, useParams } from "react-router-dom";
 import OrderPastTime from "../../../components/order_past_time";
 
-const OrderElement = (props) => {
+const OrderElementV2 = (props) => {
   const [services, setServices] = React.useState([]);
+  const [washers, setWashers] = React.useState([]);
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -31,18 +32,52 @@ const OrderElement = (props) => {
         item.vehicle.vehicle_type.vehicle_class_name;
       newArr[item.vehicle.id].vehicle_plate_number = item.vehicle.plate_number;
       newArr[item.vehicle.id].vehicle_model = item.vehicle.vehicle_model;
-      newArr[item.vehicle.id].without_plate_number = item.vehicle.without_plate_number;
+      newArr[item.vehicle.id].without_plate_number =
+        item.vehicle.without_plate_number;
     });
+
+    if (Object.keys(newArr).length == 1) {
+      newArr["-1"] ??= {
+        services: [],
+        vehicle_type_name: "None",
+        vehicle_class_name: "None",
+        vehicle_plate_number: "None",
+        vehicle_model: "None",
+        without_plate_number: false,
+      };
+    }
+
+    let washerArr = {};
+    props.order.washers.map((item) => {
+      washerArr[item.id] ??= {
+        id: -1,
+        name: "",
+        short_name: "",
+      };
+      washerArr[item.id].id = item.id;
+      washerArr[item.id].name = item.name;
+      washerArr[item.id].short_name = item.short_name;
+    });
+    if (Object.keys(washerArr).length < 3) {
+      for (let index = 0; index <= 3 - Object.keys(washerArr).length; index++) {
+        washerArr[`w${index}`] ??= {
+            id: "None",
+            name: "None",
+            short_name: "None",
+        };
+      }
+    }
     setServices(newArr);
+    setWashers(washerArr);
   }, [props]);
 
   return (
     <>
-      <div className="card shadow">
-        <div className="card-header bg-primary pl-2 pr-2 pt-1 pb-1">
+      <div className="card shadow mb-3">
+        <div className="card-header bg-primary pl-2 pr-2 pt-1 pb-0">
           <div className="row fs-7 fw-medium align-middle mt-1">
             <div
-              className="col-8 text-start text-white fw-medium "
+              className="col-8 text-start text-white fw-medium fs-7"
               style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}
             >
               {new Date(props.order.order_datetime).toLocaleString("ru-RU")} (
@@ -69,58 +104,62 @@ const OrderElement = (props) => {
           </div>
         </div>
         <div className="card-body p-1 pb-0">
-          <div className="row d-sm-flex flex-sm-row flex-column fs-7">
-            <div className="col pt-1" id="services">
+          <div className="row d-sm-flex flex-sm-row flex-column fs-8">
+            <div className="pt-1" id="services">
               {Object.keys(services).map((key, index) => (
-                <div key={"serviceList" + index} className="mb-3">
+                <div key={"serviceList" + index} className="mb-0">
                   <OrderElementGroup
-                    header={
-                      <div className=" fs-6">
-                        <b className="">
-                          {services[key].without_plate_number ? "Без гос. номера" : services[key].vehicle_plate_number}{" "}
-                          {services[key].vehicle_model}
-                        </b>
-                        <br />
-                        {services[key].vehicle_class_name}{" "}
-                        {services[key].vehicle_type_name}
-                      </div>
-                    }
-                    elements_with_badge={services[key].services.map(
-                      (service) => ({
+                    header={<div className="d-flex">
+                        <div className="flex-grow-1">{index === 0 ? "ТС" : "ПП/ППЦ"}</div>
+                        {index === 0 && <div className="">Оплата: {props.order.payment_method_verbose.toUpperCase()}</div>}
+                    </div>}
+                    elements_with_badge={[
+                      {
                         name: (
-                          <div className="row">
-                            <span className="fs-6">
-                              {service.service_name}
-                              {service.legal_entity_service
-                                ? " (договор)"
-                                : null}
-                            </span>
+                          <div
+                            className={`fs-7 ${
+                              services[key].vehicle_class_name === "None" &&
+                              "text-white"
+                            }`}
+                          >
+                            <b className="">
+                              {services[key].without_plate_number
+                                ? "Без гос. номера"
+                                : services[key].vehicle_plate_number}{" "}
+                              {services[key].vehicle_model}
+                            </b>
+                            <br />
+                            {services[key].vehicle_class_name}{" "}
+                            {services[key].vehicle_type_name}
                           </div>
                         ),
-                        badge: <div className="fs-6">{service.cost}₽</div>,
-                      })
-                    )}
+                      },
+                    ]}
                   />
                 </div>
               ))}
             </div>
             <div className="col  pt-1" id="washers">
               <OrderElementGroup
-                header={
-                  <div className="fs-6">
-                    Назначенные
-                    <br />
-                    мойщики
-                  </div>
-                }
-                elements_with_badge={props.order.washers.map((washer) => ({
+                header={<div className="fs-7">Мойщики</div>}
+                elements_with_badge={Object.keys(washers).map((key) => ({
                   name: (
                     <div className="row">
-                      <span className="fs-6">{washer.short_name}</span>
+                      <span
+                        className={`fs-7 ${
+                          washers[key]?.short_name === "None" && "text-white"
+                        }`}
+                      >
+                        {washers[key]?.short_name}
+                      </span>
                     </div>
                   ),
                   badge: (
-                    <div className="fs-6">
+                    <div
+                      className={`fs-7 ${
+                        washers[key]?.short_name === "None" && "text-white"
+                      }`}
+                    >
                       {auth.employerInfo.employer_info.position ===
                       "MANAGER" ? (
                         <>Получит: {props.order.each_washer_salary}₽</>
@@ -139,9 +178,10 @@ const OrderElement = (props) => {
                 clickHandler={() => {
                   navigate("/" + props.order.id);
                 }}
-                colorClass="btn-primary"
+                colorClass="btn-primary btn-sm"
                 type="button"
                 disabled={false}
+                marginBottom={1}
               >
                 <>Завершить/Изменить заказ</>
               </Button>
@@ -153,9 +193,10 @@ const OrderElement = (props) => {
                 clickHandler={() => {
                   navigate("/" + props.order.id);
                 }}
-                colorClass="btn-primary"
+                colorClass="btn-primary btn-sm"
                 type="button"
                 disabled={false}
+                marginBottom={1}
               >
                 <>Изменить заказ</>
               </Button>
@@ -167,10 +208,10 @@ const OrderElement = (props) => {
   );
 };
 
-OrderElement.propTypes = {
+OrderElementV2.propTypes = {
   order: PropTypes.object.isRequired,
   isCompletedOrder: PropTypes.bool,
   isSalaryInfo: PropTypes.bool,
 };
 
-export default OrderElement;
+export default OrderElementV2;
