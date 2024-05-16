@@ -17,7 +17,7 @@ const VehicleClassAdd = (props) => {
     api
       .createVehicleClass(data)
       .then((data) => {
-        toast.success("Класс ТС/ПЦ/ППЦ " + data.name + " успешно добавлен");
+        toast.success("Класс ТС/ПП/ППЦ " + data.name + " успешно добавлен");
         navigate(`../classes/${data.id}`);
       })
       .catch((err) => {
@@ -27,7 +27,7 @@ const VehicleClassAdd = (props) => {
 
   return (
         <>
-          <p className="text-text-color fs-5">Добавление нового класса ТС/ПЦ/ППЦ</p>
+          <p className="text-text-color fs-5">Добавление нового класса ТС/ПП/ППЦ</p>
           <hr></hr>
           <form
             autoComplete="new-password"
@@ -48,7 +48,7 @@ const VehicleClassAdd = (props) => {
                 value={name}
                 name="name"
               />
-              <label htmlFor="name">Название класса ТС/ПЦ/ППЦ</label>
+              <label htmlFor="name">Название класса ТС/ПП/ППЦ</label>
             </div>
             <Button
               clickHandler={() => {}}
@@ -56,7 +56,7 @@ const VehicleClassAdd = (props) => {
               type="submit"
               disabled={false}
             >
-              <>Добавить новый класс ТС/ПЦ/ППЦ</>
+              <>Добавить новый класс ТС/ПП/ППЦ</>
             </Button>
             <Button
               clickHandler={() => {

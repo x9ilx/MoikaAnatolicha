@@ -60,7 +60,7 @@ const VehicleTypesEditList = (props) => {
         <input
           className="form-control me-2"
           type="text"
-          placeholder="Добавить тип ТС/ПЦ/ППЦ"
+          placeholder="Добавить тип ТС/ПП/ППЦ"
           aria-label="Search"
           value={newName}
           onChange={(e) => {

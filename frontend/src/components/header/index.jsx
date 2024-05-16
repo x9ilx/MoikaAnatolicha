@@ -187,14 +187,18 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                         />
                         Статистика
                       </a>
-                      <a className="dropdown-item" style={{cursor: "pointer"}}>
+                      {/* <a className="dropdown-item" style={{cursor: "pointer"}}>
                         <HiDocumentText
                           size={14}
                           className="me-2 text-text-color"
                         />
                         Отчёты
-                      </a>
-                      <a className="dropdown-item" style={{cursor: "pointer"}}>
+                      </a> */}
+                      <a className="dropdown-item" style={{cursor: "pointer"}}
+                      onClick={() => {
+                        navigate("/employees/salaries/");
+                      }}
+                      >
                         <FaMoneyCheckAlt
                           size={14}
                           className="me-2 text-text-color"

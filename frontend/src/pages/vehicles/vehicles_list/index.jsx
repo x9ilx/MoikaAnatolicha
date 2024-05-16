@@ -58,7 +58,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
   };
 
   {
-    document.title = "Редактирование ТС/ПЦ/ППЦ Чистый Грузовик";
+    document.title = "Редактирование ТС/ПП/ППЦ Чистый Грузовик";
   }
 
   if (vehicles.length === 0) {
@@ -75,7 +75,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
     <>
       {loading && (
         <p className="grid h-screen place-items-center text-center mb-2">
-          Загрузка списка ТС/ПЦ/ППЦ...
+          Загрузка списка ТС/ПП/ППЦ...
         </p>
       )}
       {!loading && (
@@ -102,12 +102,12 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
                       <div className="row px-4 d-sm-flex flex-sm-row flex-column fs-8">
                         <div className="col  pt-1" id="services">
                           <OrderElementGroup
-                            header="Информация о ТС/ПЦ/ППЦ"
+                            header="Информация о ТС/ПП/ППЦ"
                             elements_with_badge={[
                               {
                                 name: (
                                   <>
-                                    <b>Гос. номер: {vehicle.plate_number}</b> 
+                                    <b>Гос. номер: {vehicle.without_plate_number ? "без гос. номера": vehicle.plate_number}</b> 
                                   </>
                                 ),
                                 badge: "",

@@ -26,7 +26,7 @@ function OrderController() {
       .deleteVehicleClass(id)
       .then((res) => {
         navigate('/vehicles/classes/')
-        toast.success("Класс ТС/ПЦ/ППЦ успешно удалён");
+        toast.success("Класс ТС/ПП/ППЦ успешно удалён");
       })
       .catch((err) => {
         const errors = Object.values(err);
@@ -41,7 +41,7 @@ function OrderController() {
       .deleteVehicle(id)
       .then((res) => {
         navigate('/vehicles/')
-        toast.success("ТС/ПЦ/ППЦ успешно удалён");
+        toast.success("ТС/ПП/ППЦ успешно удалён");
       })
       .catch((err) => {
         const errors = Object.values(err);

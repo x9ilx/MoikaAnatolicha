@@ -49,7 +49,7 @@ const VehicleModelPicker = (props) => {
             }}
             value={currentModel}
           />
-          <label htmlFor="accountent_phone">Модель ТС/ПЦ/ППЦ</label>
+          <label htmlFor="accountent_phone">Модель ТС/ПП/ППЦ</label>
         </div>
         {showList && (
           <>

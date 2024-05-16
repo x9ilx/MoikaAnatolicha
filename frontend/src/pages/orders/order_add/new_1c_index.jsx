@@ -25,6 +25,8 @@ const OrderAdd1C = (props) => {
   const [trailerPlateNumber, setTrailerPlateNumber] = React.useState("");
   const [tractor, setTractor] = React.useState({});
   const [trailer, setTrailer] = React.useState({});
+  const [tractorNoPlateNumber, setTractorNoPlateNumber] = React.useState(false);
+  const [trailerNoPlateNumber, setTrailerNoPlateNumber] = React.useState(false);
   const [vehicleList, setVehicleList] = React.useState([]);
   const [paymentMethod, setPaymentMethod] = React.useState("CASH");
   const [isPaid, setIsPaid] = React.useState(false);
@@ -142,10 +144,10 @@ const OrderAdd1C = (props) => {
   const changeVehicleList = React.useCallback(() => {
     let newArr = [];
     if (tractor.hasOwnProperty("plate_number")) {
-        newArr.push(tractor);
+      newArr.push(tractor);
     }
     if (trailer.hasOwnProperty("plate_number")) {
-        newArr.push(trailer);
+      newArr.push(trailer);
     }
 
     setVehicleList(newArr);
@@ -154,6 +156,14 @@ const OrderAdd1C = (props) => {
   React.useEffect(() => {
     changeVehicleList();
   }, [tractor, trailer, changeVehicleList]);
+
+  React.useEffect(() => {
+    setTractor({});
+  }, [tractorNoPlateNumber]);
+
+  React.useEffect(() => {
+    setTrailer({});
+  }, [trailerNoPlateNumber]);
 
   const onChangeTrailerPlateNumber = (value) => {
     if (value.length >= 8) {
@@ -194,6 +204,8 @@ const OrderAdd1C = (props) => {
                   header="Гос. номер ТС"
                   ok={tractor.hasOwnProperty("plate_number")}
                   notOk={!tractor.hasOwnProperty("plate_number")}
+                  setNoPlateNumber={setTractorNoPlateNumber}
+                  setVehicleWithNoPlateNumber={setTractor}
                 />
               )}
               {isTractor === "0" && (
@@ -208,15 +220,21 @@ const OrderAdd1C = (props) => {
                     !tractor.hasOwnProperty("plate_number") &&
                     tractorPlateNumber.length >= 8
                   }
+                  setNoPlateNumber={setTractorNoPlateNumber}
+                  setVehicleWithNoPlateNumber={setTractor}
                 />
               )}
 
-              <VehicleInfo
-                notFoundText="ТС не найдено"
-                vehicle={tractor}
-                vehiclePlateNumber={tractorPlateNumber}
-                showOwner={paymentMethod === "CONTRACT"}
-              />
+              {tractor && (
+                <VehicleInfo
+                  notFoundText="ТС не найдено"
+                  vehicle={tractor}
+                  vehiclePlateNumber={tractorPlateNumber}
+                  showOwner={paymentMethod === "CONTRACT"}
+                  isNoPlateNumber={tractorNoPlateNumber}
+                  setNoPlateNumberChange={() => {setTractor({})}}
+                />
+              )}
             </div>
             {haveTrailer === "1" && (
               <div className="col mx-1">
@@ -231,14 +249,20 @@ const OrderAdd1C = (props) => {
                     !trailer.hasOwnProperty("plate_number") &&
                     trailerPlateNumber.length >= 8
                   }
+                  setNoPlateNumber={setTrailerNoPlateNumber}
+                  setVehicleWithNoPlateNumber={setTrailer}
                 />
 
-                <VehicleInfo
-                  notFoundText="ПЦ/ППЦ не найден"
-                  vehicle={trailer}
-                  vehiclePlateNumber={trailerPlateNumber}
-                  showOwner={paymentMethod === "CONTRACT"}
-                />
+                {trailer && (
+                  <VehicleInfo
+                    notFoundText="ПП/ППЦ не найден"
+                    vehicle={trailer}
+                    vehiclePlateNumber={trailerPlateNumber}
+                    showOwner={paymentMethod === "CONTRACT"}
+                    isNoPlateNumber={trailerNoPlateNumber}
+                    setNoPlateNumberChange={() => {setTrailer({})}}
+                  />
+                )}
               </div>
             )}
           </div>
@@ -248,10 +272,12 @@ const OrderAdd1C = (props) => {
               currentPaymentMethod={paymentMethod}
               onSetPaymentMethod={setPaymentMethod}
               enable={
-                (haveTrailer == "1" && (tractor.hasOwnProperty("plate_number") &&
-                trailer.hasOwnProperty("plate_number"))) ||
-                (haveTrailer == "0" && (tractor.hasOwnProperty("plate_number") ||
-                trailer.hasOwnProperty("plate_number")))
+                (haveTrailer == "1" &&
+                  tractor.hasOwnProperty("plate_number") &&
+                  trailer.hasOwnProperty("plate_number")) ||
+                (haveTrailer == "0" &&
+                  (tractor.hasOwnProperty("plate_number") ||
+                    trailer.hasOwnProperty("plate_number")))
               }
             />
             <GetServicesFromVehicleV2
@@ -261,22 +287,24 @@ const OrderAdd1C = (props) => {
               setCheckedServicesList={ServiceChoise}
               vehicleList={vehicleList}
               enable={
-                (haveTrailer == "1" && (tractor.hasOwnProperty("plate_number") &&
-                trailer.hasOwnProperty("plate_number"))) ||
-                (haveTrailer == "0" && (tractor.hasOwnProperty("plate_number") ||
-                trailer.hasOwnProperty("plate_number")))
+                (haveTrailer == "1" &&
+                  tractor.hasOwnProperty("plate_number") &&
+                  trailer.hasOwnProperty("plate_number")) ||
+                (haveTrailer == "0" &&
+                  (tractor.hasOwnProperty("plate_number") ||
+                    trailer.hasOwnProperty("plate_number")))
               }
             />
           </div>
-            
-            <div>
-                <SetWashersV2 
-                currentWashers={washers}
-                onCancel={() => {}}
-                setWashers={setWashers}
-                enable={services.length > 0}
-                />
-            </div>
+
+          <div>
+            <SetWashersV2
+              currentWashers={washers}
+              onCancel={() => {}}
+              setWashers={setWashers}
+              enable={services.length > 0}
+            />
+          </div>
           {!hideInterface && (
             <>
               <Button

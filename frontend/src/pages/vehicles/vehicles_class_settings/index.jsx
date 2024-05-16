@@ -15,20 +15,20 @@ const VehicleClassSettings = () => {
   }
   
   {
-    document.title = "Редактирование классов ТС/ПЦ/ППЦ Чистый Грузовик";
+    document.title = "Редактирование классов ТС/ПП/ППЦ Чистый Грузовик";
   }
     return (
           <>
             <div className="mt-4">
-            <p className="text-text-color fs-5">Классы/типы ТС/ПЦ/ППЦ:</p>
+            <p className="text-text-color fs-5">Классы/типы ТС/ПП/ППЦ:</p>
             <Button
               clickHandler={() => {navigate("/vehicles/classes/add")}}
               colorClass="btn-success"
               type="button"
               disabled={false}
-              hint="Чтобы создать тип ТС/ПЦ/ППЦ, для услуг, необходимо нажать 'редактировать' на созданом классе ТС/ПЦ/ППЦ"
+              hint="Чтобы создать тип ТС/ПП/ППЦ, для услуг, необходимо нажать 'редактировать' на созданом классе ТС/ПП/ППЦ"
             >
-              <>Добавить класс ТС/ПЦ/ППЦ</>
+              <>Добавить класс ТС/ПП/ППЦ</>
             </Button>
             <hr></hr>
             <form className="d-flex mb-3" role="search">

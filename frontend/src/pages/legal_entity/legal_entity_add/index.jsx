@@ -494,7 +494,7 @@ const LegalEntityAdd = (props) => {
                   aria-expanded="false"
                   aria-controls="flush-collapse5"
                 >
-                  Связные ТС/ПЦ/ППЦ
+                  Связные ТС/ПП/ППЦ
                 </button>
               </h2>
               <div

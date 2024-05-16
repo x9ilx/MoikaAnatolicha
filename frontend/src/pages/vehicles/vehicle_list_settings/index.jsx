@@ -14,19 +14,19 @@ const VehicleListSettings = () => {
   }
   
   {
-    document.title = "Редактирование ТС/ПЦ/ППЦ Чистый Грузовик";
+    document.title = "Редактирование ТС/ПП/ППЦ Чистый Грузовик";
   }
     return (
           <>
             <div className="mt-4">
-            <p className="text-text-color fs-5">ТС/ПЦ/ППЦ:</p>
+            <p className="text-text-color fs-5">ТС/ПП/ППЦ:</p>
             <Button
               clickHandler={() => navigate("./add")}
               colorClass="btn-success"
               type="button"
               disabled={false}
             >
-              <>Добавить ТС/ПЦ/ППЦ</>
+              <>Добавить ТС/ПП/ППЦ</>
             </Button>
             <hr></hr>
             <form className="d-flex mb-3" role="search">

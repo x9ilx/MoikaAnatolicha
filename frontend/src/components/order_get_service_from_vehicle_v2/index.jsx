@@ -9,7 +9,6 @@ const GetServicesFromVehicleV2 = (props) => {
   const [currentTab, setCurrentTab] = React.useState(
     props.includeContractServices ? "contract" : "common"
   );
-  // const [renderCount, setRenderCount] = React.useState(0);
 
   const [ownerShortName, setOwnerShortName] = React.useState("");
   const [services, setServices] = React.useState({
@@ -30,14 +29,16 @@ const GetServicesFromVehicleV2 = (props) => {
     props.vehicleList.map((vehicle) => {
       if (vehicle.hasOwnProperty("plate_number")) {
         api
-          .getServicesForVehicleType(vehicle.vehicle_type.id)
+          .getServicesForVehicleType(vehicle.vehicle_type.id || vehicle.vehicle_type)
           .then((res) => {
             newArr.common_service.push({
-              vehicle_type_name: vehicle.vehicle_type.name,
+              vehicle_type_name: vehicle.vehicle_type.name || vehicle.vehicle_type_name,
               vehicle_id: vehicle.id,
               vehicle_plate_number: vehicle.plate_number,
-              vehicle_class_name: vehicle.vehicle_type.vehicle_class_name,
+              vehicle_class_name: vehicle.vehicle_type.vehicle_class_name || vehicle.vehicle_class_name,
               vehicle_model: vehicle.vehicle_model,
+              without_plate_number: vehicle.without_plate_number,
+              unique_id: vehicle.unique_id,
               services: res.map((item) => ({
                 ...item,
                 vehicle: vehicle,
@@ -48,17 +49,19 @@ const GetServicesFromVehicleV2 = (props) => {
             });
             api
               .getLegalEntityVehicleTypeServicesList(
-                vehicle.owner.id,
-                vehicle.vehicle_type.id
+                vehicle.owner.id || vehicle.owner,
+                vehicle.vehicle_type.id || vehicle.vehicle_type
               )
               .then((res) => {
                 if (res.length > 0) {
                   newArr.contract_service.push({
-                    vehicle_type_name: vehicle.vehicle_type.name,
+                    vehicle_type_name: vehicle.vehicle_type.name || vehicle.vehicle_type_name,
                     vehicle_id: vehicle.id,
                     vehicle_plate_number: vehicle.plate_number,
-                    vehicle_class_name: vehicle.vehicle_type.vehicle_class_name,
+                    vehicle_class_name: vehicle.vehicle_type.vehicle_class_name || vehicle.vehicle_class_name,
                     vehicle_model: vehicle.vehicle_model,
+                    without_plate_number: vehicle.without_plate_number,
+                    unique_id: vehicle.unique_id,
                     services: res.map((item) => ({
                       ...item,
                       vehicle: vehicle,
@@ -125,7 +128,8 @@ const GetServicesFromVehicleV2 = (props) => {
       (element) =>
         (element.service.id == service.service.id) &
         (element.legal_entity_service === service.legal_entity_service) &
-        (element.vehicle.id == service.vehicle.id)
+        (element.vehicle.id == service.vehicle.id) &
+        (element.vehicle.unique_id === service.vehicle.unique_id)
     );
 
     if (serv) {
@@ -145,12 +149,12 @@ const GetServicesFromVehicleV2 = (props) => {
       <div className=" row overflow-auto vh-25" style={{ maxHeight: "450px" }}>
         {services[table].map((service_list) => (
           <div
-            key={`${table}${service_list.vehicle_id}${id}${service_list.vehicle_plate_number}`}
+            key={`${table}${service_list.vehicle_id}${id}${service_list.vehicle_plate_number}${service_list.unique_id}`}
             className=""
           >
             <ul className="list-group">
               <li className="list-group-item fw-medium fs-8">
-                <b>{service_list.vehicle_plate_number}</b>{" "}
+                <b>{service_list.without_plate_number ? "Без гос. номера" : service_list.vehicle_plate_number}</b>{" "}
                 {service_list.vehicle_model} {isMobile && <br></br>}
                 {service_list.vehicle_class_name} (
                 {service_list.vehicle_type_name})
@@ -159,15 +163,15 @@ const GetServicesFromVehicleV2 = (props) => {
                 <div className="input-group">
                   <div className="d-flex flex-wrap gap-2">
                     {service_list.services.map((service, serv_index) => (
-                      <div key={`${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}`}>
+                      <div key={`${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}${service_list.unique_id}`}>
                         <input
                           type="checkbox"
                           className="btn-check rounded"
                           name={
-                            "btnradiocommon_service" + `${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}`
+                            "btnradiocommon_service" + `${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}${service_list.unique_id}`
                           }
                           id={
-                            "btnradiocommon_service" + `${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}`
+                            "btnradiocommon_service" + `${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}${service_list.unique_id}`
                           }
                           autoComplete="off"
                           checked={checkChecked(service)}
@@ -180,14 +184,15 @@ const GetServicesFromVehicleV2 = (props) => {
                                   (element.service.id == service.service.id) &
                                   (element.legal_entity_service ==
                                     service.legal_entity_service) &
-                                  (element.vehicle.id == service.vehicle.id)
+                                  (element.vehicle.id == service.vehicle.id) &
+                                  (element.vehicle.unique_id === service.vehicle.unique_id)
                               ),
                               e.target.checked
                             );
                           }}
                           disabled={!props.enable}
                         />
-
+                        {/* {console.log(service.vehicle.unique_id)} */}
                         <label
                           className={`${
                             (selectedServices.find(
@@ -195,7 +200,8 @@ const GetServicesFromVehicleV2 = (props) => {
                                 (element.service.id == service.service.id) &
                                 (element.legal_entity_service ==
                                   service.legal_entity_service) &
-                                (element.vehicle.id == service.vehicle.id)
+                                (element.vehicle.id == service.vehicle.id) &
+                                (element.vehicle.unique_id == service.vehicle.unique_id)
                             )?.cost || service.cost) != service.cost
                               ? "btn-outline-secondary"
                               : "btn-outline-primary"
@@ -204,7 +210,7 @@ const GetServicesFromVehicleV2 = (props) => {
                             textShadow: "1px -1px 10px rgba(0,0,0,0.45)",
                           }}
                           htmlFor={
-                            "btnradiocommon_service" + `${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}`
+                            "btnradiocommon_service" + `${service_list.vehicle_id}${serv_index}${service_list.vehicle_plate_number}${service.vehicle.id}${id}${service_list.unique_id}`
                           }
                         >
                           {service.service.name} ({service.cost}₽) /{" "}

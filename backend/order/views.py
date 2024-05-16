@@ -1,4 +1,4 @@
-from urllib import request
+import uuid 
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
@@ -352,6 +352,20 @@ class OrderViewSet(viewsets.ModelViewSet):
             has_been_modifed_after_save=False,
         )
 
+        dict_unique_id = {}
+
+        for vehicle in vehicles:
+            if (vehicle['plate_number'] == 'Без гос. номера'
+                or vehicle['without_plate_number']):
+                new_vehicle = Vehicle.objects.create(
+                    without_plate_number=True,
+                    plate_number=uuid.uuid4().hex.upper(),
+                    owner_id=vehicle['owner'],
+                    vehicle_model=vehicle['vehicle_model'],
+                    vehicle_type_id=vehicle['vehicle_type'],
+                )
+                dict_unique_id[vehicle['unique_id']] = new_vehicle.plate_number
+
         washer_objs = [
             OrderWashers(
                 order=order,
@@ -384,9 +398,11 @@ class OrderViewSet(viewsets.ModelViewSet):
 
             new_employer_salary = b_service.employer_salary
 
-            if service['vehicle']['id'] == -1:
+            if service['vehicle']['id'] == -1:  
                 vehicle_obj = Vehicle.objects.get(
-                    plate_number=service['vehicle']['plate_number']
+                    plate_number=dict_unique_id[
+                        service['vehicle']['unique_id']
+                    ]
                 )
                 service['vehicle']['id'] = vehicle_obj.pk
                 

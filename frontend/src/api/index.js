@@ -1,5 +1,5 @@
-const URL = "http://localhost:8000/";
-// const URL = "";
+export const URL = "http://localhost:8000/";
+// export const URL = "";
 import Cookies from "universal-cookie";
 import { COOKIES_LIFE_TIME } from "../constants";
 
@@ -299,7 +299,7 @@ class Api {
       },
     }).then(this.checkResponse);
   }
-  
+
   getEmployerPosition(employer_id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/employees/${employer_id}/get_employer_position/`, {
@@ -338,15 +338,18 @@ class Api {
 
   getWasherOrders(id_employer, start_date, end_date) {
     const token = cookies.get("auth_token");
-    return fetch(URL + `/api/employees/${id_employer}/get_washer_orders/?start_date=${start_date}&end_date=${end_date}`, {
-      method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Token ${token}`,
-      },
-    }).then(this.checkResponse);
+    return fetch(
+      URL +
+        `/api/employees/${id_employer}/get_washer_orders/?start_date=${start_date}&end_date=${end_date}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
   }
-  
 
   getAdministratorShiftsForPeriod(admin_id, start_date, end_date) {
     const token = cookies.get("auth_token");
@@ -361,6 +364,35 @@ class Api {
         },
       }
     ).then(this.checkResponse);
+  }
+
+  getAllSalaries(
+    current_page = 1,
+    items_limit = 8,
+    searchEmployer = "",
+    dateStart = (new Date()).toISOString(),
+    dateEnd = (new Date()).toISOString()
+  ) {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL +
+        `/api/employees_salaries/?page=${current_page}&limit=${items_limit}&employee_name=${searchEmployer}&start_date_issue=${dateStart}&end_date_issue=${dateEnd}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
+
+  getSalaryDocPDFURL(id_employer, salary_id) {
+    window.open(
+      `${URL}/api/employees/${id_employer}/get_salary_pdf/${salary_id}/`,
+      "_blank",
+      "rel=noopener noreferrer"
+    );
   }
 
   /////////////////////////////// VEHICLES
@@ -936,7 +968,7 @@ class Api {
     employer_salary,
     total_order_income,
     shifts_description,
-    orders_description,
+    orders_description
   ) {
     const token = cookies.get("auth_token");
     return fetch(URL + "/api/employees_salaries/", {
@@ -978,10 +1010,7 @@ class Api {
       },
     }).then(this.checkResponse);
   }
-  
 }
-
-
 
 // eslint-disable-next-line no-undef
 export default new Api(process.env.API_URL || "http://localhost", {

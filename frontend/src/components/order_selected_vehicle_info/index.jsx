@@ -12,14 +12,14 @@ const SelectedVehicleInfo = (props) => {
             <>
               <div className="d-flex">
                 <div className="d-flex flex-row align-middle mb-3">
-                  <span>Выбранное ТС/ПЦ/ППЦ:</span>
+                  <span>Выбранное ТС/ПП/ППЦ:</span>
                 </div>
                 <div className="d-flex flex-fill justify-content-end align-middle">
                   <MdModeEdit
                     size={24}
                     className="text-text-color"
                     style={{ cursor: "pointer" }}
-                    title="Изменить ТС/ПЦ/ППЦ"
+                    title="Изменить ТС/ПП/ППЦ"
                     onClick={() => {
                       props.onSetCurrentVehicle(null);
                       props.onSetVehicleSelected(false);
@@ -33,7 +33,7 @@ const SelectedVehicleInfo = (props) => {
             {
               name: (
                 <div className="fs-6 fw-medium">
-                  {props.currentVehicle.plate_number}
+                  {props.currentVehicle.without_plate_number ? "Без гос. номера" : props.currentVehicle.plate_number}
                 </div>
               ),
               badge: "",

@@ -88,7 +88,7 @@ const OrderWorkAct = (props) => {
           {Object.keys(services).map((key, index) => (
             <div key={"serviceList" + index} className="">
               <p>
-                <b>{services[key].vehicle_plate_number}</b>{" "}
+                <b>{services[key].without_plate_number ? "Без гос. номера" : services[key].vehicle_plate_number}</b>{" "}
                 {services[key].vehicle_model} {services[key].vehicle_class_name}{" "}
                 ({services[key].vehicle_type_name})
               </p>

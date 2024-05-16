@@ -68,7 +68,7 @@ const OrderSelectCar = (props) => {
     <>
       {loading && (
         <p className="grid h-screen place-items-center text-center">
-          Загрузка списка ТС/ПЦ/ППЦ...
+          Загрузка списка ТС/ПП/ППЦ...
         </p>
       )}
       {!loading && (
@@ -79,7 +79,7 @@ const OrderSelectCar = (props) => {
                 key={"vehiclexcvxczvdfh5675467456List"}
                 className="form-control text"
                 type="search"
-                placeholder="Гос. номер ТС/ПЦ/ППЦ"
+                placeholder="Гос. номер ТС/ПП/ППЦ"
                 aria-label="Search"
                 value={currentPlateNumber}
                 onChange={(e) => {
@@ -116,7 +116,7 @@ const OrderSelectCar = (props) => {
                                 setShowList(false);
                               }}
                             >
-                              <b>{vehicle?.plate_number}:</b>{" "}
+                              <b>{vehicle?.without_plate_number ? "Без. гос. номера" : vehicle?.plate_number}:</b>{" "}
                               {vehicle?.vehicle_type?.vehicle_class_name}{" "}
                               {vehicle?.vehicle_model} (
                               {vehicle?.vehicle_type?.name})
@@ -154,10 +154,10 @@ const OrderSelectCar = (props) => {
                               disabled={false}
                               type="button"
                               hint={
-                                "Добавить новый ТС/ПЦ/ППЦ " + currentPlateNumber
+                                "Добавить новый ТС/ПП/ППЦ " + currentPlateNumber
                               }
                             >
-                              <>Создать ТС/ПЦ/ППЦ {currentPlateNumber}</>
+                              <>Создать ТС/ПП/ППЦ {currentPlateNumber}</>
                             </Button>
                           </div>
                         </div>

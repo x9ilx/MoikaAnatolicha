@@ -432,19 +432,19 @@ const LegalEntitySetServices = (props) => {
               type="button"
               disabled={false}
             >
-              <>Загрузить услуги исходя из ТС/ПЦ/ППЦ</>
+              <>Загрузить услуги исходя из ТС/ПП/ППЦ</>
             </Button>
           )}
           <hr></hr>
           <p>Наименование организации: {name}</p>
           <p className="blockquote-footer">ИНН: {inn}</p>
           <OrderElementGroup
-            header="ТС/ПЦ/ППЦ:"
+            header="ТС/ПП/ППЦ:"
             elements_with_badge={vehicleList.map((vehicle, index) => ({
               name: (
                 <div className="fs-7">
-                  <b key={"vehicleListFinal554" + vehicle.plate_number + index}>
-                    {vehicle?.plate_number}:
+                  <b key={"vehicleListFinal554" + vehicle?.plate_number + index}>
+                    {vehicle?.without_plate_number ? "Без гос. номера" : vehicle?.plate_number}:
                   </b>{" "}
                   {vehicle?.vehicle_class_name} {vehicle?.vehicle_model}{" "}
                   {isMobile && <br />}({vehicle?.vehicle_type_name})
@@ -507,7 +507,7 @@ const LegalEntitySetServices = (props) => {
             {serviceAddition && (
               <>
                 <div className="form-floating mb-3">
-                  <p className="">Класс ТС/ПЦ/ППЦ:</p>
+                  <p className="">Класс ТС/ПП/ППЦ:</p>
                   <select
                     className="form-select text p-3"
                     id="currentClass"
@@ -527,7 +527,7 @@ const LegalEntitySetServices = (props) => {
                 </div>
 
                 <div className="form-floating mb-3">
-                  <p className="">Тип ТС/ПЦ/ППЦ:</p>
+                  <p className="">Тип ТС/ПП/ППЦ:</p>
                   <select
                     className="form-select text p-3"
                     id="currentClass"

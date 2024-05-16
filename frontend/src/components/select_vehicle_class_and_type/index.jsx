@@ -77,15 +77,15 @@ const SelectVehicleClassAndType = (props) => {
     if (currentClassIndex >= 0 && vehicleClasses) {
       let classes = vehicleClasses[currentClassIndex].vehicle_types;
       setVehicleTypes(classes);
-      if (!props.currentVehicleType) {
+      // if (!props.currentVehicleType) {
         setCurrentType(classes[0]?.id);
         setCurrentTypeName(classes[0]?.name);
         setCurrentTypeIndex(0);
         props.onSelectType(classes[0]?.id, classes[0]?.name);
-      } else {
-        setCurrentType(props.currentVehicleType);
-        setCurrentTypeName(props.currentVehicleTypeName);
-      }
+      // } else {
+      //   setCurrentType(props.currentVehicleType);
+      //   setCurrentTypeName(props.currentVehicleTypeName);
+      // }
     }
   }, [currentClassIndex, vehicleClasses]);
 
@@ -95,7 +95,7 @@ const SelectVehicleClassAndType = (props) => {
 
   React.useEffect(() => {
     props.onSelectType(currentType, currentTypeName);
-  }, [currentTypeName, currentType]);
+  }, [currentTypeName, currentType, props]);
 
   if (loading || fisrtLoad) {
     return (
@@ -110,7 +110,7 @@ const SelectVehicleClassAndType = (props) => {
   return (
     <>
       <div className="form-floating mb-3">
-        <p className="">Класс ТС/ПЦ/ППЦ:</p>
+        <p className="">Класс ТС/ПП/ППЦ:</p>
         <select
           className="form-select text p-3"
           id="currentClass"
@@ -138,7 +138,7 @@ const SelectVehicleClassAndType = (props) => {
       {currentClassIndex >= 0 && (
         <>
           <div className="form-floating mb-3">
-            <p className="">Тип ТС/ПЦ/ППЦ:</p>
+            <p className="">Тип ТС/ПП/ППЦ:</p>
             <select
               className="form-select text p-3"
               id="currentType"

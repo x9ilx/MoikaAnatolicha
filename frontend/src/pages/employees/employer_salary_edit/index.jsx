@@ -1,61 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { toast } from "react-toastify";
 import { useParams, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { isMobile } from "react-device-detect";
 import api from "../../../api";
 import OrderElementGroup from "../../orders/order_element_group";
 import Button from "../../../components/button";
-import OrderElement from "../../orders/order_element";
+
 
 function AdminShiftEdit(props) {
   const [loading, setLoading] = React.useState(false);
   const [salary, setSalary] = React.useState(null);
   const [DELETE, setDELETE] = React.useState(false);
 
-  const [showShift, setShowShift] = React.useState(false);
-  const [showOrders, setShowOrders] = React.useState(false);
-
-  const { salary_id } = useParams();
+  const { employer_id, salary_id } = useParams();
 
   const navigate = useNavigate();
-
-  const updateSalary = React.useCallback(
-    () => {
-      // api
-      //   .createSalary(
-      //     parseInt(employer_id),
-      //     startDate,
-      //     endDate,
-      //     totalEarnings,
-      //     totalOrderCommonCost + totalOrderContractCost,
-      //     shitsDescription,
-      //     ordersDescription
-      //   )
-      //   .then((res) => {
-      //     toast.success(
-      //       `Заработная плата, от ${new Date(
-      //         res.date_of_issue
-      //       ).toLocaleDateString()}г., успешно сохранена`
-      //     );
-      //     navigate(`./${res.id}`);
-      //   })
-      //   .catch((err) => {
-      //     Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
-      //   });
-    },
-    [
-      // employer_id,
-      // startDate,
-      // endDate,
-      // totalEarnings,
-      // totalOrderCommonCost,
-      // totalOrderContractCost,
-      // shitsDescription,
-      // ordersDescription,
-      // navigate,
-    ]
-  );
 
   const getSalary = React.useCallback(() => {
     setLoading(true);
@@ -86,7 +45,7 @@ function AdminShiftEdit(props) {
     return (
       <div className="container fs-6">
         <p className="fw-medium ">
-          ЗП администратора: {salary?.employer?.name}
+          ЗП {salary?.employer.position === "ADMINISTRATOR" ? "админстратора" : "мойщика"}: {salary?.employer?.name}
         </p>
         <hr></hr>
         <OrderElementGroup
@@ -117,7 +76,7 @@ function AdminShiftEdit(props) {
             {
               name: (
                 <span>
-                  <strong>ЗП администратора: {salary?.employer_salary}₽</strong>
+                  <strong>ЗП {salary?.employer.position === "ADMINISTRATOR" ? "админстратора" : "мойщика"}: {salary?.employer_salary}₽</strong>
                 </span>
               ),
             },
@@ -138,10 +97,10 @@ function AdminShiftEdit(props) {
             Удалить данные о ЗП
           </label>
         </div>
-
         <Button
           clickHandler={() => {
-            //   CreateSalary();
+            // window.open(`${api.getSalaryDocPDFURL(employer_id, salary_id)}`,'_blank', 'rel=noopener noreferrer')
+            api.getSalaryDocPDFURL(employer_id, salary_id);
           }}
           colorClass="btn-info"
           type="button"

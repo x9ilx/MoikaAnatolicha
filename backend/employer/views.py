@@ -1,15 +1,19 @@
 from datetime import datetime, time, date
+from io import BytesIO
 
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.http import urlencode
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from employer.pdf_doc import EmployerSalaryDocPDF
 from employer.filters import ShiftFilter
 from company.models import CompanySettings
 from core.permissions import OnlyManager
@@ -31,6 +35,7 @@ class EmployerSalaryViewSet(viewsets.ModelViewSet):
     permission_classes = [
         OnlyManager,
     ]
+    
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -44,10 +49,10 @@ class EmployerSalaryViewSet(viewsets.ModelViewSet):
         employee_id = self.request.GET.get('employee_id', 0)
         employee_name = self.request.GET.get('employee_name', '')
         str_start_date_issue =  self.request.GET.get(
-            'str_start_date_issue', ''
+            'start_date_issue', ''
         )
         str_end_date_issue = self.request.GET.get(
-            'end_shift_time_issue', ''
+            'end_date_issue', ''
         )
         
         if str_start_date_issue:
@@ -363,3 +368,24 @@ class EmployerViewSet(viewsets.ModelViewSet):
             "Закртие смены доступно только администратору",
             status=status.HTTP_200_OK,
         )
+
+    @action(
+        detail=True,
+        methods=["GET"],
+        url_path="get_salary_pdf/(?P<doc_id>[\d])",
+        url_name="get_salary_pdf",
+        permission_classes=[],
+    )
+    def get_salary_pdf(self, request, pk, doc_id):
+        salary=get_object_or_404(
+                EmployerSalary, pk=doc_id, employer=pk
+            )
+        pdf_template = EmployerSalaryDocPDF(
+            salary=salary,
+            buffer=BytesIO(),
+        )
+        response = HttpResponse(content_type='application/pdf')
+
+        pdf = pdf_template.get_pdf()
+        response.write(pdf)
+        return response

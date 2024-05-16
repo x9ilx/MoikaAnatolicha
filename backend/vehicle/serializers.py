@@ -161,6 +161,7 @@ class VehicleSerializer(serializers.ModelSerializer):
             'vehicle_type',
             'owner_id',
             'vehicle_type_id',
+            'without_plate_number',
         ]
 
     def validate(self, attrs):

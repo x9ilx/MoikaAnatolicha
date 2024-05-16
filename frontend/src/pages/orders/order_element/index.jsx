@@ -21,6 +21,7 @@ const OrderElement = (props) => {
         vehicle_class_name: "",
         vehicle_plate_number: "",
         vehicle_model: "",
+        without_plate_number: false,
         services: [],
       };
       newArr[item.vehicle.id].services.push(item);
@@ -30,6 +31,7 @@ const OrderElement = (props) => {
         item.vehicle.vehicle_type.vehicle_class_name;
       newArr[item.vehicle.id].vehicle_plate_number = item.vehicle.plate_number;
       newArr[item.vehicle.id].vehicle_model = item.vehicle.vehicle_model;
+      newArr[item.vehicle.id].without_plate_number = item.vehicle.without_plate_number;
     });
     setServices(newArr);
   }, [props]);
@@ -76,7 +78,7 @@ const OrderElement = (props) => {
                     header={
                       <div className=" fs-6">
                         <b className="">
-                          {services[key].vehicle_plate_number}{" "}
+                          {services[key].without_plate_number ? "Без гос. номера" : services[key].vehicle_plate_number}{" "}
                           {services[key].vehicle_model}
                         </b>
                         <br />

@@ -125,12 +125,12 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
                       </div>
                       <div className="col  pt-1" id="washers">
                         <OrderElementGroup
-                          header="Связные ТС/ПЦ/ППЦ"
+                          header="Связные ТС/ПП/ППЦ"
                           elements_with_badge={legal_entity?.vehicles?.map(
                             (vehicle) => ({
                               name: (
                                 <>
-                                  <b>{vehicle?.plate_number}:</b>{" "}
+                                  <b>{vehicle?.without_plate_number ? "Без гос. номера" : vehicle?.plate_number}:</b>{" "}
                                   {vehicle?.vehicle_class_name}{" "}
                                   {vehicle?.vehicle_model} {isMobile ? <br></br> : ""} (
                                   {vehicle?.vehicle_type_name})

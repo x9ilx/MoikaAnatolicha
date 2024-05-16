@@ -31,6 +31,8 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
     props.ownerName
   );
 
+  const id = React.useId();
+
   React.useImperativeHandle(ref, () => ({
     preCreateVehicle,
   }));
@@ -54,7 +56,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       return;
     }
     if (props.editOwner && (!newVehicleOwner || newVehicleOwner <= 0)) {
-      toast.error('Необходимо выбрать владельца из списка');
+      toast.error("Необходимо выбрать владельца из списка");
       return;
     }
     if (!newVehiclePlateNUmber || newVehiclePlateNUmber.length === 0) {
@@ -66,7 +68,6 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       return;
     }
     const vehicle = {
-   
       id: -1,
       plate_number: newVehiclePlateNUmber,
       vehicle_model: newVehicleModel,
@@ -78,6 +79,8 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       vehicle_type: newVehicleType,
       to_be_removed: false,
       to_be_added: true,
+      without_plate_number: props.noPlateNumber,
+      unique_id: id,
     };
 
     props.onCreate(vehicle);
@@ -115,9 +118,9 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
       )}
       {props.editOwner && (
         <VehicleOwnerPicker
-        setVehicleOwnerValue={selectVehicleOwner}
-        currentVehicleOwner={newVehicleOwner}
-        currentVehicleOwnerName={newVehicleOwnerName}
+          setVehicleOwnerValue={selectVehicleOwner}
+          currentVehicleOwner={newVehicleOwner}
+          currentVehicleOwnerName={newVehicleOwnerName}
         />
       )}
       <VehicleModelPicker
@@ -143,7 +146,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
             type="button"
             disabled={false}
           >
-            <>Создать ТС/ПЦ/ППЦ</>
+            <>Создать ТС/ПП/ППЦ</>
           </Button>
           <Button
             clickHandler={() => {
@@ -156,6 +159,18 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
             <>Отмена</>
           </Button>
         </>
+      )}
+      {props.noPlateNumber && (
+        <Button
+          clickHandler={() => {
+            preCreateVehicle();
+          }}
+          colorClass="btn-success btn-sm"
+          type="button"
+          disabled={false}
+        >
+          <>Применить</>
+        </Button>
       )}
     </>
   );
@@ -175,6 +190,7 @@ CreateNewVehicle.propTypes = {
   hideButtons: PropTypes.bool,
   onCreate: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
+  noPlateNumber: PropTypes.bool,
 };
 
 export default CreateNewVehicle;

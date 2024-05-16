@@ -89,6 +89,10 @@ class Vehicle(models.Model):
         null=True,
     )
 
+    without_plate_number = models.BooleanField(
+        'Без гос. номера?', default=False
+    )
+
     class Meta:
         """Meta definition for VehicleOrTrailerClass."""
 

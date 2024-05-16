@@ -74,7 +74,7 @@ const VehicleAdd = (props) => {
     api
       .createVehicle(data)
       .then((res) => {
-        toast.success("ТС/ПЦ/ППЦ " + res.plate_number + " успешно добавлено");
+        toast.success("ТС/ПП/ППЦ " + res.plate_number + " успешно добавлено");
         navigate(-1);
       })
       .catch((err) => {
@@ -93,7 +93,7 @@ const VehicleAdd = (props) => {
     api
       .updateVehicle(vehicle_id, data)
       .then((res) => {
-        toast.success("Данные ТС/ПЦ/ППЦ " + res.plate_number + " обновлены");
+        toast.success("Данные ТС/ПП/ППЦ " + res.plate_number + " обновлены");
         navigate(-1);
       })
       .catch((err) => {
@@ -129,10 +129,10 @@ const VehicleAdd = (props) => {
         <>
           {vehicle_id ? (
             <p className="text-text-color fs-5">
-              Редактирование данных ТС/ПЦ/ППЦ
+              Редактирование данных ТС/ПП/ППЦ
             </p>
           ) : (
-            <p className="text-text-color fs-5">Добавление нового ТС/ПЦ/ППЦ</p>
+            <p className="text-text-color fs-5">Добавление нового ТС/ПП/ППЦ</p>
           )}
           <hr></hr>
           <form
@@ -171,8 +171,8 @@ const VehicleAdd = (props) => {
             >
               <>
                 {vehicle_id
-                  ? "Сохранить ТС/ПЦ/ППЦ"
-                  : "Добавить новое ТС/ПЦ/ППЦ"}
+                  ? "Сохранить ТС/ПП/ППЦ"
+                  : "Добавить новое ТС/ПП/ППЦ"}
               </>
             </Button>
             <Button
@@ -199,7 +199,7 @@ const VehicleAdd = (props) => {
                     }}
                   />
                   <label className="form-check-label" htmlFor="DELETE">
-                    Удалить данные о ТС/ПЦ/ППЦ
+                    Удалить данные о ТС/ПП/ППЦ
                   </label>
                 </div>
                 {DELETE && (
@@ -207,7 +207,7 @@ const VehicleAdd = (props) => {
                     <Button
                       clickHandler={() => {
                         props.setInfoStringForDelete(
-                          "ТС/ПЦ/ППЦ  " + plateNumber
+                          "ТС/ПП/ППЦ  " + plateNumber
                         );
                         props.setId(vehicle_id);
                         navigate("./delete/");
@@ -216,7 +216,7 @@ const VehicleAdd = (props) => {
                       type="button"
                       disabled={false}
                     >
-                      <>УДАЛИТЬ ЗАПИСЬ О ТС/ПЦ/ППЦ</>
+                      <>УДАЛИТЬ ЗАПИСЬ О ТС/ПП/ППЦ</>
                     </Button>
                   </>
                 )}

@@ -24,7 +24,7 @@ const VehicleClassEdit = (props) => {
     api
       .updateVehicleClass(data)
       .then((data) => {
-        toast.success("Класс ТС/ПЦ/ППЦ " + data.name + " успешно обновлён");
+        toast.success("Класс ТС/ПП/ППЦ " + data.name + " успешно обновлён");
         navigate(0)
       })
       .catch((err) => {
@@ -64,7 +64,7 @@ const VehicleClassEdit = (props) => {
   }
   return (
     <>
-      <p className="text-text-color fs-5">Редактирование класса ТС/ПЦ/ППЦ</p>
+      <p className="text-text-color fs-5">Редактирование класса ТС/ПП/ППЦ</p>
       <hr></hr>
       <form
         autoComplete="new-password"
@@ -85,7 +85,7 @@ const VehicleClassEdit = (props) => {
             value={name}
             name="name"
           />
-          <label htmlFor="name">Название класса ТС/ПЦ/ППЦ</label>
+          <label htmlFor="name">Название класса ТС/ПП/ППЦ</label>
         </div>
         <VehicleTypesEditList
           vehicleTypesList={vehicleTypes}
@@ -131,7 +131,7 @@ const VehicleClassEdit = (props) => {
                   <>
                     <Button
                       clickHandler={() => {
-                        props.setInfoStringForDelete("класс ТС/ПЦ/ППЦ \"" + name + "\"? Все связные типы так же будут удалены");
+                        props.setInfoStringForDelete("класс ТС/ПП/ППЦ \"" + name + "\"? Все связные типы так же будут удалены");
                         props.setId(vehicle_class_id);
                         navigate("./delete/");
                       }}
@@ -139,7 +139,7 @@ const VehicleClassEdit = (props) => {
                       type="button"
                       disabled={false}
                     >
-                       <>УДАЛИТЬ ЗАПИСЬ КЛАСС ТС/ПЦ/ППЦ</>
+                       <>УДАЛИТЬ ЗАПИСЬ КЛАСС ТС/ПП/ППЦ</>
                     </Button>
                   </>
                 )}

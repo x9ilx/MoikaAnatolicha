@@ -15,12 +15,12 @@ const EmployeesSettings = () => {
   }
   
   {
-    document.title = "Редактирование ТС/ПЦ/ППЦ Чистый Грузовик";
+    document.title = "Редактирование ТС/ПП/ППЦ Чистый Грузовик";
   }
     return (
           <>
             <div className="mt-4">
-            <p className="text-text-color fs-5">ТС/ПЦ/ППЦ:</p>
+            <p className="text-text-color fs-5">ТС/ПП/ППЦ:</p>
             <Button
               clickHandler={()=>navigate("/employees/add")}
               colorClass="btn-success"

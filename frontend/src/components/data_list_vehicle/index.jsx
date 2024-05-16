@@ -154,7 +154,7 @@ const DataListVehicle = (props) => {
                           aria-current="true"
                           onClick={() => vehicleChange(vehicle)}
                         >
-                          <b>{vehicle?.plate_number}:</b>{" "}
+                          <b>{vehicle?.without_plate_number ? "Без гос. номера" : vehicle?.plate_number}:</b>{" "}
                           {vehicle?.vehicle_type?.vehicle_class_name}{" "}
                           {vehicle?.vehicle_model} (
                           {vehicle?.vehicle_type?.name})
@@ -189,9 +189,9 @@ const DataListVehicle = (props) => {
                         colorClass="btn-info btn-sm"
                         disabled={false}
                         type="button"
-                        hint={"Добавить новый ТС/ПЦ/ППЦ " + currentPlateNumber}
+                        hint={"Добавить новый ТС/ПП/ППЦ " + currentPlateNumber}
                       >
-                        <>Создать ТС/ПЦ/ППЦ {currentPlateNumber}</>
+                        <>Создать ТС/ПП/ППЦ {currentPlateNumber}</>
                       </Button>
                     </div>
                   </div>
@@ -200,7 +200,7 @@ const DataListVehicle = (props) => {
             </>
           )}
 
-          <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">Список ТС/ПЦ/ППЦ:</p>
+          <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">Список ТС/ПП/ППЦ:</p>
           <ul key={"vehicleListF345345ina123sdfl"} className="list-group my-3">
             {vehicleListFinal?.map((vehicle, index) => (
               <div key={"vehicleListFinal" + vehicle.plate_number + index}>

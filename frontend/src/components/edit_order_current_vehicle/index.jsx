@@ -8,7 +8,7 @@ const EditOrderCurrentVehicle = (props) => {
   return (
     <div>
       <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3  border bg-primary fw-medium text-white p-2" style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>
-        Список ТС/ПЦ/ППЦ:
+        Список ТС/ПП/ППЦ:
       </p>
       <ul key={"vehicleListF345345ina123sdfl"} className="list-group">
         {props.vehicleList?.map((vehicle, index) => (
@@ -31,7 +31,7 @@ const EditOrderCurrentVehicle = (props) => {
                     <b
                       key={"vehicleListFinal554" + vehicle.plate_number + index}
                     >
-                      {vehicle?.plate_number}:
+                      {vehicle?.without_plate_number ? "Без гос. номера" : vehicle?.plate_number}:
                     </b>{" "}
                     {vehicle?.vehicle_model}{" "}
                     {isMobile && <br />}

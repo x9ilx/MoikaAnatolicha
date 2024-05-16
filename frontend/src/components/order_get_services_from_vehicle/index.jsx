@@ -146,7 +146,7 @@ const GetServicesFromVehicle = (props) => {
                 {services.contract_service.map((service_list, index) => (
                   <div key={"servicescommon_service" + index}>
                     <div className="fs-6 fw-medium my-2">
-                      <b>{service_list.vehicle_plate_number}</b>{" "}
+                      <b>{service_list.without_plate_number ? "Без гос. номера" : service_list.vehicle_plate_number}</b>{" "}
                       {service_list.vehicle_model}
                       <br />
                       {service_list.vehicle_class_name} (
@@ -285,7 +285,7 @@ const GetServicesFromVehicle = (props) => {
             {services.common_service.map((service_list, index) => (
               <div key={"servicescommon_service" + index}>
                 <div className="fs-6 fw-medium m-2">
-                  <b>{service_list.vehicle_plate_number}</b>{" "}
+                  <b>{service_list.without_plate_number ? "Без гос. номера" : service_list.vehicle_plate_number}</b>{" "}
                   {service_list.vehicle_model}
                   <br />
                   {service_list.vehicle_class_name} (

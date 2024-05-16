@@ -40,6 +40,7 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
             'vehicle_class_name',
             'to_be_removed',
             'to_be_added',
+            'without_plate_number',
         ]
 
 

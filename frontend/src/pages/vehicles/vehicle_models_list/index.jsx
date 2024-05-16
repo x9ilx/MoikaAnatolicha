@@ -37,7 +37,7 @@ const VehicleModelsList = forwardRef(function MyInput(props, ref) {
       .deleteVehicleModel(id)
       .then((res) => {
         getVehicleModels(res);
-        toast.success("Модель ТС/ПЦ/ППЦ успешно удалена");
+        toast.success("Модель ТС/ПП/ППЦ успешно удалена");
       })
       .catch((err) => {
         const errors = Object.values(err);

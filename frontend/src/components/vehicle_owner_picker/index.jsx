@@ -52,7 +52,7 @@ const VehicleOwnerPicker = (props) => {
 
             value={currentOwnerName}
           />
-          <label htmlFor="accountent_phone">Владелец ТС/ПЦ/ППЦ</label>
+          <label htmlFor="accountent_phone">Владелец ТС/ПП/ППЦ</label>
         </div>
         {showList && (
           <>

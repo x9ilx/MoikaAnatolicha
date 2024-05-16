@@ -201,7 +201,7 @@ const OrderEditV2 = (props) => {
                 <VehicleInfo
                   notFoundText="ТС не найдено"
                   vehicle={vehicleList[0]}
-                  vehiclePlateNumber={vehicleList[0].plate_number}
+                  vehiclePlateNumber={vehicleList[0].without_plate_number ? "Без гос. номера" : vehicleList[0].plate_number}
                   showOwner={paymentMethod === "CONTRACT"}
                   showPlateNumber={true}
                 />
@@ -210,9 +210,9 @@ const OrderEditV2 = (props) => {
             {vehicleList.length > 1 && (
               <div className="col mx-1">
                 <VehicleInfo
-                  notFoundText="ПЦ/ППЦ не найден"
+                  notFoundText="ПП/ППЦ не найден"
                   vehicle={vehicleList[1]}
-                  vehiclePlateNumber={vehicleList[1].plate_number}
+                  vehiclePlateNumber={vehicleList[0].without_plate_number ? "Без гос. номера" : vehicleList[1].plate_number}
                   showOwner={paymentMethod === "CONTRACT"}
                   showPlateNumber={true}
                 />
