@@ -20,13 +20,19 @@ function Stopwatch(props) {
 
   return (
     <div className="stop-watch">
-      <Watch time={duration} />
+      <Watch 
+      time={duration} 
+      overdueTimer={props.overdueTimer}
+      setNoTime={props.setNoTime}
+      />
     </div>
   );
 }
 
 Stopwatch.propTypes = {
   startValue: PropTypes.number.isRequired,
+  overdueTimer: PropTypes.number,
+  setNoTime: PropTypes.func
 };
 
 export default Stopwatch;

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import Button from "../../components/button";
 
-
 const OrganistaionSettings = () => {
   const [settings, setSettings] = React.useState({
     administrator_wage_threshold: "",
@@ -82,8 +81,46 @@ const OrganistaionSettings = () => {
                   className="accordion-button"
                   type="button"
                   data-bs-toggle="collapse"
-                  data-bs-target="#flush-collapseOne"
+                  data-bs-target="#flush-collapseOneOrder"
                   aria-expanded="true"
+                  aria-controls="flush-collapseOneOrder"
+                >
+                  Заказы
+                </button>
+              </h2>
+              <div
+                id="flush-collapseOneOrder"
+                className="accordion-collapse collapse show"
+                data-bs-parent="#accordionFlushExample"
+              >
+                <div className="accordion-body">
+                  <div className="form-floating mb-3">
+                    <input
+                      type="number"
+                      className="form-control text"
+                      id="overdue_order_timer"
+                      placeholder="overdue_order_timer"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={settings.overdue_order_timer}
+                      name="overdue_order_timer"
+                    />
+                    <label htmlFor="overdue_order_timer">
+                      Время просроченого заказа (минуты)
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="accordion-item">
+              <h2 className="accordion-header">
+                <button
+                  className="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#flush-collapseOne"
+                  aria-expanded="false"
                   aria-controls="flush-collapseOne"
                 >
                   Заработная плата администраторов
@@ -91,13 +128,13 @@ const OrganistaionSettings = () => {
               </h2>
               <div
                 id="flush-collapseOne"
-                className="accordion-collapse collapse show"
+                className="accordion-collapse collapse"
                 data-bs-parent="#accordionFlushExample"
               >
                 <div className="accordion-body">
                   <div className="form-floating mb-3">
                     <input
-                    type="number"
+                      type="number"
                       className="form-control text"
                       id="administrator_wage_threshold"
                       placeholder="administrator_wage_threshold"
@@ -107,11 +144,13 @@ const OrganistaionSettings = () => {
                       value={settings.administrator_wage_threshold}
                       name="administrator_wage_threshold"
                     />
-                    <label htmlFor="administrator_wage_threshold">Порог получения ЗП</label>
+                    <label htmlFor="administrator_wage_threshold">
+                      Порог получения ЗП
+                    </label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                    type="number"
+                      type="number"
                       className="form-control text"
                       id="administrator_earnings_after_threshold"
                       placeholder="administrator_earnings_after_threshold"
@@ -121,21 +160,27 @@ const OrganistaionSettings = () => {
                       value={settings.administrator_earnings_after_threshold}
                       name="administrator_earnings_after_threshold"
                     />
-                    <label htmlFor="administrator_earnings_after_threshold">ЗП после достижения порога</label>
+                    <label htmlFor="administrator_earnings_after_threshold">
+                      ЗП после достижения порога
+                    </label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
-                    type="number"
+                      type="number"
                       className="form-control text"
                       id="administrator_additional_payment_threshold"
                       placeholder="administrator_additional_payment_threshold"
                       onChange={(e) => {
                         onChangeInput(e);
                       }}
-                      value={settings.administrator_additional_payment_threshold}
+                      value={
+                        settings.administrator_additional_payment_threshold
+                      }
                       name="administrator_additional_payment_threshold"
                     />
-                    <label htmlFor="administrator_additional_payment_threshold">Порог для дополнительных выплат</label>
+                    <label htmlFor="administrator_additional_payment_threshold">
+                      Порог для дополнительных выплат
+                    </label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
@@ -146,12 +191,15 @@ const OrganistaionSettings = () => {
                       onChange={(e) => {
                         onChangeInput(e);
                       }}
-                      value={settings.administrator_additional_payments_after_threshold}
+                      value={
+                        settings.administrator_additional_payments_after_threshold
+                      }
                       name="administrator_additional_payments_after_threshold"
                     />
-                    <label htmlFor="administrator_additional_payments_after_threshold">Размер дополнительных выплат</label>
+                    <label htmlFor="administrator_additional_payments_after_threshold">
+                      Размер дополнительных выплат
+                    </label>
                   </div>
-                  
                 </div>
               </div>
             </div>

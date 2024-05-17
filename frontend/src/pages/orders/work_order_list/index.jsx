@@ -41,8 +41,14 @@ const WorkOrderList = () => {
     <>
       <div className="row">
         <div className="vstack">
+        <div className="row mb-3 border px-0 py-3">
+          <span className="badge text-bg-success text-white col mx-3"  style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>Оплачен</span>
+          <span className="badge text-bg-primary text-white col mx-3"  style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>Не оплачен</span>
+          <span className="badge text-bg-danger text-white col mx-3"  style={{ textShadow: "1px -1px 7px rgba(0,0,0,0.45)" }}>Просрочен</span>
+          </div>
           <SelectVehicleTypeButton />
           <WasherOnShiftButton />
+         
         </div>
       </div>
 

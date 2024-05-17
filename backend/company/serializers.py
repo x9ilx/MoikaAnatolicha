@@ -31,4 +31,5 @@ class CompanySettingsSerializer(serializers.ModelSerializer):
             'administrator_earnings_after_threshold',
             'administrator_additional_payment_threshold',
             'administrator_additional_payments_after_threshold',
+            'overdue_order_timer',
         ]

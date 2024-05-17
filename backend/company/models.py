@@ -46,6 +46,9 @@ class CompanySettings(models.Model):
     administrator_additional_payments_after_threshold = models.IntegerField(
         'Выплаты администратора после достижения порога'
     )
+    overdue_order_timer = models.IntegerField(
+        'Количество минут, когда заказ считается просроченым', default=60
+    )
 
     class Meta:
         """Meta definition for CompanyRequisites."""

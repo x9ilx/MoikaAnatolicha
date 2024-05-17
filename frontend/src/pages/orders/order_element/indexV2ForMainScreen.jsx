@@ -6,13 +6,18 @@ import Stopwatch from "../../../components/stopwatch";
 import { useAuth } from "../../../contexts/auth-context";
 import { useNavigate, useParams } from "react-router-dom";
 import OrderPastTime from "../../../components/order_past_time";
+import api from "../../../api";
 
 const OrderElementV2 = (props) => {
   const [services, setServices] = React.useState([]);
   const [washers, setWashers] = React.useState([]);
+  const [noTime, setNoTime] = React.useState(false);
+  const [overdueOrderTimer, setOverdueOrderTimer] = React.useState(60);
 
   const auth = useAuth();
   const navigate = useNavigate();
+
+  
 
   React.useEffect(() => {
     let newArr = {};
@@ -61,20 +66,32 @@ const OrderElementV2 = (props) => {
     if (Object.keys(washerArr).length < 3) {
       for (let index = 0; index <= 3 - Object.keys(washerArr).length; index++) {
         washerArr[`w${index}`] ??= {
-            id: "None",
-            name: "None",
-            short_name: "None",
+          id: "None",
+          name: "None",
+          short_name: "None",
         };
       }
     }
     setServices(newArr);
     setWashers(washerArr);
+
+    api.getSettings()
+    .then((res) => {
+        setOverdueOrderTimer(res.overdue_order_timer)
+    })
+
   }, [props]);
 
   return (
     <>
       <div className="card shadow mb-3">
-        <div className="card-header bg-primary pl-2 pr-2 pt-1 pb-0">
+        <div
+          className={`card-header ${props.order.is_paid && !noTime && "bg-success"} ${
+            noTime && "bg-danger"
+          } ${
+            !props.order.is_paid && !noTime && "bg-primary"
+          } pl-2 pr-2 pt-1 pb-0`}
+        >
           <div className="row fs-7 fw-medium align-middle mt-1">
             <div
               className="col-8 text-start text-white fw-medium fs-7"
@@ -92,6 +109,8 @@ const OrderElementV2 = (props) => {
                   startValue={Math.round(
                     new Date() - new Date(props.order.order_datetime)
                   )}
+                  overdueTimer={overdueOrderTimer}
+                  setNoTime={setNoTime}
                 />
               )}
               {props.isCompletedOrder && (
@@ -109,10 +128,19 @@ const OrderElementV2 = (props) => {
               {Object.keys(services).map((key, index) => (
                 <div key={"serviceList" + index} className="mb-0">
                   <OrderElementGroup
-                    header={<div className="d-flex">
-                        <div className="flex-grow-1">{index === 0 ? "ТС" : "ПП/ППЦ"}</div>
-                        {index === 0 && <div className="">Оплата: {props.order.payment_method_verbose.toUpperCase()}</div>}
-                    </div>}
+                    header={
+                      <div className="d-flex">
+                        <div className="flex-grow-1">
+                          {index === 0 ? "ТС" : "ПП/ППЦ"}
+                        </div>
+                        {index === 0 && (
+                          <div className="">
+                            Оплата:{" "}
+                            {props.order.payment_method_verbose.toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    }
                     elements_with_badge={[
                       {
                         name: (
@@ -178,7 +206,9 @@ const OrderElementV2 = (props) => {
                 clickHandler={() => {
                   navigate("/" + props.order.id);
                 }}
-                colorClass="btn-primary btn-sm"
+                colorClass={`btn-sm ${props.order.is_paid && !noTime && "btn-success"} ${
+                  noTime && "btn-danger"
+                } ${!props.order.is_paid && !noTime && "btn-primary"}`}
                 type="button"
                 disabled={false}
                 marginBottom={1}
