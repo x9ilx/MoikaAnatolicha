@@ -127,7 +127,7 @@ function AdminShiftEdit(props) {
         )}
         <Button
           clickHandler={() => {
-            navigate(-1);
+            navigate("/employees/salaries/");
           }}
           colorClass="btn-primary"
           type="button"

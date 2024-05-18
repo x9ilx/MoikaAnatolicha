@@ -17,6 +17,7 @@ import ServicesController from "./pages/services/services_controller/index.jsx";
 import OrderController from "./pages/orders/order_controller/index.jsx";
 import OrganistaionRequisites from "./pages/organisation_requisitions/index.jsx";
 import OrganistaionSettings from "./pages/organisation_settings/index.jsx";
+import Statistic from "./pages/statistic/index.jsx";
 
 function App() {
   const auth = useAuth();
@@ -136,6 +137,18 @@ function App() {
                 element={
                   <>
                     <ServicesController />
+                  </>
+                }
+              />
+            </Route>
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+              <Route
+                path="/statistic/"
+                element={
+                  <>
+                    <Statistic />
                   </>
                 }
               />

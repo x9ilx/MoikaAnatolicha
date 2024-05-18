@@ -180,7 +180,9 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                       </a>
 
                       <div className="dropdown-divider"></div>
-                      <a className="dropdown-item" style={{cursor: "pointer"}}>
+                      <a className="dropdown-item" style={{cursor: "pointer"}} onClick={() => {
+                          navigate("/statistic/");
+                        }}>
                         <HiDocumentReport
                           size={14}
                           className="me-2 text-text-color"
