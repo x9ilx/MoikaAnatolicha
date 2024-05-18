@@ -15,7 +15,7 @@ function Watch(props) {
 
   return (
     <h2 className="fs-7">
-      {days > 0 && <span>{(days + "д. ")}</span>}
+      {/* {days > 0 && <span>{(days + "д. ")}</span>} */}
       <span>{("0" + hours).slice(-2)}:</span>
       <span>{("0" + minutes).slice(-2)}:</span>
       <span>{("0" + seconds).slice(-2)}</span>

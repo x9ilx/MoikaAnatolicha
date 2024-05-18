@@ -192,7 +192,7 @@ const OrderEditV2 = (props) => {
       {!loading && (
         <>
           <p className="text-text-color fs-5">
-            Редактирование заказа №{order.order_number}
+            Редактирование заказа №{order.order_number} (заказ создал: {order?.administrator?.short_name})
           </p>
           <hr></hr>
           <div className="row d-sm-flex flex-sm-row flex-column m-0 mb-3">

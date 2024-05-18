@@ -37,7 +37,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         'has_been_modifed_after_save',
     ]
     ordering = [
-        'order_datetime',
+        '-order_datetime',
     ]
     ordering_fields = [
         'order_datetime',
@@ -55,6 +55,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         order_datetime__lte = self.request.GET.get('order_datetime__lte', None)
         order_datetime__gt = self.request.GET.get('order_datetime__gt', None)
         order_datetime__lt = self.request.GET.get('order_datetime__lt', None)
+        
+        multi_search = self.request.GET.get('multi_search', None)
 
         filter = Q()
         if order_datetime__gte:
@@ -65,8 +67,18 @@ class OrderViewSet(viewsets.ModelViewSet):
             filter &= Q(order_datetime__gt=order_datetime__gt)
         if order_datetime__lt:
             filter &= Q(order_datetime__lt=order_datetime__lt)
+        if multi_search:
+            filter &= (
+                Q(administrator__name__icontains=multi_search)
+                | Q(administrator__short_name__icontains=multi_search)
+                | Q(washers_order__washer__name__icontains=multi_search)
+                | Q(washers_order__washer__short_name__icontains=multi_search)
+                | Q(services_in_order__vehicle__plate_number__icontains=multi_search)
+                | Q(services_in_order__vehicle__owner__name__icontains=multi_search)
+                | Q(services_in_order__vehicle__owner__short_name__icontains=multi_search)
+            )
 
-        return Order.objects.filter(filter).order_by('-order_datetime')
+        return Order.objects.filter(filter).distinct().order_by('-order_datetime')
 
     def __get_completed_order_for_day(self, request):
         start_date_time = timezone.now().replace(
