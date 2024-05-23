@@ -370,8 +370,8 @@ class Api {
     current_page = 1,
     items_limit = 8,
     searchEmployer = "",
-    dateStart = (new Date()).toISOString(),
-    dateEnd = (new Date()).toISOString()
+    dateStart = new Date().toISOString(),
+    dateEnd = new Date().toISOString()
   ) {
     const token = cookies.get("auth_token");
     return fetch(
@@ -743,6 +743,63 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getLegalEntityShortName(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${id}/get_legal_entity_short_name/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  ////////////////////////////////////////// CONTRACT
+  createContract(legal_entity_id, start_date, end_date) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_contracts/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        legal_entity: legal_entity_id,
+        start_date: start_date,
+        end_date: end_date,
+      }),
+    }).then(this.checkResponse);
+  }
+
+  getGetContract(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_contracts/${id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  getContractDocPDFURL(contract_id) {
+    window.open(
+      `${URL}/api/legal_entity_contracts/get_contract_pdf/${contract_id}/`,
+      "_blank",
+      "rel=noopener noreferrer"
+    );
+  }
+
+  deleteLegalEntityContract(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_contracts/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
   ////////////////////////////////////////// SERVICES
 
   getServices(search = "") {

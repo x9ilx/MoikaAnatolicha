@@ -18,6 +18,8 @@ const DataListVehicle = (props) => {
   const [showVehicleList, setShowVehicleList] = React.useState(true);
   const [createVehicle, setCreateVehicle] = React.useState(false);
 
+  const [noPlateNumber, setNoPlateNumber] = React.useState(false);
+
   React.useEffect(() => {
     setVehicleListFinal(props.vehicleListFinal);
     let excludes_plate_number = [];
@@ -75,7 +77,6 @@ const DataListVehicle = (props) => {
   };
 
   const vehicleChange = (vehicle) => {
-
     setShowList(false);
     let newData = {
       id: vehicle.id ? vehicle.id : -1,
@@ -86,6 +87,7 @@ const DataListVehicle = (props) => {
       vehicle_class_name: vehicle.vehicle_type.vehicle_class_name,
       owner: vehicle.owner?.id ? vehicle.owner?.id : props.ownerId,
       vehicle_type: vehicle.vehicle_type.id,
+      without_plate_number: vehicle.without_plate_number,
       to_be_removed: false,
       to_be_added: true,
     };
@@ -94,7 +96,7 @@ const DataListVehicle = (props) => {
     setCurrentPlateNumber("");
     setShowVehicleList(true);
     setCreateVehicle(false);
-    props.onShowAdd(false)
+    props.onShowAdd(false);
   };
 
   const closeOpenMenus = (e) => {
@@ -112,7 +114,7 @@ const DataListVehicle = (props) => {
     props.setVehicleListFinal(newState);
     setShowVehicleList(true);
     setCreateVehicle(false);
-    props.onShowAdd(false)
+    props.onShowAdd(false);
   };
 
   document.addEventListener("mousedown", closeOpenMenus);
@@ -121,7 +123,7 @@ const DataListVehicle = (props) => {
       {showVehicleList && (
         <>
           <input
-            key={"vehiclexcvxczvdfh5675467456List" }
+            key={"vehiclexcvxczvdfh5675467456List"}
             className="form-control text"
             type="search"
             placeholder={props.header || "Привязать (поиск по гос. номеру)"}
@@ -154,7 +156,12 @@ const DataListVehicle = (props) => {
                           aria-current="true"
                           onClick={() => vehicleChange(vehicle)}
                         >
-                          <b>{vehicle?.without_plate_number ? "Без гос. номера" : vehicle?.plate_number}:</b>{" "}
+                          <b>
+                            {vehicle?.without_plate_number
+                              ? "Без гос. номера"
+                              : vehicle?.plate_number}
+                            :
+                          </b>{" "}
                           {vehicle?.vehicle_type?.vehicle_class_name}{" "}
                           {vehicle?.vehicle_model} (
                           {vehicle?.vehicle_type?.name})
@@ -184,7 +191,7 @@ const DataListVehicle = (props) => {
                         clickHandler={() => {
                           setShowVehicleList(false);
                           setCreateVehicle(true);
-                          props.onShowAdd(true)
+                          props.onShowAdd(true);
                         }}
                         colorClass="btn-info btn-sm"
                         disabled={false}
@@ -193,6 +200,23 @@ const DataListVehicle = (props) => {
                       >
                         <>Создать ТС/ПП/ППЦ {currentPlateNumber}</>
                       </Button>
+                      <div id="vehicleelement" className="form-check form-switch form-check-reverse pb-2">
+                        <input
+                          className="form-check-input "
+                          type="checkbox"
+                          id="vehicleelement"
+                          name="NoPlateNumber"
+                          onChange={() => {
+                            setNoPlateNumber(!noPlateNumber);
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="vehicleelement"
+                        >
+                          Без гос. номера
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -200,7 +224,9 @@ const DataListVehicle = (props) => {
             </>
           )}
 
-          <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">Список ТС/ПП/ППЦ:</p>
+          <p key={"vehicleListFina123sdfsdfsdfsdfl"} className="fw-medium mt-3">
+            Список ТС/ПП/ППЦ:
+          </p>
           <ul key={"vehicleListF345345ina123sdfl"} className="list-group my-3">
             {vehicleListFinal?.map((vehicle, index) => (
               <div key={"vehicleListFinal" + vehicle.plate_number + index}>
@@ -208,85 +234,135 @@ const DataListVehicle = (props) => {
                   key={"vehicleListFinal" + vehicle.plate_number + index}
                   className={`list-group-item fs-7
               ${vehicle.to_be_removed ? " bg-danger text-white" : ""} 
-              ${vehicle.to_be_added && !props.noColor ? " bg-success text-white" : ""}`}
+              ${
+                vehicle.to_be_added && !props.noColor
+                  ? " bg-success text-white"
+                  : ""
+              }`}
                 >
-                  <div key={"vehicleListFinal123" + vehicle.plate_number + index} className="row">
+                  <div
+                    key={"vehicleListFinal123" + vehicle.plate_number + index}
+                    className="row"
+                  >
                     <div className="d-flex">
-                    <div
-                      key={"vehicleListFinal3332" + vehicle.plate_number + index}
-                      className="flex-grow-1 flex-fill"
-                    >
-                      <b key={"vehicleListFinal554" + vehicle.plate_number + index}>{vehicle?.plate_number}:</b>{" "}
-                      {vehicle?.vehicle_class_name} {vehicle?.vehicle_model} {isMobile && <br/>}(
-                      {vehicle?.vehicle_type_name})<br></br>
-                      {vehicle?.owner_name}
-                    </div>
-                    <>
-                      {!vehicle.to_be_added > 0 && (
-                        <>
-                          {!vehicle.to_be_removed && (
-                            <>
-                              <div
-                                key={"vehicleListFina434343434l" + vehicle.plate_number + index}
-                                className={`align-items-end`}
-                                title="Пометить на удаление"
-                              >
-                                <ImCross
-                                  key={"vehicleListFinweweweal" + vehicle.plate_number + index}
-                                  size={14}
-                                  className="text-danger"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => {
-                                    markDelete(index, true);
-                                  }}
-                                />
-                              </div>
-                            </>
-                          )}
-                          {vehicle.to_be_removed && (
-                            <>
-                             
-                              <div
-                                key={"vehicleListFinjhjjal" + vehicle.plate_number + index}
-                                className={`col-2 ${
-                                  isMobile ? "text-center" : "text-end"
-                                }`}
-                                title="Отменить удаление"
-                              >
-                                <FaTrashRestore
-                                  key={"vehicleListFinxcvxzcvzal" + vehicle.plate_number + index}
-                                  size={18}
-                                  className={`${!props.noColor ? "text-white" : "text-text-color"} fw-medium`}
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => {
-                                    markDelete(index, false);
-                                  }}
-                                />
-                              </div>
-                            </>
-                          )}
-                        </>
-                      )}
-                      {vehicle.to_be_added && (
-                        <div
-                          key={"vehicleListFina123sdfl" + vehicle.plate_number + index}
-                          className={`col-2 ${
-                            isMobile ? "text-center" : "text-end"
-                          }`}
-                          title="Отменить добавление"
+                      <div
+                        key={
+                          "vehicleListFinal3332" + vehicle.plate_number + index
+                        }
+                        className="flex-grow-1 flex-fill"
+                      >
+                        <b
+                          key={
+                            "vehicleListFinal554" + vehicle.plate_number + index
+                          }
                         >
-                          <ImCross
-                            key={"vehicleListFinalcvbn3432" + vehicle.plate_number + index}
-                            size={14}
-                            className={`${!props.noColor ? "text-white" : "text-text-color"}`}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              cancelAddNew(index);
-                            }}
-                          />
-                        </div>
-                      )}
-                    </>
+                          {vehicle?.without_plate_number
+                            ? "Без гос. номера"
+                            : vehicle?.plate_number}
+                          :
+                        </b>{" "}
+                        {vehicle?.vehicle_class_name} {vehicle?.vehicle_model}{" "}
+                        {isMobile && <br />}({vehicle?.vehicle_type_name})
+                        <br></br>
+                        {vehicle?.owner_name}
+                      </div>
+                      <>
+                        {!vehicle.to_be_added > 0 && (
+                          <>
+                            {!vehicle.to_be_removed && (
+                              <>
+                                <div
+                                  key={
+                                    "vehicleListFina434343434l" +
+                                    vehicle.plate_number +
+                                    index
+                                  }
+                                  className={`align-items-end`}
+                                  title="Пометить на удаление"
+                                >
+                                  <ImCross
+                                    key={
+                                      "vehicleListFinweweweal" +
+                                      vehicle.plate_number +
+                                      index
+                                    }
+                                    size={14}
+                                    className="text-danger"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                      markDelete(index, true);
+                                    }}
+                                  />
+                                </div>
+                              </>
+                            )}
+                            {vehicle.to_be_removed && (
+                              <>
+                                <div
+                                  key={
+                                    "vehicleListFinjhjjal" +
+                                    vehicle.plate_number +
+                                    index
+                                  }
+                                  className={`col-2 ${
+                                    isMobile ? "text-center" : "text-end"
+                                  }`}
+                                  title="Отменить удаление"
+                                >
+                                  <FaTrashRestore
+                                    key={
+                                      "vehicleListFinxcvxzcvzal" +
+                                      vehicle.plate_number +
+                                      index
+                                    }
+                                    size={18}
+                                    className={`${
+                                      !props.noColor
+                                        ? "text-white"
+                                        : "text-text-color"
+                                    } fw-medium`}
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                      markDelete(index, false);
+                                    }}
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </>
+                        )}
+                        {vehicle.to_be_added && (
+                          <div
+                            key={
+                              "vehicleListFina123sdfl" +
+                              vehicle.plate_number +
+                              index
+                            }
+                            className={`col-2 ${
+                              isMobile ? "text-center" : "text-end"
+                            }`}
+                            title="Отменить добавление"
+                          >
+                            <ImCross
+                              key={
+                                "vehicleListFinalcvbn3432" +
+                                vehicle.plate_number +
+                                index
+                              }
+                              size={14}
+                              className={`${
+                                !props.noColor
+                                  ? "text-white"
+                                  : "text-text-color"
+                              }`}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                cancelAddNew(index);
+                              }}
+                            />
+                          </div>
+                        )}
+                      </>
                     </div>
                   </div>
                 </li>
@@ -298,7 +374,8 @@ const DataListVehicle = (props) => {
       {createVehicle && (
         <>
           <CreateNewVehicle
-            currentPlateNumber={currentPlateNumber}
+            currentPlateNumber={noPlateNumber ? "Без гос. номера" : currentPlateNumber}
+            noPlateNumber={noPlateNumber}
             ownerName={props.ownerName}
             ownerID={props.ownerId}
             onCreate={createNewVehicle}
@@ -320,7 +397,7 @@ DataListVehicle.propTypes = {
   setVehicleListFinal: PropTypes.func.isRequired,
   ownerId: PropTypes.number.isRequired,
   ownerName: PropTypes.string.isRequired,
-  editOwner:PropTypes.bool,
+  editOwner: PropTypes.bool,
   onShowAdd: PropTypes.func,
   header: PropTypes.string,
   noColor: PropTypes.bool,

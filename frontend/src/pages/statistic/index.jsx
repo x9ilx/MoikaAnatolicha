@@ -228,9 +228,9 @@ function Statistic() {
                 ),
               }))}
             />
-            <OrderElementGroup
+            {employeesSalary?.administrators && <OrderElementGroup
               header="ЗП администраторов"
-              elements_with_badge={Object.keys(employeesSalary.administrators).map((key) => ({
+              elements_with_badge={Object.keys(employeesSalary?.administrators)?.map((key) => ({
                 name: (
                   <span>
                     {employeesSalary.administrators[key].short_name}
@@ -242,10 +242,10 @@ function Statistic() {
                   </span>
                 ),
               }))}
-            />
-            <OrderElementGroup
+            />}
+            {employeesSalary?.washers && <OrderElementGroup
               header="ЗП мойщиков"
-              elements_with_badge={Object.keys(employeesSalary.washers).map((key) => ({
+              elements_with_badge={Object.keys(employeesSalary?.washers)?.map((key) => ({
                 name: (
                   <span>
                     {employeesSalary.washers[key].short_name}
@@ -257,7 +257,7 @@ function Statistic() {
                   </span>
                 ),
               }))}
-            />
+            />}
           </div>
         </div>
       )}

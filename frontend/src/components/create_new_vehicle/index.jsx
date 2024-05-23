@@ -160,7 +160,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
           </Button>
         </>
       )}
-      {props.noPlateNumber && (
+      {props.noPlateNumber && props.hideButtons && (
         <Button
           clickHandler={() => {
             preCreateVehicle();

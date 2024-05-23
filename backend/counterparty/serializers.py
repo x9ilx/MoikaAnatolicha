@@ -1,14 +1,16 @@
+import uuid
 from django.db.models import Q
 from rest_framework import serializers
 
+from counterparty.helpers import get_services_from_service_legal_entity
 from core.string_utils import normalize_plate_number
 from vehicle.models import Vehicle, VehicleModel, VehicleOrTrailerType
 
-from .models import LegalEntity
+from .models import LegalEntity, LegalEntityContract, LegalEntityInvoice
 
 
 class VehicleMiniSerializer(serializers.ModelSerializer):
-    plate_number = serializers.CharField(max_length=25)
+    plate_number = serializers.CharField(max_length=255)
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     vehicle_type = serializers.PrimaryKeyRelatedField(
         queryset=VehicleOrTrailerType.objects.all()
@@ -45,7 +47,14 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
 
 
 class LegalEntitySerializer(serializers.ModelSerializer):
-    vehicles = VehicleMiniSerializer(many=True)
+    vehicles = serializers.SerializerMethodField()
+    vehicles_save = VehicleMiniSerializer(many=True, write_only=True)
+    current_contract_verbose = serializers.StringRelatedField(
+        source='current_contract', read_only=True
+    )
+    def get_vehicles(self, obj):
+        vehicles = Vehicle.objects.filter(owner=obj).order_by('plate_number')
+        return VehicleMiniSerializer(vehicles, many=True).data
 
     class Meta:
         model = LegalEntity
@@ -71,6 +80,9 @@ class LegalEntitySerializer(serializers.ModelSerializer):
             'mechanic_phone',
             'accountent_phone',
             'vehicles',
+            'vehicles_save',
+            'current_contract',
+            'current_contract_verbose',
         ]
 
     def update_create_vehicle(self, vehicle_list, instance):
@@ -94,11 +106,19 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                     added_vehicle.owner = instance
                     added_vehicle.save()
                 else:
+                    plate_number = vehicle['plate_number']
+                    if (
+                        plate_number == "Без гос. номера"
+                        or vehicle["without_plate_number"]
+                    ):
+                        plate_number = uuid.uuid4().hex.upper()
+
                     new_vehicle = Vehicle.objects.create(
-                        plate_number=vehicle['plate_number'],
+                        plate_number=plate_number,
                         owner=instance,
                         vehicle_model=vehicle['vehicle_model'],
                         vehicle_type=vehicle['vehicle_type'],
+                        without_plate_number = vehicle["without_plate_number"]
                     )
                     new_vehicle.save()
 
@@ -108,7 +128,7 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                     new_model.save()
 
     def create(self, validated_data):
-        vehicles = validated_data.pop('vehicles')
+        vehicles = validated_data.pop('vehicles_save')
 
         instance = LegalEntity.objects.create(**validated_data)
         instance.save()
@@ -118,7 +138,7 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        vehicles = validated_data.pop('vehicles')
+        vehicles = validated_data.pop('vehicles_save')
 
         for attr, value in validated_data.items():
             if attr == 'plate_number':
@@ -130,3 +150,18 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         self.update_create_vehicle(vehicles, instance)
 
         return instance
+
+
+class ContractSerializer(serializers.ModelSerializer):
+    vehicles = VehicleMiniSerializer(many=True)
+    legal_entity = LegalEntitySerializer()
+    services = serializers.SerializerMethodField()
+
+    def get_services(self, obj):
+        queryset = obj.services_contract.all()
+        result = get_services_from_service_legal_entity(queryset)
+        return result
+
+    class Meta:
+        model = LegalEntityContract
+        fields = '__all__'

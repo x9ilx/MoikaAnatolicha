@@ -70,6 +70,7 @@ const VehicleAdd = (props) => {
       vehicle_model: vehicleModel,
       owner_id: owner,
       vehicle_type_id: vehicleType,
+      without_plate_number: false,
     };
     api
       .createVehicle(data)

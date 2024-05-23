@@ -8,6 +8,7 @@ import Paginator from "../../../components/paginator";
 import OrderElementGroup from "../../orders/order_element_group";
 import api from "../../../api";
 import { prettyPhone } from "../../../utils/string_utils";
+import LegalEntityOffcanvasDocs from "../../../components/legal_entity_offcanvas_docs";
 
 const LegalEntityList = forwardRef(function MyInput(props, ref) {
   const [loading, setLoading] = React.useState(true);
@@ -74,9 +75,9 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
         <>
           <div className="row mb-3">
             <div className="vstack gap-3">
-              {legalEntities?.map((legal_entity) => (
+              {legalEntities?.map((legal_entity, l_index) => (
                 <div key={legal_entity.id} className="card shadow">
-                  <div className="card-header bg-primary pl-2 pr-2 pt-1 pb-1">
+                  <div className="card-header bg-primary pt-1 pb-1">
                     <div className="row fs-7 fw-medium">
                       <div
                         className="text-start text-white fw-medium "
@@ -130,9 +131,15 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
                             (vehicle) => ({
                               name: (
                                 <>
-                                  <b>{vehicle?.without_plate_number ? "Без гос. номера" : vehicle?.plate_number}:</b>{" "}
+                                  <b>
+                                    {vehicle?.without_plate_number
+                                      ? "Без гос. номера"
+                                      : vehicle?.plate_number}
+                                    :
+                                  </b>{" "}
                                   {vehicle?.vehicle_class_name}{" "}
-                                  {vehicle?.vehicle_model} {isMobile ? <br></br> : ""} (
+                                  {vehicle?.vehicle_model}{" "}
+                                  {isMobile ? <br></br> : ""} (
                                   {vehicle?.vehicle_type_name})
                                 </>
                               ),
@@ -142,17 +149,33 @@ const LegalEntityList = forwardRef(function MyInput(props, ref) {
                         />
                       </div>
                     </div>
-                    <div className="row mx-3 gap-1 my-2">
+                    <div className="row mx-3 gap-1 mt-2">
                       <Button
                         clickHandler={() => {
                           navigate(`./${legal_entity.id}/`);
                         }}
-                        colorClass="btn-primary"
+                        colorClass="btn-primary btn-sm"
                         type="button"
                         disabled={false}
                       >
                         <>Редактировать</>
                       </Button>
+                    </div>
+                    <div className="row mx-3 mb-2">
+                      <Button
+                        clickHandler={() => {}}
+                        colorClass="btn-info btn-sm"
+                        type="button"
+                        disabled={false}
+                        offcanvasName={`LE${l_index}_offcanvas`}
+                        marginBottom={2}
+                      >
+                        <>Документы</>
+                      </Button>
+                      <LegalEntityOffcanvasDocs
+                        legalEntity={legal_entity}
+                        offcanvasName={`LE${l_index}_offcanvas`}
+                      />
                     </div>
                   </div>
                 </div>

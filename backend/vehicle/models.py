@@ -65,7 +65,7 @@ class VehicleOrTrailerType(models.Model):
 class Vehicle(models.Model):
     """Model definition for VehicleOrTrailerClass."""
 
-    plate_number = models.CharField('Гос. номер', max_length=25)
+    plate_number = models.CharField('Гос. номер', max_length=255)
 
     vehicle_model = models.CharField(
         'Модель',
