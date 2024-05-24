@@ -215,7 +215,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                         Расходы
                       </a> */}
                       <div className="dropdown-divider"></div>
-                      <a
+                      {/* <a
                         className="dropdown-item"
                         style={{cursor: "pointer"}}
                         onClick={() => {
@@ -227,7 +227,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                           className="me-2 text-text-color"
                         />
                         Реквизиты
-                      </a>
+                      </a> */}
                       <a
                         className="dropdown-item"
                         style={{cursor: "pointer"}}

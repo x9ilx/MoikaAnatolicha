@@ -1,7 +1,7 @@
 from reportlab.platypus import Paragraph, Spacer, Table, flowables
 
-from employer.models import EmployerSalary
 from core.pdf import BaseDocPortraitTemplate
+from employer.models import EmployerSalary
 from employer.pdf_base import BaseEmployerDocsPDF
 
 

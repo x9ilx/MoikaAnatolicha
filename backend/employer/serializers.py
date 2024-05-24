@@ -175,8 +175,11 @@ class EmployerShiftSerializer(serializers.ModelSerializer):
 class EmployerSalarySerializer(serializers.ModelSerializer):
     employer = EmployerSerializer(read_only=True)
     employer_id = serializers.PrimaryKeyRelatedField(
-        queryset=Employer.objects.all(), source='employer', write_only=True,
+        queryset=Employer.objects.all(),
+        source='employer',
+        write_only=True,
     )
+
     class Meta:
         model = EmployerSalary
         fields = [

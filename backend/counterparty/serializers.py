@@ -1,9 +1,10 @@
 import uuid
+
 from django.db.models import Q
 from rest_framework import serializers
 
+from core.string_utils import normalize_phone, normalize_plate_number
 from counterparty.helpers import get_services_from_service_legal_entity
-from core.string_utils import normalize_plate_number
 from vehicle.models import Vehicle, VehicleModel, VehicleOrTrailerType
 
 from .models import LegalEntity, LegalEntityContract, LegalEntityInvoice
@@ -52,6 +53,7 @@ class LegalEntitySerializer(serializers.ModelSerializer):
     current_contract_verbose = serializers.StringRelatedField(
         source='current_contract', read_only=True
     )
+
     def get_vehicles(self, obj):
         vehicles = Vehicle.objects.filter(owner=obj).order_by('plate_number')
         return VehicleMiniSerializer(vehicles, many=True).data
@@ -108,8 +110,8 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                 else:
                     plate_number = vehicle['plate_number']
                     if (
-                        plate_number == "Без гос. номера"
-                        or vehicle["without_plate_number"]
+                        plate_number == 'Без гос. номера'
+                        or vehicle['without_plate_number']
                     ):
                         plate_number = uuid.uuid4().hex.upper()
 
@@ -118,7 +120,7 @@ class LegalEntitySerializer(serializers.ModelSerializer):
                         owner=instance,
                         vehicle_model=vehicle['vehicle_model'],
                         vehicle_type=vehicle['vehicle_type'],
-                        without_plate_number = vehicle["without_plate_number"]
+                        without_plate_number=vehicle['without_plate_number'],
                     )
                     new_vehicle.save()
 
@@ -133,6 +135,13 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         instance = LegalEntity.objects.create(**validated_data)
         instance.save()
 
+        for attr, value in validated_data.items():
+            if attr == 'plate_number':
+                value = normalize_plate_number(value)
+            if attr == 'phone':
+                value = normalize_phone(value)
+            setattr(instance, attr, value)
+
         self.update_create_vehicle(vehicles, instance)
 
         return instance
@@ -143,6 +152,8 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             if attr == 'plate_number':
                 value = normalize_plate_number(value)
+            if attr == 'phone':
+                value = normalize_phone(value)
             setattr(instance, attr, value)
 
         instance.save()

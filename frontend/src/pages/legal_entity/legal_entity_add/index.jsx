@@ -26,6 +26,7 @@ const LegalEntityAdd = (props) => {
     accountent_name: "",
     mechanic_phone: "",
     accountent_phone: "",
+    kpp: "",
     vehicles_save: [],
   });
   const [loading, setLoading] = React.useState(true);
@@ -67,7 +68,10 @@ const LegalEntityAdd = (props) => {
     if (!validate()) {
       return;
     }
-    const new_vehicle_requisites = { ...requisites, vehicles_save: vehicleList };
+    const new_vehicle_requisites = {
+      ...requisites,
+      vehicles_save: vehicleList,
+    };
     api
       .createLegalEntity(new_vehicle_requisites)
       .then((data) => {
@@ -91,7 +95,10 @@ const LegalEntityAdd = (props) => {
     if (!validate()) {
       return;
     }
-    const new_vehicle_requisites = { ...requisites, vehicles_save: vehicleList };
+    const new_vehicle_requisites = {
+      ...requisites,
+      vehicles_save: vehicleList,
+    };
     api
       .updateLegalEntity(legal_entity_id, new_vehicle_requisites)
       .then((data) => {
@@ -250,7 +257,7 @@ const LegalEntityAdd = (props) => {
                       name="director_name"
                     />
                     <label htmlFor="director_name">
-                      Должность/Руководящее лицо
+                      Ф. И. О. руководящего лица
                     </label>
                   </div>
                 </div>
@@ -300,6 +307,19 @@ const LegalEntityAdd = (props) => {
                       name="inn"
                     />
                     <label htmlFor="inn">ИНН</label>
+                  </div>
+                  <div className="form-floating mb-3">
+                    <input
+                      className="form-control text"
+                      id="kpp"
+                      placeholder="kpp"
+                      onChange={(e) => {
+                        onChangeInput(e);
+                      }}
+                      value={requisites.kpp}
+                      name="kpp"
+                    />
+                    <label htmlFor="inn">КПП</label>
                   </div>
                   <div className="form-floating mb-3">
                     <input
@@ -512,18 +532,20 @@ const LegalEntityAdd = (props) => {
               </div>
             </div>
           </div>
-          {requisites.current_contract > 0 && <span className="fw-medium">
-            Текущий договор:{" "}
-            <a
-              className="link-body-emphasis"
-              style={{cursor: "pointer"}}
-              onClick={() => {
-                navigate(`./contract/${requisites.current_contract}/`);
-              }}
-            >
-              {requisites.current_contract_verbose}
-            </a>
-          </span>}
+          {requisites.current_contract > 0 && (
+            <span className="fw-medium">
+              Текущий договор:{" "}
+              <a
+                className="link-body-emphasis"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  navigate(`./contract/${requisites.current_contract}/`);
+                }}
+              >
+                {requisites.current_contract_verbose}
+              </a>
+            </span>
+          )}
           <hr></hr>
           {!showAddVehicle && (
             <>

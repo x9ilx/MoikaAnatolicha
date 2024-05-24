@@ -783,7 +783,7 @@ class Api {
 
   getContractDocPDFURL(contract_id) {
     window.open(
-      `${URL}/api/legal_entity_contracts/get_contract_pdf/${contract_id}/`,
+      `${URL}/api/legal_entity_contracts/${contract_id}/get_contract_pdf/`,
       "_blank",
       "rel=noopener noreferrer"
     );

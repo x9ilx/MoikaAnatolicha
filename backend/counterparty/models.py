@@ -61,15 +61,14 @@ class LegalEntityContract(models.Model):
         related_name='contracts',
     )
     vehicles = models.ManyToManyField(
-        'vehicle.Vehicle',
-        verbose_name='ТС/ПП/ППЦ',
-        related_name='+'
+        'vehicle.Vehicle', verbose_name='ТС/ПП/ППЦ', related_name='+'
     )
     services = models.ManyToManyField(
         'service.ServiceVehicleType',
         verbose_name='Услуга',
         through='counterparty.LegalEntytyContractServices',
     )
+
     class Meta:
         """Meta definition for LegalEntity."""
 
@@ -79,7 +78,7 @@ class LegalEntityContract(models.Model):
 
     def __str__(self):
         """Unicode representation of LegalEntity."""
-        return f'Договор №{self.pk}: {self.legal_entity.short_name}' 
+        return f'Договор №{self.pk}: {self.legal_entity.short_name}'
 
 
 class LegalEntytyContractServices(models.Model):
@@ -121,6 +120,7 @@ class LegalEntityInvoice(models.Model):
         on_delete=models.CASCADE,
         related_name='invoices',
     )
+
     class Meta:
         """Meta definition for LegalEntity."""
 
@@ -130,4 +130,4 @@ class LegalEntityInvoice(models.Model):
 
     def __str__(self):
         """Unicode representation of LegalEntity."""
-        return f'Счёт № {self.pk}: {self.legal_entity.short_name}' 
+        return f'Счёт № {self.pk}: {self.legal_entity.short_name}'

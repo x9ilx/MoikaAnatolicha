@@ -3,8 +3,8 @@ from rest_framework import routers
 
 from company.views import CompanyRequisitesViewSet, CompanySettingsViewSet
 from counterparty.views import ContractViewSet, LegalEntityViewSet
-from employer.views import (CHGUserViewSet, EmployerSalaryViewSet, EmployerShiftViewSet,
-                            EmployerViewSet)
+from employer.views import (CHGUserViewSet, EmployerSalaryViewSet,
+                            EmployerShiftViewSet, EmployerViewSet)
 from order.views import OrderViewSet
 from service.views import ServiceViewSet
 from vehicle.views import (VehicleModelDelete, VehicleOrTrailerClassViewSet,

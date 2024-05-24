@@ -35,7 +35,7 @@ class BaseEmployerDocsPDF(ABC):
             leading=14,
             firstLineIndent=25,
         )
-               
+
         self.NORMAL_CENTERED_STYLE = ParagraphStyle(
             name='doc_header',
             fontName='OpenSans',
@@ -44,10 +44,7 @@ class BaseEmployerDocsPDF(ABC):
             alignment=TA_CENTER,
         )
         self.BOLD_STYLE = ParagraphStyle(
-            name='BOLD_STYLE',
-            fontName='OpenSans-Bold',
-            fontSize=9,
-            leading=14
+            name='BOLD_STYLE', fontName='OpenSans-Bold', fontSize=9, leading=14
         )
         self.RIGHT_HEADER_STYLE = ParagraphStyle(
             name='Header',
@@ -71,11 +68,13 @@ class BaseEmployerDocsPDF(ABC):
 
     def get_details_and_signature(self):
         return Paragraph(
-                (f'Ф.И.О.: {self.employer}, '
-                 '_________________________________________ (Ф. И. О.) '
-                 '________________ (Подпись)'),
-                self.NORMAL_STYLE
-            )
+            (
+                f'Ф.И.О.: {self.employer}, '
+                '_________________________________________ (Ф. И. О.) '
+                '________________ (Подпись)'
+            ),
+            self.NORMAL_STYLE,
+        )
 
     @abstractmethod
     def get_pdf(self):

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../api";
 import { toast } from "react-toastify";
 import EditOrderCurrentVehicle from "../../../components/edit_order_current_vehicle";
@@ -26,7 +26,7 @@ const LegalEntityContract = (props) => {
       setContract(res);
       setDateStart(res.start_date);
       setDateEnd(res.end_date);
-      setLegalEntityServices(res.services)
+      setLegalEntityServices(res.services);
     });
   };
 
@@ -46,7 +46,9 @@ const LegalEntityContract = (props) => {
         new Date(dateEnd).toISOString().split("T")[0]
       )
       .then((res) => {
-        navigate(`/legal_entity/${legal_entity_id}/contract/${res}/`, { replace: true });
+        navigate(`/legal_entity/${legal_entity_id}/contract/${res}/`, {
+          replace: true,
+        });
         toast.success("Договор успешно сохранён");
       })
       .catch((err) => {
@@ -239,17 +241,16 @@ const LegalEntityContract = (props) => {
               Удалить данные о договоре
             </label>
           </div>
-
-          <Button
-            clickHandler={() => {
-              api.getContractDocPDFURL(contract_id);
-            }}
-            colorClass="btn-info"
-            type="button"
-            disabled={false}
-          >
-            <>Печать квитанции</>
-          </Button>
+          <Link to="./print/" target="_blank">
+            <Button
+              clickHandler={() => {}}
+              colorClass="btn-info"
+              type="button"
+              disabled={false}
+            >
+              <>Печать квитанции</>
+            </Button>
+          </Link>
 
           {DELETE && (
             <>

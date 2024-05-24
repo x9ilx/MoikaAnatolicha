@@ -1,4 +1,4 @@
-from datetime import datetime, time, date
+from datetime import date, datetime, time
 from io import BytesIO
 
 from django.contrib.auth import get_user_model
@@ -13,12 +13,14 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from employer.pdf_doc import EmployerSalaryDocPDF
-from employer.filters import ShiftFilter
 from company.models import CompanySettings
 from core.permissions import OnlyManager
-from employer.models import Employer, EmployerPositions, EmployerSalary, EmployerShift
-from employer.serializers import EmployerSalarySerializer, EmployerSerializer, EmployerShiftSerializer
+from employer.filters import ShiftFilter
+from employer.models import (Employer, EmployerPositions, EmployerSalary,
+                             EmployerShift)
+from employer.pdf_doc import EmployerSalaryDocPDF
+from employer.serializers import (EmployerSalarySerializer, EmployerSerializer,
+                                  EmployerShiftSerializer)
 from order.models import Order
 from order.serializers import OrderMiniSerializer
 
@@ -35,26 +37,21 @@ class EmployerSalaryViewSet(viewsets.ModelViewSet):
     permission_classes = [
         OnlyManager,
     ]
-    
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"request": self.request})
+        context.update({'request': self.request})
         return context
-    
+
     def get_queryset(self):
         queryset = EmployerSalary.objects.all()
-        
+
         start_date_issue = end_date_issue = None
         employee_id = self.request.GET.get('employee_id', 0)
         employee_name = self.request.GET.get('employee_name', '')
-        str_start_date_issue =  self.request.GET.get(
-            'start_date_issue', ''
-        )
-        str_end_date_issue = self.request.GET.get(
-            'end_date_issue', ''
-        )
-        
+        str_start_date_issue = self.request.GET.get('start_date_issue', '')
+        str_end_date_issue = self.request.GET.get('end_date_issue', '')
+
         if str_start_date_issue:
             start_date_issue = date.fromisoformat(str_start_date_issue)
         if str_end_date_issue:
@@ -63,23 +60,29 @@ class EmployerSalaryViewSet(viewsets.ModelViewSet):
         filters = Q()
         if employee_id:
             filters &= Q(employer__pk=employee_id)
-        
-        if start_date_issue == end_date_issue and start_date_issue and end_date_issue:
-            
-             filters &= Q(date_of_issue=start_date_issue)
+
+        if (
+            start_date_issue == end_date_issue
+            and start_date_issue
+            and end_date_issue
+        ):
+
+            filters &= Q(date_of_issue=start_date_issue)
         else:
             if start_date_issue:
                 filters &= Q(date_of_issue__gte=start_date_issue)
-            
+
             if end_date_issue:
                 filters &= Q(date_of_issue__lte=end_date_issue)
-        
+
         if employee_name:
             filters &= Q(employer__name__icontains=employee_name)
 
-        return queryset.filter(
-            filters
-        ).select_related('employer').order_by('-date_of_issue')
+        return (
+            queryset.filter(filters)
+            .select_related('employer')
+            .order_by('-date_of_issue')
+        )
 
 
 class EmployerShiftViewSet(viewsets.ModelViewSet):
@@ -91,17 +94,17 @@ class EmployerShiftViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"request": self.request})
+        context.update({'request': self.request})
         return context
-    
+
     def get_queryset(self):
         queryset = EmployerShift.objects.all()
-        
+
         start_date = end_date = None
         employee_id = self.request.GET.get('employee_id', 0)
-        str_start_date =  self.request.GET.get('start_shift_time', '')
+        str_start_date = self.request.GET.get('start_shift_time', '')
         str_end_date = self.request.GET.get('end_shift_time', '')
-        
+
         if str_start_date:
             start_date = date.fromisoformat(str_start_date)
             start_date = datetime.combine(start_date, time.min)
@@ -112,21 +115,22 @@ class EmployerShiftViewSet(viewsets.ModelViewSet):
         filters = Q()
         if employee_id:
             filters &= Q(employer__pk=employee_id)
-        
+
         if start_date == end_date and start_date and end_date:
-            
-             filters &= Q(start_shift_time=start_date)
+
+            filters &= Q(start_shift_time=start_date)
         else:
             if start_date:
                 filters &= Q(start_shift_time__gte=start_date)
-            
+
             if end_date:
                 filters &= Q(start_shift_time__lte=end_date)
-        
 
-        return queryset.filter(
-            filters
-        ).select_related('employer').order_by('start_shift_time')
+        return (
+            queryset.filter(filters)
+            .select_related('employer')
+            .order_by('start_shift_time')
+        )
 
 
 class EmployerViewSet(viewsets.ModelViewSet):
@@ -141,52 +145,52 @@ class EmployerViewSet(viewsets.ModelViewSet):
         filters.OrderingFilter,
     ]
     filterset_fields = [
-        "position",
-        "on_shift",
+        'position',
+        'on_shift',
     ]
     ordering = [
-        "name",
+        'name',
     ]
     ordering_fields = [
-        "name",
-        "position",
+        'name',
+        'position',
     ]
-    search_fields = ["name", "short_name"]
+    search_fields = ['name', 'short_name']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"request": self.request})
+        context.update({'request': self.request})
         return context
 
     def get_queryset(self):
         return Employer.objects.filter(~Q(pk=1))
 
     def destroy(self, request, *args, **kwargs):
-        employer = get_object_or_404(Employer, pk=kwargs["pk"])
+        employer = get_object_or_404(Employer, pk=kwargs['pk'])
         employer.user.delete()
         employer.delete()
         return Response(
-            {"details": "delete - ok"}, status=status.HTTP_204_NO_CONTENT
+            {'details': 'delete - ok'}, status=status.HTTP_204_NO_CONTENT
         )
 
     @action(
         detail=False,
-        methods=["GET"],
-        url_path="get_all_position",
-        url_name="get-all-position",
+        methods=['GET'],
+        url_path='get_all_position',
+        url_name='get-all-position',
     )
     def get_all_position(self, request):
         positions = [
-            {"name": name, "verbose_name": name.label}
+            {'name': name, 'verbose_name': name.label}
             for name in EmployerPositions
         ]
         return Response(positions, status=status.HTTP_200_OK)
 
     @action(
         detail=True,
-        methods=["GET"],
-        url_path="get_employer_name",
-        url_name="get_employer_name",
+        methods=['GET'],
+        url_path='get_employer_name',
+        url_name='get_employer_name',
     )
     def get_employer_name(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
@@ -194,32 +198,32 @@ class EmployerViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=["GET"],
-        url_path="get_employer_position",
-        url_name="get_employer_position",
+        methods=['GET'],
+        url_path='get_employer_position',
+        url_name='get_employer_position',
     )
     def get_employer_position(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
         return Response(
             {
-                "name": employer.position,
+                'name': employer.position,
                 'verbose_name': EmployerPositions(employer.position).label,
             },
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
 
     @action(
         detail=True,
-        methods=["GET"],
-        url_path="get_washer_orders",
-        url_name="get_washer_orders",
+        methods=['GET'],
+        url_path='get_washer_orders',
+        url_name='get_washer_orders',
     )
     def get_washer_orders(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
-        str_start_date =  self.request.GET.get('start_date', '')
+        str_start_date = self.request.GET.get('start_date', '')
         str_end_date = self.request.GET.get('end_date', '')
         filter = Q()
-        
+
         if str_start_date:
             start_date = date.fromisoformat(str_start_date)
             start_date = datetime.combine(start_date, time.min)
@@ -229,14 +233,14 @@ class EmployerViewSet(viewsets.ModelViewSet):
             end_date = date.fromisoformat(str_end_date)
             end_date = datetime.combine(end_date, time.max)
             filter &= Q(order__order_datetime__lte=end_date)
-            
+
         if employer.position == EmployerPositions.WASHER:
             order_list = []
             orders = employer.orders_washers.all().filter(filter).only()
-            
+
             for order in orders:
                 order_list.append(order.order)
-            
+
             serializer = OrderMiniSerializer(order_list, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -244,14 +248,14 @@ class EmployerViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=["PUT"],
-        url_path="set_washer_on_shift/(?P<value>[\d])",
-        url_name="set_washer_on_shift",
+        methods=['PUT'],
+        url_path='set_washer_on_shift/(?P<value>[\d])',
+        url_name='set_washer_on_shift',
     )
     def set_washer_on_shift(self, request, pk, value):
         employer = get_object_or_404(Employer, pk=pk)
 
-        if value == "0":
+        if value == '0':
             in_work = Order.objects.filter(
                 is_completed=False, washers_order__washer=employer
             ).exists()
@@ -259,37 +263,36 @@ class EmployerViewSet(viewsets.ModelViewSet):
             if in_work:
                 return Response(
                     {
-                        f'Мойщик "{employer.short_name}" на заказе. ':
-                        'Невозможно снять со смены.'
+                        f'Мойщик "{employer.short_name}" на заказе. ': 'Невозможно снять со смены.'
                     },
-                    status=status.HTTP_403_FORBIDDEN
+                    status=status.HTTP_403_FORBIDDEN,
                 )
 
-        employer.on_shift = True if value == "1" else False
+        employer.on_shift = True if value == '1' else False
         employer.save()
         return Response(
-            {"on_shift": employer.on_shift}, status=status.HTTP_200_OK
+            {'on_shift': employer.on_shift}, status=status.HTTP_200_OK
         )
 
     @action(
         detail=False,
-        methods=["GET"],
-        url_path="get_free_washers_count",
-        url_name="get-free-washers-count",
+        methods=['GET'],
+        url_path='get_free_washers_count',
+        url_name='get-free-washers-count',
     )
     def get_free_washers_count(self, request):
         washers = Employer.objects.filter(
             position=EmployerPositions.WASHER, is_busy_working=False
         ).count()
         return Response(
-            {"free_washers_count": washers}, status=status.HTTP_200_OK
+            {'free_washers_count': washers}, status=status.HTTP_200_OK
         )
 
     @action(
         detail=True,
-        methods=["POST"],
-        url_path="open_shift",
-        url_name="open-shift",
+        methods=['POST'],
+        url_path='open_shift',
+        url_name='open-shift',
     )
     def open_shift(self, request, pk):
         employer = get_object_or_404(Employer, pk=pk)
@@ -309,14 +312,14 @@ class EmployerViewSet(viewsets.ModelViewSet):
                 )
                 shift_id = shift.pk
 
-            return Response({"shift_id": shift_id}, status=status.HTTP_200_OK)
-        return Response({"shift_id": -1}, status=status.HTTP_200_OK)
+            return Response({'shift_id': shift_id}, status=status.HTTP_200_OK)
+        return Response({'shift_id': -1}, status=status.HTTP_200_OK)
 
     @action(
         detail=True,
-        methods=["POST"],
-        url_path="close_shift",
-        url_name="close_shift",
+        methods=['POST'],
+        url_path='close_shift',
+        url_name='close_shift',
     )
     def close_shift(self, request, pk):
 
@@ -363,23 +366,21 @@ class EmployerViewSet(viewsets.ModelViewSet):
             shift.total_order_cost = final_cost
             shift.save()
 
-            return Response("Смена закрыта", status=status.HTTP_200_OK)
+            return Response('Смена закрыта', status=status.HTTP_200_OK)
         return Response(
-            "Закртие смены доступно только администратору",
+            'Закртие смены доступно только администратору',
             status=status.HTTP_200_OK,
         )
 
     @action(
         detail=True,
-        methods=["GET"],
-        url_path="get_salary_pdf/(?P<doc_id>[\d])",
-        url_name="get_salary_pdf",
+        methods=['GET'],
+        url_path='get_salary_pdf/(?P<doc_id>[\d])',
+        url_name='get_salary_pdf',
         permission_classes=[],
     )
     def get_salary_pdf(self, request, pk, doc_id):
-        salary=get_object_or_404(
-                EmployerSalary, pk=doc_id, employer=pk
-            )
+        salary = get_object_or_404(EmployerSalary, pk=doc_id, employer=pk)
         pdf_template = EmployerSalaryDocPDF(
             salary=salary,
             buffer=BytesIO(),

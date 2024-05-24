@@ -86,13 +86,11 @@ class EmployerSalary(models.Model):
         on_delete=models.CASCADE,
         related_name='salaries',
     )
-    date_of_issue = models.DateField('Дата выдачи ЗП', auto_now_add=True, null=True)
-    start_date = models.DateField(
-        'Начало расчёта ЗП', null=True, default=None
+    date_of_issue = models.DateField(
+        'Дата выдачи ЗП', auto_now_add=True, null=True
     )
-    end_date = models.DateField(
-        'Конец расчёта ЗП', null=True, default=None
-    )
+    start_date = models.DateField('Начало расчёта ЗП', null=True, default=None)
+    end_date = models.DateField('Конец расчёта ЗП', null=True, default=None)
     employer_salary = models.IntegerField('ЗП сотрудника', default=0)
     total_order_income = models.IntegerField('Доход с заказов', default=0)
     shifts_description = models.TextField('Перечень смен')

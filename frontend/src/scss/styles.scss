@@ -111,11 +111,29 @@ $bs-btn-active-color: #e7e7e7;
 }
 
 @media print {
-  @page {
-    margin: 0;
+  html,
+  body {
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
   }
-  .page_break {
-    page-break-after: always;
+}
+
+@media print {
+  a[href]:after { content: none; }
+  #header,
+  #footer,
+  #nav {
+    display: none !important;
+  }
+
+  .page-break {
+    margin-top: 1rem;
+    display: block;
+    page-break-before: always;
+  }
+  .print_content {
+    padding: 50px;
   }
 }
 @media screen {
@@ -123,6 +141,19 @@ $bs-btn-active-color: #e7e7e7;
     display: none;
   }
 }
+// @page {
+//   size: A4;
+//   @bottom-right {
+//     content: counter(page) ' of ' counter(pages);
+//   }
+// }
+// @page {
+//   size: A4;
+//   margin-left: 10mm;
+//   margin-right: 10mm;
+//   margin-top: 10mm;
+//   margin-bottom: 10mm;
+// }
 // @page
 //     {
 //         size:  auto;   /* auto is the initial value */

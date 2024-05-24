@@ -1,9 +1,10 @@
-from backend import settings
 from reportlab.lib.pagesizes import A4, landscape, portrait
 from reportlab.lib.styles import TA_CENTER, TA_LEFT, TA_RIGHT, ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Table, TableStyle
+
+from backend import settings
 
 
 class BaseDocPortraitTemplate(SimpleDocTemplate):
