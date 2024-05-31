@@ -2,6 +2,7 @@ from datetime import date, datetime, time
 from io import BytesIO
 
 import django_filters.rest_framework as django_filters
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
@@ -11,13 +12,66 @@ from rest_framework.response import Response
 from core.permissions import OnlyManager
 from counterparty.helpers import get_services_from_service_legal_entity
 from counterparty.pdf_doc import LegalEntityContractDocPDF
+from order.models import Order, OrderService
+from order.serializers import OrderMiniSerializer, OrderServiceSerializer
 from service.models import ServiceVehicleType, ServiceVehicleTypeLegalEntyty
 from vehicle.models import Vehicle
 
 from .filters import LegalEntitySearchFilter
-from .models import (LegalEntity, LegalEntityContract,
-                     LegalEntytyContractServices)
-from .serializers import ContractSerializer, LegalEntitySerializer
+from .models import (LegalEntity, LegalEntityContract, LegalEntityInvoice,
+                     LegalEntytyContractServices, LegalEntytyInvoiceServices)
+from .serializers import (ContractSerializer, InvoiceSerializer,
+                          LegalEntitySerializer)
+
+
+class InvoiceViewSet(viewsets.ModelViewSet):
+    serializer_class = InvoiceSerializer
+    permission_classes = [
+        OnlyManager,
+    ]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
+
+    def get_queryset(self):
+        queryset = LegalEntityInvoice.objects.all()
+        return queryset.select_related('legal_entity').order_by('-pk')
+
+    def create(self, request, *args, **kwargs):
+        legal_entity_id = request.data.get('legal_entity', -1)
+        services = request.data.get('services', -1)
+        str_start_date = request.data.get('start_date', '')
+        str_end_date = request.data.get('end_date', '')
+
+        if str_start_date:
+            start_date = date.fromisoformat(str_start_date)
+        if str_end_date:
+            end_date = date.fromisoformat(str_end_date)
+
+        legal_entity = get_object_or_404(LegalEntity, pk=legal_entity_id)
+        invoice = LegalEntityInvoice.objects.create(
+            legal_entity=legal_entity,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        invoice.save()
+
+        new_services_list = []
+        for service in services:
+            new_services_list.append(
+                LegalEntytyInvoiceServices(
+                    legal_entity_invoice=invoice,
+                    name=service['name'],
+                    cost=service['cost'],
+                    count=service['count'],
+                    total_cost=service['total_cost'],
+                )
+            )
+        LegalEntytyInvoiceServices.objects.bulk_create(new_services_list)
+
+        return Response(invoice.pk, status=status.HTTP_200_OK)
 
 
 class ContractViewSet(viewsets.ModelViewSet):
@@ -110,6 +164,54 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context.update({'request': self.request})
         return context
+
+    @action(
+        detail=True,
+        methods=['GET'],
+        url_path='get_services_for_period',
+        url_name='get_services_for_period',
+    )
+    def get_services_for_period(self, request, pk):
+        legal_entity = get_object_or_404(LegalEntity, pk=pk)
+
+        start_date = ''
+        end_date = ''
+        str_start_date = self.request.GET.get('start_date', '')
+        str_end_date = self.request.GET.get('end_date', '')
+
+        if str_start_date:
+            start_date = date.fromisoformat(str_start_date)
+            start_date = datetime.combine(start_date, time.min)
+        if str_end_date:
+            end_date = date.fromisoformat(str_end_date)
+            end_date = datetime.combine(end_date, time.max)
+
+        filters = Q(vehicle__owner=legal_entity)
+        filters &= Q(legal_entity_service=True)
+        filters &= Q(order__is_completed=True)
+
+        if start_date == end_date and start_date and end_date:
+
+            filters &= Q(order__order_datetime=start_date)
+        else:
+            if start_date:
+                filters &= Q(order__order_datetime__gte=start_date)
+
+            if end_date:
+                filters &= Q(order__order_datetime__lte=end_date)
+
+        services = OrderService.objects.filter(filters)
+
+        orders_id = []
+        for service in services:
+            orders_id.append(service.order.pk)
+
+        orders = Order.objects.filter(pk__in=orders_id).order_by(
+            'order_datetime'
+        )
+        serializer = OrderMiniSerializer(orders, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
         detail=True,

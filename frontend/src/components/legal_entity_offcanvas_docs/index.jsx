@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { GrDocumentText } from "react-icons/gr";
 import { RiHistoryFill } from "react-icons/ri";
+import { HiOutlineDocumentPlus } from "react-icons/hi2";
+import Button from "../button";
 
 const LegalEntityOffcanvasDocs = (props) => {
   const navigate = useNavigate();
@@ -37,31 +39,52 @@ const LegalEntityOffcanvasDocs = (props) => {
               style={{ textAlign: "left" }}
             >
               <span>
-                <GrDocumentText size={22} /> Сформировать договор
+                <HiOutlineDocumentPlus size={22} /> Сформировать договор
               </span>
             </button>
             <button
               className="btn btn-light"
               onClick={() => {
-                navigate(`${props.legalEntity.id}/salary/`);
+                navigate(`${props.legalEntity.id}/invoice/-1/`);
               }}
               style={{ textAlign: "left" }}
             >
               <span>
-                <GrDocumentText size={22} /> Сформировать акт сдачи-приёмки
+                <HiOutlineDocumentPlus size={22} /> Сформировать счёт на оплату
               </span>
             </button>
-            <button
-              className="btn btn-light mb-3"
-              onClick={() => {
-                navigate(`${props.legalEntity.id}/salary/`);
-              }}
-              style={{ textAlign: "left" }}
+            <hr></hr>
+            <Link
+              to={`${props.legalEntity.id}/acceptance_certificate/print/`}
+              target="_blank"
+              className="m-0 p-0"
             >
-              <span>
-                <GrDocumentText size={22} /> Печать реестра ТС
-              </span>
-            </button>
+              <button
+                className="btn btn-light"
+                onClick={() => {}}
+                style={{ textAlign: "left" }}
+              >
+                <span>
+                  <GrDocumentText size={22} /> Печать акта сдачи-приёмки
+                </span>
+              </button>
+            </Link>
+            <Link
+              to={`${props.legalEntity.id}/vehicle_registry/print/`}
+              target="_blank"
+              className="m-0 p-0"
+            >
+              <button
+                className="btn btn-light"
+                onClick={() => {}}
+                style={{ textAlign: "left" }}
+              >
+                <span>
+                  <GrDocumentText size={22} /> Печать реестра ТС
+                </span>
+              </button>
+            </Link>
+
             <hr></hr>
             <button
               className="btn btn-light"
@@ -78,6 +101,17 @@ const LegalEntityOffcanvasDocs = (props) => {
               className="btn btn-light"
               onClick={() => {
                 navigate(`${props.legalEntity.id}/salary/`);
+              }}
+              style={{ textAlign: "left" }}
+            >
+              <span>
+                <RiHistoryFill size={22} /> История счетов на оплату
+              </span>
+            </button>
+            <button
+              className="btn btn-light"
+              onClick={() => {
+                navigate("/completed/", { state: { search: props.legalEntity.short_name } });
               }}
               style={{ textAlign: "left" }}
             >

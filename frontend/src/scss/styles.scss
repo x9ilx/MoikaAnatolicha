@@ -26,6 +26,9 @@ $font-sizes: (
   9: 0.7rem,
   // adds fs-7
   10: 0.6rem,
+  11: 0.5rem,
+  12: 0.4rem,
+  13: 0.3rem,
   // adds fs-n1
 );
 
@@ -126,6 +129,9 @@ $bs-btn-active-color: #e7e7e7;
   #nav {
     display: none !important;
   }
+  header, footer { 
+    display: none !important;
+  }
 
   .page-break {
     margin-top: 1rem;
@@ -135,6 +141,9 @@ $bs-btn-active-color: #e7e7e7;
   .print_content {
     padding: 50px;
   }
+  // body {
+  //   padding: 1cm !important;
+  // }
 }
 @media screen {
   .print_content {

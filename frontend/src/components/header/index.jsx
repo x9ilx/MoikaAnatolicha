@@ -79,7 +79,7 @@ const Header = React.forwardRef(function MyInput(props, ref) {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-primary" style={{cursor: "pointer"}} onClick={() => {navigate("/completed/")}}>
+                <a className="nav-link text-primary" style={{cursor: "pointer"}} onClick={() => {navigate("/completed/", { state: { search: '' } })}}>
                   Выполненные заказы <ClosedOrderCount ref={closedOrderRef}/>
                 </a>
               </li>

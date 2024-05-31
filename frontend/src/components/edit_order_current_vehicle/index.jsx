@@ -36,7 +36,7 @@ const EditOrderCurrentVehicle = (props) => {
                     {vehicle?.vehicle_model}{" "}
                     {isMobile && <br />}
                     {vehicle?.vehicle_type.vehicle_class_name || vehicle?.vehicle_class_name } ({vehicle?.vehicle_type.name || vehicle?.vehicle_type_name})<br></br>
-                    {vehicle?.owner.short_name}
+                    {vehicle?.owner?.short_name}
                   </div>
                   {!props.onlyShow && (
                     <>

@@ -1,11 +1,14 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import CompleteOrderListV2 from "../completed_order_list/indexv2";
 
 const CompleteOrderSettings = () => {
   const refList = React.useRef(null);
+  const searchInput = React.useRef(null);
   const navigate = useNavigate();
-
+  const {state} = useLocation()
+  const {search} = state;
+  
   function updateRef(e) {
     if (refList.current.setSearch) {
       refList.current.setSearch(e.target.value);
@@ -26,7 +29,7 @@ const CompleteOrderSettings = () => {
   }
 
   {
-    document.title = "Редактирование ЗП Чистый Грузовик";
+    document.title = "Выполненные заказы Чистый Грузовик";
   }
   return (
     <>
@@ -66,17 +69,19 @@ const CompleteOrderSettings = () => {
             </div>
           </div>
         <input
+            ref={searchInput}
             className="form-control me-2"
             type="search"
             placeholder="Поиск по всем параметрам"
             title="Поиск по ФИО/короткому имени администратора/мойщика, гос. номеру ТС/ПП/ППЦ, названию/короткому названию фирмы, ИНН фирмы"
             aria-label="Search"
+            defaultValue={search}
             onChange={(e) => {
               updateRef(e);
             }}
           />
           <hr></hr>
-        <CompleteOrderListV2 ref={refList} />
+        <CompleteOrderListV2 ref={refList} search={search}/>
       </div>
     </>
   );

@@ -2,7 +2,8 @@ from django.urls import include, path
 from rest_framework import routers
 
 from company.views import CompanyRequisitesViewSet, CompanySettingsViewSet
-from counterparty.views import ContractViewSet, LegalEntityViewSet
+from counterparty.views import (ContractViewSet, InvoiceViewSet,
+                                LegalEntityViewSet)
 from employer.views import (CHGUserViewSet, EmployerSalaryViewSet,
                             EmployerShiftViewSet, EmployerViewSet)
 from order.views import OrderViewSet
@@ -73,6 +74,12 @@ v1_router.register(
     ContractViewSet,
     basename='LegalEntityContract',
 )
+v1_router.register(
+    'legal_entity_invoices',
+    InvoiceViewSet,
+    basename='LegalEntityInvoice',
+)
+
 
 urlpatterns = [
     path('', include(v1_router.urls)),

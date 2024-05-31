@@ -753,6 +753,18 @@ class Api {
       },
     }).then(this.checkResponse);
   }
+
+  getLegalEntityServicesForPeriod(legal_entity_id, start_date, end_date) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity/${legal_entity_id}/get_services_for_period/?start_date=${start_date}&end_date=${end_date}`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
   ////////////////////////////////////////// CONTRACT
   createContract(legal_entity_id, start_date, end_date) {
     const token = cookies.get("auth_token");
@@ -792,6 +804,46 @@ class Api {
   deleteLegalEntityContract(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/legal_entity_contracts/${id}/`, {
+      method: "DELETE",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+   ////////////////////////////////////////// INVOICE
+   createInvoice(legal_entity_id, start_date, end_date, services) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_invoices/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+      body: JSON.stringify({
+        legal_entity: legal_entity_id,
+        start_date: start_date,
+        end_date: end_date,
+        services: services,
+      }),
+    }).then(this.checkResponse);
+  }
+
+  getInvoice(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_invoices/${id}/`, {
+      method: "GET",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+
+  deleteLegalEntityInvoice(id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_invoices/${id}/`, {
       method: "DELETE",
       headers: {
         ...this._headers,

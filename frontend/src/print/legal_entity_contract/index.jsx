@@ -9,6 +9,8 @@ import { prettyPhone } from "../../utils/string_utils";
 const LegalEntityContractPrint = (props) => {
   const [contract, setContract] = React.useState({});
   const [leInitials, setleInitials] = React.useState("");
+  const [emptyVehicle, setEmptyVehicle] = React.useState([]);
+  const [emptyVehicleCount, setEmptyVehicleCount] = React.useState(0);
 
   const componentRef = React.useRef();
   const { contract_id } = useParams();
@@ -16,8 +18,18 @@ const LegalEntityContractPrint = (props) => {
   const getContract = () => {
     api.getGetContract(contract_id).then((res) => {
       setContract(res);
+
       let li_list = res?.legal_entity?.director_name.split(" ");
-      let li = li_list[0] + li_list[1][0] + ". " + li_list[2][0] + "."
+      let li = li_list[0] + " " + li_list[1][0] + ". " + li_list[2][0] + ".";
+
+      const emptyVehicleCount = 20 - res?.vehicles?.length;
+      let newArr = [];
+
+      for (let index = 0; index < emptyVehicleCount; index++) {
+        newArr.push(" ");
+      }
+      setEmptyVehicleCount(emptyVehicleCount);
+      setEmptyVehicle(newArr);
       setleInitials(li);
     });
   };
@@ -316,7 +328,7 @@ const LegalEntityContractPrint = (props) => {
           <div className="row " style={{ textAlign: "left" }}>
             <div className="col border p-2">
               <p>
-                ЗАКАЗЧИК<br></br>
+                ИСПОЛНИТЕЛЬ<br></br>
                 <br></br>
                 Индивидуальный Предприниматель<br></br>Демидов Евгений
                 Леонидович
@@ -348,8 +360,9 @@ const LegalEntityContractPrint = (props) => {
             </div>
             <div className="col border p-2">
               <p>
-                ИСПОЛНИТЕЛЬ
-                <br></br><br></br>
+                ЗАКАЗЧИК
+                <br></br>
+                <br></br>
                 {contract?.legal_entity?.name}
                 <br />
                 <br />
@@ -373,7 +386,7 @@ const LegalEntityContractPrint = (props) => {
                 <br />
                 ЭП:{" "}
                 <span className="text-decoration-underline">
-                {contract?.legal_entity?.email}
+                  {contract?.legal_entity?.email}
                 </span>
               </p>
             </div>
@@ -381,17 +394,25 @@ const LegalEntityContractPrint = (props) => {
           <div className="row " style={{ textAlign: "left" }}>
             <div className="col border p-2">
               <p>
-                ЗАКАЗЧИК:<br></br><br></br>
+                ИСПОЛНИТЕЛЬ:<br></br>
+                <br></br>
                 ________________________________ Демидов Е. Л.<br></br>
-                <span className="text-center fs-8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;М. П.</span>
+                <span className="text-center fs-8">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;М.
+                  П.
+                </span>
               </p>
-              
             </div>
             <div className="col border p-2 text-end">
               <p>
-                ИСПОЛНИТЕЛЬ:<br></br><br></br>
-                ________________________________ {leInitials}<br></br>
-                <span className="text-center fs-8">М. П.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                ЗАКАЗЧИК:<br></br>
+                <br></br>
+                ________________________________ {leInitials}
+                <br></br>
+                <span className="text-center fs-8">
+                  М.
+                  П.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
               </p>
             </div>
           </div>
@@ -400,17 +421,184 @@ const LegalEntityContractPrint = (props) => {
         <div className="page-break" />
 
         <div>
-            spisok ts
+          <p className="lh-sm text-end">
+            Приложение №1<br></br>к Договору на оказание услуг<br></br>
+            по мойке транспортных средств №{contract.id}
+            <br></br>
+            от {new Date(contract?.start_date).toLocaleDateString()}г.
+          </p>
+          <p className="fw-medium fs-6 text-center mb-3">
+            Список транспортных средств и специальной техники
+          </p>
+
+          <table className="table border fs-9" style={{ textAlign: "left" }}>
+            <thead>
+              <tr>
+                <th scope="col" className="border">№ п/п</th>
+                <th scope="col" className="border">Марка, модель, класс ТС</th>
+                <th scope="col" className="border">Гос. номер ТС</th>
+                <th scope="col" className="border">Примечания</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contract?.vehicles?.map((vehicle, index) => (
+                <tr key={vehicle + index}>
+                  <th className="border" scope="row">
+                    {index + 1}
+                  </th>
+                  <td className="border">
+                    {vehicle.vehicle_model} {vehicle.vehicle_class_name} -{" "}
+                    {vehicle.vehicle_type_name}
+                  </td>
+                  <td className="border">
+                    {vehicle.without_plate_number
+                      ? "Без гос. номера"
+                      : vehicle.plate_number}
+                  </td>
+                  <td className="border"></td>
+                </tr>
+              ))}
+              {emptyVehicle?.map((val, index) => (
+                <tr key={index}>
+                  <th className="border" scope="row">
+                    {index + 1 + emptyVehicleCount}
+                  </th>
+                  <td className="border">{}</td>
+                  <td className="border">{}</td>
+                  <td className="border"></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <p className="fw-medium fs-6 text-center mb-3">
+            ***(формируется ЗАКАЗЧИКОМ на дату заключения договора)***
+          </p>
+          <p className="fw-medium fs-6 text-center mb-3">ПОДПИСИ СТОРОН:</p>
+          <div className="row " style={{ textAlign: "left" }}>
+            <div className="col border p-2">
+              <p>
+                ИСПОЛНИТЕЛЬ:<br></br>
+                <br></br>
+                ________________________________ Демидов Е. Л.<br></br>
+                <span className="text-center fs-8">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;М.
+                  П.
+                </span>
+              </p>
+            </div>
+            <div className="col border p-2 text-end">
+              <p>
+                ЗАКАЗЧИК:<br></br>
+                <br></br>
+                ________________________________ {leInitials}
+                <br></br>
+                <span className="text-center fs-8">
+                  М.
+                  П.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+              </p>
+            </div>
+          </div>
         </div>
 
+        <div className="page-break" />
 
+        <div>
+          <p className="lh-sm text-end">
+            Приложение №2<br></br>к Договору на оказание услуг<br></br>
+            по мойке транспортных средств №{contract.id}
+            <br></br>
+            от {new Date(contract?.start_date).toLocaleDateString()}г.
+          </p>
+          <p className="fw-medium fs-6 text-center mb-3">
+            Прейскурант стоимости услуг по мойке транспортных средств и
+            специальной техники
+          </p>
+
+          <table className="table border fs-9" style={{ textAlign: "left" }}>
+            <thead>
+              <tr>
+                <th scope="col" className="border">№ п/п</th>
+                <th scope="col" className="border">Kласс ТС / Вид услуги</th>
+                <th scope="col" style={{ textAlign: "center" }} className="border">
+                  Стоимость
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {contract?.services?.map((vclass, vindex) => (
+                <>
+                  {vclass?.vehicle_type?.map((vtype, vtindex) => (
+                    <>
+                      <tr key={vtype + vtindex}>
+                        <th className="border" scope="row">
+                          {vindex + 1}
+                        </th>
+                        <td className="border" colSpan={2} style={{fontWeight: "bold"}}>
+                          <div className="" style={{fontWeight: "bold"}}>{vclass.vehicle_class_name} -{" "}
+                          {vtype.vehicle_type_name}</div>
+                        </td>
+                      </tr>
+                      {vtype?.services?.map((service, sindex) => (
+                        <tr key={service + sindex}>
+                          <th className="border" scope="row">
+                            {vindex + 1}.{sindex + 1}
+                          </th>
+                          <td className="border ps-5" >{service.name}</td>
+                          <td
+                            className="border"
+                            style={{ textAlign: "center" }}
+                          >
+                            {service.cost}₽
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ))}
+                </>
+              ))}
+            </tbody>
+          </table>
+
+          <p className="fw-medium fs-6 text-center mb-3">
+            Дополнительные услуги (мойка двигателя, мойка рамы, мойка радиатора,
+            мойка внутри кузова или кабины) оплачиваются, согласно прейскуранта.
+          </p>
+          <p className="fw-medium fs-6 text-center mb-3">ПОДПИСИ СТОРОН:</p>
+          <div className="row " style={{ textAlign: "left" }}>
+            <div className="col border p-2">
+              <p>
+                ИСПОЛНИТЕЛЬ:<br></br>
+                <br></br>
+                ________________________________ Демидов Е. Л.<br></br>
+                <span className="text-center fs-8">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;М.
+                  П.
+                </span>
+              </p>
+            </div>
+            <div className="col border p-2 text-end">
+              <p>
+                ЗАКАЗЧИК:<br></br>
+                <br></br>
+                ________________________________ {leInitials}
+                <br></br>
+                <span className="text-center fs-8">
+                  М.
+                  П.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 LegalEntityContractPrint.propTypes = {
-//   legalEntityContract: PropTypes.object.isRequired,
+  //   legalEntityContract: PropTypes.object.isRequired,
 };
 
 export default LegalEntityContractPrint;

@@ -248,7 +248,7 @@ const LegalEntityContract = (props) => {
               type="button"
               disabled={false}
             >
-              <>Печать квитанции</>
+              <>Печать договора</>
             </Button>
           </Link>
 

@@ -14,7 +14,7 @@ const CompleteOrderListV2 = forwardRef(function MyInput(props, ref) {
   const [loading, setLoading] = React.useState(true);
   const [orders, setOrders] = React.useState({});
 
-  const [search, setSearch] = React.useState("");
+  const [search, setSearch] = React.useState(props.search);
   const [dateStart, setDateStart] = React.useState("");
   const [dateEnd, setDateEnd] = React.useState("");
 
@@ -111,7 +111,7 @@ const CompleteOrderListV2 = forwardRef(function MyInput(props, ref) {
 });
 
 CompleteOrderListV2.propTypes = {
-  //   vehicleClasses: PropTypes.array.isRequired,
+  search: PropTypes.string,
   //   total_page: PropTypes.number.isRequired,
   //   current_page: PropTypes.number.isRequired,
   //   ChangePage: PropTypes.func.isRequired,

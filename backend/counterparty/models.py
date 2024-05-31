@@ -78,7 +78,7 @@ class LegalEntityContract(models.Model):
 
     def __str__(self):
         """Unicode representation of LegalEntity."""
-        return f'Договор №{self.pk}: {self.legal_entity.short_name}'
+        return f'Договор №{self.pk}, от {self.start_date.strftime('%d.%m.%Y')}г.'
 
 
 class LegalEntytyContractServices(models.Model):
@@ -108,10 +108,14 @@ class LegalEntytyContractServices(models.Model):
 
 
 class LegalEntityInvoice(models.Model):
+    date_of_issue = models.DateField(
+        'Дата выдачи',
+        auto_now_add=True
+    )
     start_date = models.DateField(
         'Начало выборки заказов',
     )
-    end_date = models.DateTimeField(
+    end_date = models.DateField(
         'Окончание выборки заказов',
     )
     legal_entity = models.ForeignKey(
@@ -131,3 +135,23 @@ class LegalEntityInvoice(models.Model):
     def __str__(self):
         """Unicode representation of LegalEntity."""
         return f'Счёт № {self.pk}: {self.legal_entity.short_name}'
+
+
+class LegalEntytyInvoiceServices(models.Model):
+    """Model definition for Service."""
+
+    legal_entity_invoice = models.ForeignKey(
+        LegalEntityInvoice,
+        verbose_name='Счёт',
+        on_delete=models.CASCADE,
+        related_name='services_invoice',
+    )
+    name = models.TextField()
+    count = models.IntegerField('Количество')
+    cost = models.IntegerField('Стоимость')
+    total_cost = models.IntegerField('Итоговая стоимость')
+
+    class Meta:
+        """Meta definition for Service."""
+
+        ordering = ['name']

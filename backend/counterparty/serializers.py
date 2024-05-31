@@ -7,7 +7,8 @@ from core.string_utils import normalize_phone, normalize_plate_number
 from counterparty.helpers import get_services_from_service_legal_entity
 from vehicle.models import Vehicle, VehicleModel, VehicleOrTrailerType
 
-from .models import LegalEntity, LegalEntityContract, LegalEntityInvoice
+from .models import (LegalEntity, LegalEntityContract, LegalEntityInvoice,
+                     LegalEntytyInvoiceServices)
 
 
 class VehicleMiniSerializer(serializers.ModelSerializer):
@@ -175,4 +176,30 @@ class ContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LegalEntityContract
+        fields = '__all__'
+
+
+class LegalEntytyInvoiceServicesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LegalEntytyInvoiceServices
+        fields = [
+            'id',
+            'name',
+            'count',
+            'cost',
+            'total_cost',
+        ]
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    services = serializers.SerializerMethodField()
+    legal_entity = LegalEntitySerializer()
+
+    def get_services(self, obj):
+        services = obj.services_invoice.all()
+        serializer = LegalEntytyInvoiceServicesSerializer(services, many=True)
+        return serializer.data
+
+    class Meta:
+        model = LegalEntityInvoice
         fields = '__all__'

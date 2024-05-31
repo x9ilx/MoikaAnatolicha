@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
+from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.platypus import Paragraph, Table
-from reportlab.lib import colors
 
 from counterparty.models import LegalEntity
 
