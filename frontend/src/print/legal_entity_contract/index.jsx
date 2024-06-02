@@ -550,7 +550,7 @@ const LegalEntityContractPrint = (props) => {
                             className="border"
                             style={{ textAlign: "center" }}
                           >
-                            {service.cost}₽
+                            {service.cost.toLocaleString()}₽
                           </td>
                         </tr>
                       ))}

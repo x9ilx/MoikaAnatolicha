@@ -124,7 +124,7 @@ const VehicleClassEdit = (props) => {
                     }}
                   />
                   <label className="form-check-label" htmlFor="DELETE">
-                    Удалить данные о сотруднике
+                    Удалить данные о классе ТС
                   </label>
                 </div>
                 {DELETE && (

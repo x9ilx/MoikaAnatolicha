@@ -46,19 +46,41 @@ const SelectVehicleClassAndType = (props) => {
       .getVehicleClasses(1, 999999, "")
       .then((res) => {
         setVehicleClasses(res.results);
-        setVehicleTypes(res.results[0]?.vehicle_types);
+
+        let ci = 0;
+
+        if (props.currentVehicleClass) {
+          ci = res?.results?.findIndex(
+            (v_class) => v_class.id === props.currentVehicleClass
+          );
+        }
+
+        
+        setVehicleTypes(res.results[ci]?.vehicle_types);
 
         if (!props.currentVehicleClass) {
           setCurrentClassIndex(0);
           setCurrentClass(res.results[0]?.id);
           setCurrentClassName(res.results[0]?.name);
+        } else {
+          setCurrentClassIndex(ci);
+          setCurrentClass(props.currentVehicleClass);
+          setCurrentClassName(props.currentVehicleClassName);
         }
 
         if (!props.currentVehicleType) {
           setCurrentTypeIndex(0);
           setCurrentType(res.results[0]?.vehicle_types[0]?.id);
           setCurrentTypeName(res.results[0]?.vehicle_types[0]?.name);
+        } else {
+          const ti = res.results[ci]?.vehicle_types.findIndex(
+            (v_type) => v_type.id === props.currentVehicleType
+          );
+          setCurrentTypeIndex(ti);
+          setCurrentType(props.currentVehicleType);
+          setCurrentTypeName(props.currentVehicleTypeName);
         }
+
         setLoading(false);
       })
       .catch((err) => {
@@ -67,7 +89,7 @@ const SelectVehicleClassAndType = (props) => {
           toast.error(errors.join(", "));
         }
       });
-  }, []);
+  }, [props]);
 
   React.useEffect(() => {
     getVehicleClassesAndTypes();
@@ -77,21 +99,31 @@ const SelectVehicleClassAndType = (props) => {
     if (currentClassIndex >= 0 && vehicleClasses) {
       let classes = vehicleClasses[currentClassIndex].vehicle_types;
       setVehicleTypes(classes);
-      // if (!props.currentVehicleType) {
-        setCurrentType(classes[0]?.id);
-        setCurrentTypeName(classes[0]?.name);
-        setCurrentTypeIndex(0);
-        props.onSelectType(classes[0]?.id, classes[0]?.name);
-      // } else {
-      //   setCurrentType(props.currentVehicleType);
-      //   setCurrentTypeName(props.currentVehicleTypeName);
-      // }
+
+      // setCurrentType(classes[0]?.id);
+      // setCurrentTypeName(classes[0]?.name);
+      // setCurrentTypeIndex(0);
+      // props.onSelectType(classes[0]?.id, classes[0]?.name);
     }
   }, [currentClassIndex, vehicleClasses]);
 
+  const changeVClass = React.useCallback(
+    (class_id, class_index, class_name) => {
+      setCurrentClass(class_id);
+      setCurrentClassIndex(class_index);
+      setCurrentType(vehicleClasses[class_index].vehicle_types[0]?.id);
+      setCurrentClassName(class_name);
+      setCurrentTypeName(
+        vehicleClasses[class_index].vehicle_types[0]?.name
+      );
+      setCurrentTypeIndex(0);
+    },
+    [vehicleClasses]
+  );
+
   React.useEffect(() => {
     getVehicleTypesByClass();
-  }, [currentClassIndex, getVehicleTypesByClass]);
+  }, [currentClassIndex]);
 
   React.useEffect(() => {
     props.onSelectType(currentType, currentTypeName);
@@ -117,11 +149,16 @@ const SelectVehicleClassAndType = (props) => {
           placeholder="currentClass"
           value={currentClass}
           onChange={(e) => {
-            setCurrentClass(e.target.value);
-            setCurrentClassIndex(e.target.selectedIndex);
-            setCurrentClassName(e.target[e.target.selectedIndex].text);
+            // setCurrentClass(e.target.value);
+            // setCurrentClassIndex(e.target.selectedIndex);
+            // setCurrentClassName(e.target[e.target.selectedIndex].text);
             props.onSelectClass(
               e.target.value,
+              e.target[e.target.selectedIndex].text
+            );
+            changeVClass(
+              e.target.value,
+              e.target.selectedIndex,
               e.target[e.target.selectedIndex].text
             );
           }}
@@ -175,6 +212,7 @@ SelectVehicleClassAndType.propTypes = {
   currentVehicleTypeName: PropTypes.string,
   onSelectClass: PropTypes.func.isRequired,
   onSelectType: PropTypes.func.isRequired,
+  setVehicleFromParent: PropTypes.bool,
 };
 
 export default SelectVehicleClassAndType;

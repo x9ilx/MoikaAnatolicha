@@ -33,14 +33,15 @@ const VehicleAdd = (props) => {
         setPlateNumber(res.plate_number);
         setVehicleModel(res.vehicle_model);
         setOwner(res.owner?.id);
-        setvehicleType(res.vehicle_type.id);
+        setvehicleType(res.vehicle_type?.id || 0);
         setOwnerName(res.owner?.name);
-        setvehicleTypeName(res.vehicle_type.name);
-        setvehicleClass(res.vehicle_type.vehicle_class);
-        setvehicleClassName(res.vehicle_type.vehicle_class_name);
+        setvehicleTypeName(res.vehicle_type?.name || "Класс ТС удалён");
+        setvehicleClass(res.vehicle_type?.vehicle_class || "Класс ТС удалён");
+        setvehicleClassName(res.vehicle_type?.vehicle_class_name || "Класс ТС удалён");
         setLoading(false);
       })
       .catch((err) => {
+        console.log(err)
         const errors = Object.values(err);
         if (errors) {
           toast.error(errors.join(", "));
@@ -145,22 +146,36 @@ const VehicleAdd = (props) => {
               }
             }}
           >
-            <CreateNewVehicle
-              ref={ref}
-              currentPlateNumber={plateNumber}
-              editPlateNumber={true}
-              currentVehicleClass={vehicleClass}
-              currentVehicleClassName={vehicleClassName}
-              currentVehicleModel={vehicleModel}
-              currentVehicleType={vehicleType}
-              currentVehicleTypeName={vehicleTypeName}
-              editOwner={true}
-              ownerName={ownerName}
-              ownerID={owner}
-              onCreate={setVehicleInfo}
-              onCancel={() => {}}
-              hideButtons={true}
-            />
+            {vehicle_id > 0 && (
+              <CreateNewVehicle
+                ref={ref}
+                currentPlateNumber={plateNumber}
+                editPlateNumber={true}
+                currentVehicleClass={parseInt(vehicleClass)}
+                currentVehicleClassName={vehicleClassName}
+                currentVehicleModel={vehicleModel}
+                currentVehicleType={parseInt(vehicleType)}
+                currentVehicleTypeName={vehicleTypeName}
+                editOwner={true}
+                ownerName={ownerName}
+                ownerID={owner}
+                onCreate={setVehicleInfo}
+                onCancel={() => {}}
+                hideButtons={true}
+                setVehicleFromParent={true}
+              />
+            )}
+            {vehicle_id === undefined && (
+              <CreateNewVehicle
+                ref={ref}
+                currentPlateNumber={""}
+                editPlateNumber={true}
+                editOwner={true}
+                onCreate={setVehicleInfo}
+                onCancel={() => {}}
+                hideButtons={true}
+              />
+            )}
             <hr></hr>
             <Button
               clickHandler={() => {

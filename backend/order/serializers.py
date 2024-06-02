@@ -74,5 +74,6 @@ class OrderMiniSerializer(serializers.ModelSerializer):
             'is_completed',
             'has_been_modifed_after_save',
             'backup_info',
+            'tractor_trailer_plate_numbers',
             'comments',
         ]

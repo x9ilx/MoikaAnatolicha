@@ -86,6 +86,16 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
     props.onCreate(vehicle);
   };
 
+  React.useEffect(() => {
+    if (props.setVehicleFromParent) {
+      setNewVehicleClass(parseInt(props.currentVehicleClass));
+      setNewVehicleClassName(props.currentVehicleClassName);
+      setNewVehicleModel(props.currentVehicleModel);
+      setNewVehicleType(parseInt(props.currentVehicleType));
+      setNewVehicleTypeName(props.currentVehicleTypeName);
+    }
+  }, []);
+
   return (
     <>
       {props.editPlateNumber ? (
@@ -127,6 +137,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
         currentVehicleModel={newVehicleModel}
         setVehicleModelValue={setNewVehicleModel}
       />
+
       <SelectVehicleClassAndType
         currentVehicleClass={oldVehicleClass}
         currentVehicleClassName={newVehicleClassName}
@@ -134,6 +145,7 @@ const CreateNewVehicle = React.forwardRef(function MyInput(props, ref) {
         currentVehicleTypeName={newVehicleTypeName}
         onSelectClass={selectVehicleClass}
         onSelectType={selectVehicleType}
+        setVehicleFromParent={props.setVehicleFromParent}
       />
 
       {!props.hideButtons && (
@@ -191,6 +203,7 @@ CreateNewVehicle.propTypes = {
   onCreate: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   noPlateNumber: PropTypes.bool,
+  setVehicleFromParent: PropTypes.bool,
 };
 
 export default CreateNewVehicle;

@@ -3,6 +3,7 @@ from io import BytesIO
 
 import django_filters.rest_framework as django_filters
 from django.db.models import Q
+from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
@@ -80,6 +81,21 @@ class ContractViewSet(viewsets.ModelViewSet):
         OnlyManager,
     ]
 
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = [
+        'legal_entity',
+    ]
+    ordering = [
+        '-pk',
+    ]
+    ordering_fields = [
+        '-pk',
+    ]
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({'request': self.request})
@@ -148,6 +164,20 @@ class ContractViewSet(viewsets.ModelViewSet):
         response.write(pdf)
         return response
 
+    @action(
+        detail=True,
+        methods=['POST'],
+        url_path='set_contract_to_current',
+        url_name='set_contract_to_current',
+        permission_classes=[],
+    )
+    def set_contract_to_current(self, request, pk):
+        legal_entity_contract = get_object_or_404(LegalEntityContract, pk=pk)
+        legal_entity = legal_entity_contract.legal_entity
+        legal_entity.current_contract = legal_entity_contract
+        legal_entity.save()
+        
+        return Response({'legal_entity_contract': str(legal_entity_contract)}, status=status.HTTP_200_OK)
 
 class LegalEntityViewSet(viewsets.ModelViewSet):
     serializer_class = LegalEntitySerializer
@@ -325,7 +355,7 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
     def set_vehicle_services(self, request, pk):
         results = []
         legal_entity = get_object_or_404(LegalEntity, pk=pk)
-        legal_entity.service_legal_entity.all().delete()
+        # legal_entity.service_legal_entity.all().delete()
 
         for vehicle_class in request.data.values():
             for vehicle_type in vehicle_class['vehicle_type']:
@@ -361,6 +391,16 @@ class LegalEntityViewSet(viewsets.ModelViewSet):
                                     service,
                                     legal_entity,
                                 )
+                        if service['to_be_removed'] == True:
+                            legal_entity_service_filter = (
+                                ServiceVehicleTypeLegalEntyty.objects.filter(
+                                    service_vehicle_type=service_v_type,
+                                    legal_entity=legal_entity,
+                                )
+                            )
+                            print(legal_entity_service_filter)
+                            if legal_entity_service_filter.exists():
+                                legal_entity_service_filter.delete()
 
         return Response(results, status=status.HTTP_200_OK)
 

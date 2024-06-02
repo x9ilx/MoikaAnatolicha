@@ -15,7 +15,7 @@ class VehicleMiniSerializer(serializers.ModelSerializer):
     plate_number = serializers.CharField(max_length=255)
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     vehicle_type = serializers.PrimaryKeyRelatedField(
-        queryset=VehicleOrTrailerType.objects.all()
+        queryset=VehicleOrTrailerType.objects.all(), allow_null=True
     )
     owner_name = serializers.StringRelatedField(source='owner', read_only=True)
     owner_short_name = serializers.StringRelatedField(
@@ -89,8 +89,8 @@ class LegalEntitySerializer(serializers.ModelSerializer):
         ]
 
     def update_create_vehicle(self, vehicle_list, instance):
-        for vehicle in vehicle_list:
-            if vehicle['to_be_removed']:
+        for vehicle in vehicle_list:  
+            if vehicle['to_be_removed'] or vehicle['vehicle_type'] is None:
                 current_vehicle = instance.vehicles.get(
                     plate_number=vehicle['plate_number']
                 )

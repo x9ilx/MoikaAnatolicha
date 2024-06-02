@@ -93,7 +93,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
                             textShadow: "1px -1px 7px rgba(0,0,0,0.45)",
                           }}
                         >
-                          {vehicle?.vehicle_type.vehicle_class_name}{" "}
+                          {vehicle?.vehicle_type?.vehicle_class_name}{" "}
                           {vehicle?.vehicle_model}
                         </div>
                       </div>
@@ -107,7 +107,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
                               {
                                 name: (
                                   <>
-                                    <b>Гос. номер: {vehicle.without_plate_number ? "без гос. номера": vehicle.plate_number}</b> 
+                                    <b>Гос. номер: {vehicle?.without_plate_number ? "без гос. номера": vehicle?.plate_number}</b> 
                                   </>
                                 ),
                                 badge: "",
@@ -115,7 +115,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
                               {
                                 name: (
                                   <>
-                                    <b>Тип:</b> {vehicle.vehicle_type.name}
+                                    <b>Тип:</b> {vehicle?.vehicle_type?.name || "Класс ТС удалён"}
                                   </>
                                 ),
                                 badge: "",
@@ -130,7 +130,7 @@ const VehiclesList = React.forwardRef(function MyInput(props, ref) {
                               {
                                 name: (
                                   <>
-                                    {vehicle.owner.short_name}
+                                    {vehicle?.owner?.short_name}
                                   </>
                                 ),
                                 badge: "",

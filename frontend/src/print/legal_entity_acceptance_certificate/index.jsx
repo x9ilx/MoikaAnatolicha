@@ -4,7 +4,10 @@ import ReactToPrint, { PrintContextConsumer } from "react-to-print";
 import Button from "../../components/button";
 import PropTypes from "prop-types";
 import api from "../../api";
-import { NumertToText } from "../../utils/number_utils";
+import {
+  NumertToText,
+  NumertToTextOnlyCurrency,
+} from "../../utils/number_utils";
 
 const LegalEntityAcceptanceCertificatePrint = (props) => {
   const [dateStart, setDateStart] = React.useState(new Date());
@@ -26,27 +29,35 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
         setOrders(res);
         let newArr = [];
         let total_cost = 0;
+        let index = 1;
         res.map((order) => {
           let newArrItem = {
             order_number: order.order_number,
             date: null,
+            plate_numbers: "",
             services: [],
           };
 
           newArrItem.date = order.order_datetime;
+          newArrItem.plate_numbers = order?.tractor_trailer_plate_numbers
+          order?.services
+            ?.sort(function (a, b) {
+              return b.vehicle.id - a.vehicle.id;
+            })
+            .map((service) => {
+              if (service.legal_entity_service === true) {
+                newArrItem.services.push({ ...service, index: index });
+                total_cost += service.cost;
+                index += 1;
+              }
+            });
 
-          order?.services?.map((service) => {
-            if (service.legal_entity_service === true) {
-              newArrItem.services.push(service);
-            }
-          });
-
-          newArrItem.services.sort(function (a, b) {
-            return b.vehicle.id - a.vehicle.id;
-          });
+          // newArrItem.services.sort(function (a, b) {
+          //   return b.vehicle.id - a.vehicle.id;
+          // });
 
           newArr.push(newArrItem);
-          total_cost += order.final_cost_contract;
+          // total_cost += order.final_cost_contract;
         });
         setTotalCost(total_cost);
         setServices(newArr);
@@ -85,7 +96,9 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
   return (
     <div>
       <style type="text/css" media="print">
-        {"@page :first {margin: 0;} @page { size:  auto; margin-top: 2em;margin-bottom: 2em;}"}
+        {
+          "@page :first {margin: 0;} @page { size:  auto; margin-top: 2em;margin-bottom: 2em;}"
+        }
       </style>
       <hr></hr>
       <div className="row">
@@ -173,7 +186,7 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
         </p>
         <div className="m-1">
           <table
-            className="table table-sm align-top border fs-9"
+            className="table table-sm align-top border fs-11"
             style={{ textAlign: "center" }}
           >
             <thead>
@@ -181,17 +194,11 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
                 <th scope="col" className="border align-top">
                   №
                 </th>
-                <th scope="col" colSpan={6} className="border align-top">
-                  Заказ
-                </th>
-              </tr>
-              <tr>
-                <th scope="col" className="border align-top"></th>
                 <th scope="col" className="border align-top">
-                  №
+                  Дата
                 </th>
                 <th scope="col" className="border align-top">
-                  Марка, модель класс ТС
+                  Марка, модель ТС
                 </th>
                 <th scope="col" className="border align-top">
                   Гос. номер ТС
@@ -208,20 +215,13 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
               {orders.length > 0 &&
                 services?.map((serviceG, index) => (
                   <>
-                    <tr>
-                      <th className="border px-2" scope="row">
-                        {index + 1}
-                      </th>
-                      <td className="border fw-bold text-start" colSpan={5}>
-                        Заказ №{serviceG.order_number}, от{" "}
-                        {new Date(serviceG.date).toLocaleDateString()}г.
-                      </td>
-                    </tr>
                     {serviceG?.services?.map((service, sindex) => (
                       <tr key={serviceG + service + index}>
-                        <th className="border px-2" scope="row"></th>
                         <td className="border px-2" scope="row">
-                          {sindex + 1}
+                          {service?.index}
+                        </td>
+                        <td className="border px-2" scope="row">
+                          {new Date(serviceG?.date).toLocaleDateString()}
                         </td>
                         <td className="border " style={{ textAlign: "left" }}>
                           {service?.vehicle.vehicle_model}{" "}
@@ -229,14 +229,17 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
                           {service?.vehicle.vehicle_type.name}
                         </td>
                         <td className="border " style={{ textAlign: "left" }}>
-                          {service.vehicle.without_plate_number
+                          {/* {service.vehicle.without_plate_number
                             ? "Без гос. номера"
-                            : service.vehicle.plate_number}
+                            : service.vehicle.plate_number} */}
+                            {serviceG?.plate_numbers}
                         </td>
                         <td className="border" style={{ textAlign: "left" }}>
                           {service.service_name}
                         </td>
-                        <td className="border ">{service.cost}₽</td>
+                        <td className="border ">
+                          {service.cost.toLocaleString()}₽
+                        </td>
                       </tr>
                     ))}
                   </>
@@ -245,7 +248,9 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
                 <th className="border px-2 text-end" scope="row" colSpan={5}>
                   ИТОГО:
                 </th>
-                <td className="border fw-bold">{totalCost}₽</td>
+                <td className="border fw-bold">
+                  {totalCost.toLocaleString()}₽
+                </td>
               </tr>
             </tbody>
           </table>
@@ -257,8 +262,9 @@ const LegalEntityAcceptanceCertificatePrint = (props) => {
             <br></br>
             3. Замечаний к услугам и предоставленным ИСПОЛНИТЕЛЕМ расходным
             материалам не имеются.<br></br>
-            4. Стоимость оказания услуг составила {totalCost} ({NumertToText(totalCost)}) рублей 00 копеек, НДС
-            не облагается.<br></br>
+            4. Стоимость оказания услуг составила {totalCost} (
+            {NumertToText(totalCost)}) {NumertToTextOnlyCurrency(totalCost)},
+            НДС не облагается.<br></br>
             5. Стороны взаимных претензий не имеют.
           </div>
           <p className="fw-medium fs-7 text-center mt-2 mb-0">

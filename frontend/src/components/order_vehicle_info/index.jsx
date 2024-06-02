@@ -12,7 +12,12 @@ const VehicleInfo = (props) => {
         <div className="border rounded p-2 fs-8">
           {props.showPlateNumber && (
             <p className="m-0">
-              <b>Гос. номер: {props.vehicle.without_plate_number ? "Без гос. номера" : props.vehicle.plate_number}</b>
+              <b>
+                Гос. номер:{" "}
+                {props.vehicle.without_plate_number
+                  ? "Без гос. номера"
+                  : props.vehicle.plate_number}
+              </b>
             </p>
           )}
           <p className="m-0">
@@ -20,11 +25,17 @@ const VehicleInfo = (props) => {
           </p>
           <p className="m-0">
             <b>Класс:</b>{" "}
-            {props.vehicle.vehicle_type.vehicle_class_name ||
-              props.vehicle.vehicle_class_name}{" "}
-            (
-            {props.vehicle.vehicle_type.name || props.vehicle.vehicle_type_name}
-            )
+            {props.vehicle.vehicle_type != null && (
+              <>
+                {props.vehicle.vehicle_type?.vehicle_class_name ||
+                  props.vehicle?.vehicle_class_name}{" "}
+                (
+                {props.vehicle.vehicle_type?.name ||
+                  props.vehicle?.vehicle_type_name}
+                )
+              </>
+            )}
+            {props.vehicle.vehicle_type === null && <span className="text-danger">Класс ТС удалён</span>}
           </p>
         </div>
       )}

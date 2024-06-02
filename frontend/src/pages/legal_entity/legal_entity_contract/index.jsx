@@ -30,6 +30,25 @@ const LegalEntityContract = (props) => {
     });
   };
 
+  const setContractToCurrent = () => {
+    if (confirm(`Действительно сделать договор текущим?`) != true) {
+      return;
+    }
+
+    api
+      .setContractToCurrent(contract_id)
+      .then((res) => {
+        navigate(0, {replace: true});
+        toast.success(
+          "Текущий договор изменён на " + res?.legal_entity_contract
+        );
+        
+      })
+      .catch((err) => {
+        Object.keys(err).map((key) => toast.error(key + ": " + err[key]));
+      });
+  };
+
   const createContract = () => {
     if (dateStart === "" || dateStart == undefined) {
       toast.error("Необходимо выбрать дату начала действия договора");
@@ -82,8 +101,8 @@ const LegalEntityContract = (props) => {
   }, [legal_entity_id]);
 
   React.useEffect(() => {
-    if (contract_id <= 0) {
       getLegalEntity();
+    if (contract_id <= 0) {
       getVehicleServicesList();
     } else {
       getContract();
@@ -251,7 +270,16 @@ const LegalEntityContract = (props) => {
               <>Печать договора</>
             </Button>
           </Link>
-
+          <Button
+            clickHandler={() => {
+              setContractToCurrent();
+            }}
+            colorClass="btn-success"
+            type="button"
+            disabled={legalEntity.current_contract == contract_id}
+          >
+            <>Сделать текущим договором</>
+          </Button>
           {DELETE && (
             <>
               <Button

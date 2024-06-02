@@ -180,7 +180,7 @@ function Statistic() {
                 {
                   //₽
                   name: <span>Общий доход</span>,
-                  badge: <span>{totalIncome}₽</span>,
+                  badge: <span>{totalIncome.toLocaleString()}₽</span>,
                 },
               ]}
             />
@@ -194,7 +194,7 @@ function Statistic() {
                 ),
                 badge: (
                   <span>
-                    {paymentMethods[key].total_income}₽ (
+                    {paymentMethods[key].total_income.toLocaleString()}₽ (
                     {(
                       (paymentMethods[key].total_income / totalIncome) *
                       100
@@ -218,7 +218,7 @@ function Statistic() {
                 ),
                 badge: (
                   <span>
-                    {adminOrder[key].total_income}₽ (
+                    {adminOrder[key].total_income.toLocaleString()}₽ (
                     {(
                       (adminOrder[key].order_count / ordersCount) *
                       100
@@ -238,7 +238,7 @@ function Statistic() {
                 ),
                 badge: (
                   <span>
-                    {employeesSalary.administrators[key].total_salary}₽
+                    {employeesSalary.administrators[key].total_salary.toLocaleString()}₽
                   </span>
                 ),
               }))}
@@ -253,7 +253,7 @@ function Statistic() {
                 ),
                 badge: (
                   <span>
-                    {employeesSalary.washers[key].total_salary}₽
+                    {employeesSalary.washers[key].total_salary.toLocaleString()}₽
                   </span>
                 ),
               }))}

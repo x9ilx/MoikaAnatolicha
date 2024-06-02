@@ -89,7 +89,7 @@ const LegalEntityOffcanvasDocs = (props) => {
             <button
               className="btn btn-light"
               onClick={() => {
-                navigate(`${props.legalEntity.id}/salary/`);
+                navigate(`${props.legalEntity.id}/contracts/`);
               }}
               style={{ textAlign: "left" }}
             >
@@ -100,7 +100,7 @@ const LegalEntityOffcanvasDocs = (props) => {
             <button
               className="btn btn-light"
               onClick={() => {
-                navigate(`${props.legalEntity.id}/salary/`);
+                navigate(`${props.legalEntity.id}/invoices/`);
               }}
               style={{ textAlign: "left" }}
             >

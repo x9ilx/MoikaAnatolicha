@@ -766,6 +766,22 @@ class Api {
   }
   
   ////////////////////////////////////////// CONTRACT
+
+  getLegalEntityContracts(page = 1, items_limit = 8, search = "") {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL +
+        `/api/legal_entity_contracts/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
+  
   createContract(legal_entity_id, start_date, end_date) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/legal_entity_contracts/`, {
@@ -812,6 +828,18 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  setContractToCurrent(legal_entity_contract_id) {
+    const token = cookies.get("auth_token");
+    return fetch(URL + `/api/legal_entity_contracts/${legal_entity_contract_id}/set_contract_to_current/`, {
+      method: "POST",
+      headers: {
+        ...this._headers,
+        authorization: `Token ${token}`,
+      },
+    }).then(this.checkResponse);
+  }
+  
+
    ////////////////////////////////////////// INVOICE
    createInvoice(legal_entity_id, start_date, end_date, services) {
     const token = cookies.get("auth_token");
@@ -830,6 +858,21 @@ class Api {
     }).then(this.checkResponse);
   }
 
+  getLegalEntityInvoices(page = 1, items_limit = 8, search = "") {
+    const token = cookies.get("auth_token");
+    return fetch(
+      URL +
+        `/api/legal_entity_invoices/?page=${page}&limit=${items_limit}&search=${search}`,
+      {
+        method: "GET",
+        headers: {
+          ...this._headers,
+          authorization: `Token ${token}`,
+        },
+      }
+    ).then(this.checkResponse);
+  }
+  
   getInvoice(id) {
     const token = cookies.get("auth_token");
     return fetch(URL + `/api/legal_entity_invoices/${id}/`, {

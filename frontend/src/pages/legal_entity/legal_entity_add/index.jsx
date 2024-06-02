@@ -89,7 +89,7 @@ const LegalEntityAdd = (props) => {
       getLegalEntity();
       setLoading(false);
     }
-  }, [getLegalEntity, legal_entity_id]);
+  }, []);
 
   const updateLegalEntity = () => {
     if (!validate()) {

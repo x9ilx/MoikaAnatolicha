@@ -78,7 +78,13 @@ class Order(models.Model):
         max_length=150,
         blank=True,
     )
-
+    tractor_trailer_plate_numbers = models.CharField(
+        'Тягач + ППЦ номера',
+        max_length=150,
+        blank=True,
+    )
+    
+    
     class Meta:
         """Meta definition for Order."""
 

@@ -49,6 +49,15 @@ const OrderAdd1C = (props) => {
   }, []);
 
   const CreateOrder = React.useCallback(() => {
+
+    let tt = ""
+
+    if (tractor.hasOwnProperty("plate_number") && trailer.hasOwnProperty("plate_number")) {
+      tt = `${tractor.plate_number} + ${trailer.plate_number}`;
+    } else {
+      tt = `${tractor.plate_number}`;
+    }
+
     let data = {
       administrator: administrator,
       payment_method: paymentMethod,
@@ -61,6 +70,7 @@ const OrderAdd1C = (props) => {
       vehicles: vehicleList,
       services: services,
       washers: washers,
+      tractor_trailer: tt,
     };
 
     api

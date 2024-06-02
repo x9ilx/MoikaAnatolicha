@@ -249,35 +249,47 @@ class OrderViewSet(viewsets.ModelViewSet):
             b_service = None
             contract = ''
             new_employer_salary = service['employer_salary']
+            
             if service['legal_entity_service'] == True:
-                b_service = ServiceVehicleTypeLegalEntyty.objects.get(
+                b_service_exist = ServiceVehicleTypeLegalEntyty.objects.filter(
                     pk=service['base_service_id']
                 )
-                total_cost_contract += service['cost']
-                contract = '(по договору)'
+                
+                if b_service_exist:
+                    b_service = ServiceVehicleTypeLegalEntyty.objects.get(
+                        pk=service['base_service_id']
+                    )
+                    total_cost_contract += service['cost']
+                    contract = '(по договору)'
             else:
-                b_service = ServiceVehicleType.objects.get(
+                b_service_exist = ServiceVehicleTypeLegalEntyty.objects.filter(
                     pk=service['base_service_id']
                 )
-                total_cost += service['cost']
+                
+                if b_service_exist:
+                    b_service = ServiceVehicleType.objects.get(
+                        pk=service['base_service_id']
+                    )
+                    total_cost += service['cost']
 
-            new_employer_salary = b_service.employer_salary
+            if not b_service is None:
+                new_employer_salary = b_service.employer_salary
+
+                if b_service.cost != service['cost']:
+                    comments += f'{user.name} изменил \
+                                    стоимость услуги{contract} \
+                                    "{service['service_name']}" c \
+                                    {b_service.cost}₽ на {service['cost']}₽\n'
+                    new_employer_salary = round(
+                        (service['cost'] / b_service.cost) * new_employer_salary
+                    )
+                    service['employer_salary'] = new_employer_salary
 
             if service['vehicle']['id'] == -1:
                 vehicle_obj = Vehicle.objects.get(
                     plate_number=service['vehicle']['plate_number']
                 )
                 service['vehicle']['id'] = vehicle_obj.pk
-
-            if b_service.cost != service['cost']:
-                comments += f'{user.name} изменил \
-                                стоимость услуги{contract} \
-                                "{service['service_name']}" c \
-                                {b_service.cost}₽ на {service['cost']}₽\n'
-                new_employer_salary = round(
-                    (service['cost'] / b_service.cost) * new_employer_salary
-                )
-                service['employer_salary'] = new_employer_salary
 
             service_create_list.append(
                 OrderService(
@@ -324,6 +336,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         services = request.data['services']
         washers = request.data['washers']
         is_paid = request.data['is_paid']
+        tractor_trailer = request.data['tractor_trailer']
 
         if self.__get_active_order_count() >= 6:
             return Response(
@@ -372,6 +385,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             is_paid=is_paid,
             is_completed=False,
             has_been_modifed_after_save=False,
+            tractor_trailer_plate_numbers=tractor_trailer,
         )
 
         dict_unique_id = {}

@@ -80,6 +80,7 @@ const LegalEntityInvoice = (props) => {
               }
               total_service[key].count += 1;
               total_service[key].total_cost += total_service[key].cost;
+              total_cost += total_service[key].cost;
             }
           });
 
@@ -88,7 +89,6 @@ const LegalEntityInvoice = (props) => {
           });
 
           newArr.push(newArrItem);
-          total_cost += order.final_cost_contract;
         });
         setFinalServices(total_service);
         setTotalCost(total_cost);
@@ -318,7 +318,7 @@ const LegalEntityInvoice = (props) => {
               }}
             />
             <label className="form-check-label" htmlFor="DELETE">
-              Удалить данные о договоре
+              Удалить данные о счёте
             </label>
           </div>
           <Link to="./print/" target="_blank">

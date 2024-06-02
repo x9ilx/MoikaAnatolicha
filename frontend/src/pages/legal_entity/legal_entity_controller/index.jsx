@@ -16,6 +16,8 @@ import LegalEntityVehicleRegistryPrint from "../../../print/legal_entity_vehicle
 import LegalEntityAcceptanceCertificatePrint from "../../../print/legal_entity_acceptance_certificate";
 import LegalEntityInvoice from "../legal_entity_invoice";
 import LegalEntityInvoicePrint from "../../../print/legal_entity_invoice";
+import LegalEntityContractsList from "../legal_entity_contracts_list";
+import LegalEntityInvoicesList from "../legal_entity_invoices_list";
 
 function LegalEntityController() {
   const [info_string_for_delete, set_info_string_for_delete] =
@@ -129,6 +131,31 @@ function LegalEntityController() {
             />
           </Route>
         </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/:legal_entity_id/contracts/"
+              element={
+                <>
+                  <LegalEntityContractsList />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
+            <Route
+              path="/:legal_entity_id/invoices/"
+              element={
+                <>
+                  <LegalEntityInvoicesList />
+                </>
+              }
+            />
+          </Route>
+        </Route>
+        
         <Route element={<ProtectedRoute />}>
           <Route element={<UserRoleRouter role={EmployerPosition.MANAGER} />}>
             <Route

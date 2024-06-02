@@ -1,7 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import ReactToPrint, { PrintContextConsumer } from "react-to-print";
-// import QRCode from "react-qr-code";
 import { QRCodeSVG } from "qrcode.react";
 import Button from "../../components/button";
 import api from "../../api";

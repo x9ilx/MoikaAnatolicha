@@ -262,7 +262,7 @@ const DataListVehicle = (props) => {
                           :
                         </b>{" "}
                         {vehicle?.vehicle_class_name} {vehicle?.vehicle_model}{" "}
-                        {isMobile && <br />}({vehicle?.vehicle_type_name})
+                        {isMobile && <br />}({vehicle?.vehicle_type_name !== null ? vehicle?.vehicle_type_name : <><span className={`text-${vehicle.to_be_removed ? "white" : "danger"} fs-6 fw-bold`}>Класс ТС удалён. ТС будет удалено из списка, при сохранении.</span></>})
                         <br></br>
                         {vehicle?.owner_name}
                       </div>
